@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "idempotency_key": "manual-test-run-001",
+  "task_mode": "single_issue",
+  "execution_mode": "development",
+  "repository": {
+    "kind": "local_git",
+    "locator": "/Users/aniketpathak/Desktop/DobbyAI"
+  },
+  "task": {
+    "text": "Refactor database connection pool"
+  },
+  "limits": {
+    "max_tasks": 1
+  }
+}
