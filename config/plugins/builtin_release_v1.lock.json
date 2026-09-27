@@ -1,19 +1,19 @@
 {
-  "created_at": "2026-09-27T03:11:14.505432+00:00",
+  "created_at": "2026-09-27T03:41:57.376314+00:00",
   "kernel_api_version": "1.0",
-  "lock_sha256": "6261e5127d3cb1addd1dd4a259356927fbc73481433f7cdf5ee79f3277798704",
+  "lock_sha256": "d6df43263130a46db510cb7360e16e622e56b5fc98c98fbb0cd92bf28d2c5f67",
   "plugin_set_id": "pset_builtin_release_v1",
   "plugins": [
     {
       "configuration_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-      "content_sha256": "f229cd7591dab768ac3be0176d7a9daf1de37212e4960b2292c1a6e92da53414",
+      "content_sha256": "1fbde38e8a2b66e492b16e7b0e4cd725b5e1355f9081ec910e58298a315596b4",
       "name": "builtin.context-builder",
       "slot": "context",
       "version": "1.0.0"
     },
     {
       "configuration_sha256": "5479458e5e5d2bcea0517b07190712f4bae35a3692cd5efc6f7da2f0abdb341c",
-      "content_sha256": "3c528979c464e18a857d055c852fd803cd130d84e7c4aa8aca958f549e865b8c",
+      "content_sha256": "ed1cd54622cad85dbe8ddf5563298eee4d20a2ad1f9346fce1326db3c4fd954c",
       "name": "builtin.safe-controller",
       "slot": "controller",
       "version": "1.0.0"
@@ -62,7 +62,7 @@
     },
     {
       "configuration_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-      "content_sha256": "b0ee7630db04944b82e073a8eb1a9f3626f7e38d097b76eba05d664d5af9040a",
+      "content_sha256": "f49c1c81da33e07c8a4808f059bef232bc51fabe89a59deb71d38047814a6635",
       "name": "builtin.tree-sitter-retriever",
       "slot": "retriever",
       "version": "1.0.0"

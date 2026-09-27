@@ -175,8 +175,9 @@ class Retriever:
             row = file_by_path[needle.removeprefix("./")]
             return [(row, 1, min(self.max_line_span, self._line_count(root, row)), "query named an indexed file", ("exact_path",))]
         if kind == "PATH_GLOB":
+            patterns = _glob_variants(needle.removeprefix("./"))
             for row in files:
-                if fnmatch.fnmatchcase(row["relative_path"], needle):
+                if any(fnmatch.fnmatchcase(row["relative_path"], pattern) for pattern in patterns):
                     exact = row["relative_path"] == needle
                     span = self.max_line_span if exact else 40
                     candidates.append((row, 1, min(span, self._line_count(root, row)), "path glob match", ("exact_path",)))
@@ -329,3 +330,25 @@ class Retriever:
             "STACK_TRACE_LOCATION": "stack_trace",
             "MANIFEST_OR_CONFIG": "manifest",
         }.get(query_type, "source_excerpt")
+
+
+def _glob_variants(pattern: str, limit: int = 64) -> List[str]:
+    """Shell-style globs as models write them: ``{a,b}`` alternatives and ``**/`` for zero or
+    more directories (``fnmatch`` supports neither)."""
+    variants = [pattern]
+    expanded: List[str] = []
+    while variants and len(expanded) + len(variants) <= limit:
+        current = variants.pop()
+        match = re.search(r"\{([^{}]*)\}", current)
+        if not match:
+            expanded.append(current)
+            continue
+        for option in match.group(1).split(","):
+            variants.append(current[: match.start()] + option + current[match.end():])
+    expanded.extend(variants)
+    result: List[str] = []
+    for item in expanded:
+        for candidate in (item, item.replace("**/", "")):
+            if candidate not in result:
+                result.append(candidate)
+    return result

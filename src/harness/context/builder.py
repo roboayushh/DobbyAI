@@ -243,7 +243,8 @@ class ContextBuilder:
                     "repository_orientation",
                     self.firewall.wrap_untrusted("repository_map", orientation),
                     False,
-                    700,
+                    # Above evidence: under a tight budget, evidence is trimmed before the file map.
+                    2_500,
                     "repository_map",
                     source_revision=source_revision,
                 )
@@ -311,14 +312,17 @@ class ContextBuilder:
             if role == Role.VALIDATOR and record.get("kind") == "coder_narrative":
                 continue
             pair_id = str(record.get("pair_id")) if record.get("pair_id") else None
+            # Host feedback (why a reply was rejected, "evidence rounds used up") is small and
+            # decides whether the role can recover, so compaction must never drop it.
+            control = record.get("kind") == "schema_feedback"
             items.append(
                 self._item(
                     "history",
                     self.firewall.wrap_untrusted(
                         f"history_{position}", canonical_json(dict(record))
                     ),
-                    False,
-                    300 + position,
+                    control,
+                    9_300 if control else 300 + position,
                     str(record.get("kind", "history")),
                     source_revision=source_revision,
                     pair_id=pair_id,

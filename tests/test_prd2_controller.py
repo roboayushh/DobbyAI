@@ -822,3 +822,17 @@ def test_a_tiny_rate_cap_still_sends_the_pinned_minimum(tmp_path: Path, monkeypa
     result = controller.continue_run("run_1", stop_at="plan")
     assert result.status.value == "PLAN_READY" and len(adapter.calls) == 1
     assert adapter.calls[0].max_output_tokens <= 1024
+
+
+def test_rounds_exhausted_instruction_survives_a_tiny_rate_cap(tmp_path: Path, monkeypatch) -> None:
+    """todo-app regression: under a 7K tokens/minute cap, compaction dropped the host's 'plan now'
+    feedback, so the planner kept asking and hit the round limit. Host feedback is pinned."""
+    monkeypatch.setenv("HARNESS_MODEL_TPM_LIMIT", "1500")
+    data_root, _, store, artifacts = _prepared_run(tmp_path)
+    adapter = FakeModelAdapter([_evidence_request("src/example.py"), _evidence_request("tests/test_example.py"),
+                                _evidence_request("src/*.py"), _plan_response()])
+    controller = OrchestrationController(run_store=store, artifact_store=artifacts, data_root=data_root,
+                                         profile_resolver=ModelProfileResolver(_profile_file(tmp_path)), adapter=adapter)
+    result = controller.continue_run("run_1", stop_at="plan")
+    assert result.status.value == "PLAN_READY" and len(adapter.calls) == 4
+    assert "EVIDENCE_ROUNDS_EXHAUSTED" in _history_text(adapter.calls[3])

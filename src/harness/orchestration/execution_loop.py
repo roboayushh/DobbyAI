@@ -475,11 +475,21 @@ class ExecutionLoopMixin:
         rejected = [item for item in rejected if item.get("task_id") == task_id]
         sections: List[Dict[str, Any]] = []
         total = len(records)
+        # Under a small provider tokens-per-minute cap, the untrimmed newest result does not fit
+        # beside the pinned context and would be dropped: the coder would never see what its last
+        # action read, and would read again forever. Trim it to fit instead.
+        from harness.model.adapter import provider_tpm_limit
+
+        limits = provider_tpm_limit(getattr(self, "_tpm_origin", "")) or {}
+        tight = int(limits.get("tpm", 0) or 0)
+        newest_limits = ((("stdout_excerpt", max(1500, tight // 3)), ("stderr_excerpt", 600), ("diff_excerpt", 900))
+                         if 0 < tight < 20_000 else None)
         for position, record in enumerate(records):
             newest = position == total - 1
             trimmed = dict(record)
-            if not newest:
-                for key, limit in (("stdout_excerpt", 1500), ("stderr_excerpt", 1000), ("diff_excerpt", 1500)):
+            if not newest or newest_limits:
+                for key, limit in (newest_limits if newest and newest_limits else
+                                   (("stdout_excerpt", 1500), ("stderr_excerpt", 1000), ("diff_excerpt", 1500))):
                     value = trimmed.get(key) or ""
                     if len(value) > limit:
                         trimmed[key] = value[: limit // 3] + "\n…[older excerpt trimmed]…\n" + value[-(limit - limit // 3):]

@@ -45,6 +45,14 @@ IGNORED_DIRS = frozenset(
     }
 )
 
+# Machine-generated files: they match almost any identifier and would crowd real code out
+# of every packet, so they are not model-visible evidence.
+GENERATED_FILENAMES = frozenset({
+    "package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb",
+    "poetry.lock", "pipfile.lock", "cargo.lock", "composer.lock", "gemfile.lock", "go.sum", "uv.lock",
+})
+GENERATED_SUFFIXES = (".min.js", ".min.css", ".map")
+
 SECRET_FILENAMES = {
     ".env",
     ".env.local",
@@ -476,6 +484,20 @@ class RepositoryIndexer:
                     )
                     continue
                 size = full_path.stat().st_size
+                if filename.lower() in GENERATED_FILENAMES or filename.lower().endswith(GENERATED_SUFFIXES):
+                    items.append(
+                        InventoryItem(
+                            relative,
+                            full_path,
+                            None,
+                            self._hash_file(full_path),
+                            size,
+                            None,
+                            "EXCLUDED",
+                            "generated_or_minified",
+                        )
+                    )
+                    continue
                 if filename.lower() in SECRET_FILENAMES or filename.lower().endswith(
                     (".pem", ".key", ".p12", ".pfx")
                 ):
