@@ -98,6 +98,14 @@ Rules:
 - Your reply is JSON: python_action is ONE JSON string value. Escape newlines as \\n and double quotes as \\";
   never use Python triple-quoted strings or Markdown fences in the JSON. Prefer single quotes inside the Python code."""
 
+# Appended when the packet is fitted to a small provider rate limit: printed output is cut
+# to ~1,400 characters, so a coder that prints whole files never sees the part it needs.
+SMALL_CONTEXT_CODER_RULE = """
+SMALL CONTEXT (provider rate limit): the output of each action is cut to about 1,400 characters.
+Never print whole files. Use search(query) to find the exact lines you need and print at most
+~30 lines around them; then make the change IN THE SAME ACTION (apply_patch with exact "old"
+text you just located, or write new files) and run the relevant check. Do not spend an action only reading."""
+
 DEFAULT_AUTHORIZATION_POLICY = {
     "phase": "PRD2",
     "allowed_model_capabilities": ["request_evidence", "propose_plan", "propose_action"],
@@ -190,6 +198,8 @@ class ContextBuilder:
         role_policy = ROLE_POLICIES[role]
         if executing and role == Role.CODER:
             role_policy = EXECUTION_CODER_POLICY
+            if profile.context_window_tokens < 16_000:
+                role_policy += SMALL_CONTEXT_CODER_RULE
         items.append(self._item("system", system_policy, True, 10_000, "system_policy"))
         items.append(self._item("role", role_policy, True, 9_900, "role_policy"))
         items.append(
@@ -252,6 +262,21 @@ class ContextBuilder:
         if plan is not None and role in {Role.PLANNER, Role.CODER, Role.VALIDATOR}:
             plan_data = plan.model_dump(mode="json") if isinstance(plan, BaseModel) else dict(plan)
             plan_text = canonical_json(plan_data)
+            if role == Role.CODER and profile.context_window_tokens < 16_000:
+                # A small (rate-limit fitted) window: the coder keeps the plan's identity and
+                # intent, and the room saved lets it see the result of its previous action.
+                plan_text = canonical_json(
+                    {
+                        "plan_revision": plan_data.get("plan_revision"),
+                        "task_revision": plan_data.get("task_revision"),
+                        "objective": plan_data.get("objective"),
+                        "steps": [step.get("purpose") for step in plan_data.get("steps", []) if isinstance(step, dict)],
+                        "likely_edit_locations": [loc.get("path") for loc in plan_data.get("likely_edit_locations", [])
+                                                  if isinstance(loc, dict)],
+                        "acceptance_criteria": [c.get("statement") for c in plan_data.get("acceptance_criteria", [])
+                                                if isinstance(c, dict)],
+                    }
+                )
             if role == Role.VALIDATOR:
                 # Validator sees the acceptance contract without coder persuasion.
                 plan_text = canonical_json(

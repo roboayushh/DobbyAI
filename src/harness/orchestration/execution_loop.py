@@ -482,8 +482,11 @@ class ExecutionLoopMixin:
 
         limits = provider_tpm_limit(getattr(self, "_tpm_origin", "")) or {}
         tight = int(limits.get("tpm", 0) or 0)
-        newest_limits = ((("stdout_excerpt", max(1500, tight // 3)), ("stderr_excerpt", 600), ("diff_excerpt", 900))
+        newest_limits = ((("stdout_excerpt", max(1500, tight // 2)), ("stderr_excerpt", 400), ("diff_excerpt", 600))
                          if 0 < tight < 20_000 else None)
+        if newest_limits:
+            records = records[-1:]  # older results would be compacted away anyway; give their room to the newest
+            total = len(records)
         for position, record in enumerate(records):
             newest = position == total - 1
             trimmed = dict(record)
