@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "review_id": "vrev_01J...",
+  "candidate_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+  "decision": "INSUFFICIENT_EVIDENCE",
+  "findings": [
+    {
+      "severity": "medium",
+      "category": "missing_boundary_neighbor",
+      "statement": "The first invalid value next to the accepted boundary is not checked.",
+      "evidence_refs": [
+        "crun_01J..."
+      ]
+    }
+  ],
+  "proposed_checks": [
+    {
+      "proposal_id": "vcp_01J...",
+      "purpose": "Exercise the first invalid value next to the accepted boundary.",
+      "files": [
+        {
+          "path": "tests_overlay/test_validator_boundary.py",
+          "content_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+          "content_artifact_id": "art_01P..."
+        }
+      ],
+      "argv": [
+        "python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests_overlay/test_validator_boundary.py",
+        "--junitxml=/output/junit.xml"
+      ],
+      "timeout_seconds": 120,
+      "parser": "pytest-junit@1"
+    }
+  ],
+  "review_sha256": "abababababababababababababababababababababababababababababababab"
+}

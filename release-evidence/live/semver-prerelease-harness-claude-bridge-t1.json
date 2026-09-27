@@ -1,0 +1,39 @@
+{
+  "case": "semver-prerelease",
+  "configuration": "harness_full",
+  "trial": 1,
+  "budget": {
+    "model_calls": 20,
+    "wall_seconds": 1200
+  },
+  "model_profile": "claude-bridge",
+  "status": "INTERNAL_ERROR",
+  "exit_code": 7,
+  "stdout_json_objects": 1,
+  "wall_seconds": 148.1,
+  "usage": {
+    "estimated_fields": [],
+    "input_tokens": 223845,
+    "model_calls": 7,
+    "output_tokens": 6471,
+    "wall_seconds": 146
+  },
+  "verification": "NOT_RUN",
+  "export": "VALID",
+  "changed_paths": [],
+  "limitations": [
+    "PASS describes declared observed checks and does not guarantee hidden-test success.",
+    "INTERNAL_ERROR: PLANNER_EVIDENCE_ROUND_LIMIT: Planner requested more than three initial evidence rounds"
+  ],
+  "run_id": "run_0a03527171294957",
+  "patch_empty": true,
+  "patch_applies": false,
+  "hidden_before": {
+    "exit_code": 1,
+    "summary": "6 failed, 418 passed, 1 skipped in 0.61s",
+    "failing_count": 6
+  },
+  "hidden_after": null,
+  "hidden_pass": false,
+  "new_regressions": []
+}

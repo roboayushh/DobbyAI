@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "capability_request_id": "capreq_01J...",
+  "run_id": "run_01J...",
+  "operation": "PUSH_NEW_BRANCH",
+  "candidate": {
+    "commit": "2222222222222222222222222222222222222222",
+    "tree": "3333333333333333333333333333333333333333",
+    "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "artifact_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "target": {
+    "repository_identity": "repoid_01J...",
+    "remote_name": "origin",
+    "remote_url_sha256": "1818181818181818181818181818181818181818181818181818181818181818",
+    "ref": "refs/heads/harness/task-123",
+    "expected_oid": null
+  },
+  "policy": {
+    "policy_id": "policy_release_v1",
+    "policy_sha256": "1919191919191919191919191919191919191919191919191919191919191919",
+    "permission_profile": "guided"
+  },
+  "requested_uses": 1,
+  "expires_at": "2026-09-27T01:00:00Z",
+  "summary_artifact_id": "art_approval_summary_01J...",
+  "request_sha256": "2020202020202020202020202020202020202020202020202020202020202020"
+}

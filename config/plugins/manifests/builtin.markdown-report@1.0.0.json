@@ -1,0 +1,38 @@
+{
+  "configuration_schema_sha256": "042b35e50dd5dd505f0228e829f17a8aeaae50e49d865c4754cf9ba1edba9bd0",
+  "dependencies": [],
+  "in_process": true,
+  "interfaces": [
+    {
+      "api_version": "1.0",
+      "name": "ReportRendererPlugin"
+    }
+  ],
+  "optional_capabilities": [],
+  "plugin": {
+    "content_sha256": "49eea974ffc768c679ed8fbd0d936b9528ac2ee66a56b26c407e49ae2e1bb4f3",
+    "distribution": "ai-coding-harness",
+    "entry_point": "MarkdownReportRenderer",
+    "module": "harness.release.report_builder",
+    "name": "builtin.markdown-report",
+    "version": "1.0.0"
+  },
+  "provenance": {
+    "license": "project-license",
+    "review_artifact_id": null,
+    "review_status": "REVIEWED",
+    "source": "project-built-in"
+  },
+  "required_capabilities": [
+    "READ_STATE_VIEW"
+  ],
+  "runtime": {
+    "platforms": [
+      "linux",
+      "darwin"
+    ],
+    "python": ">=3.12,<3.14"
+  },
+  "schema_version": "1.0",
+  "self_check": "import_only_v1"
+}

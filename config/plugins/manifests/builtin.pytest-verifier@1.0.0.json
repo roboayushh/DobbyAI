@@ -1,0 +1,44 @@
+{
+  "configuration_schema_sha256": "5735d34a6df3b5b266ca36991a481be439f8376eb9733b81754d0887b42becc3",
+  "dependencies": [
+    {
+      "name": "builtin.docker-environment",
+      "optional": false,
+      "version_constraint": ">=1.0.0,<2.0.0"
+    }
+  ],
+  "in_process": true,
+  "interfaces": [
+    {
+      "api_version": "1.0",
+      "name": "VerifierPlugin"
+    }
+  ],
+  "optional_capabilities": [],
+  "plugin": {
+    "content_sha256": "a4bc70d87f5684136939bc8dec8bd29386b4d1a271ea072c594a36cc5f98dbab",
+    "distribution": "ai-coding-harness",
+    "entry_point": "VerificationService",
+    "module": "harness.verification.service",
+    "name": "builtin.pytest-verifier",
+    "version": "1.0.0"
+  },
+  "provenance": {
+    "license": "project-license",
+    "review_artifact_id": null,
+    "review_status": "REVIEWED",
+    "source": "project-built-in"
+  },
+  "required_capabilities": [
+    "VERIFICATION_OBSERVATION"
+  ],
+  "runtime": {
+    "platforms": [
+      "linux",
+      "darwin"
+    ],
+    "python": ">=3.12,<3.14"
+  },
+  "schema_version": "1.0",
+  "self_check": "completion_gate_false_pass_v1"
+}

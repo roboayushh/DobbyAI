@@ -1,0 +1,249 @@
+{
+  "$defs": {
+    "PluginDependencyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "optional": {
+          "default": false,
+          "title": "Optional",
+          "type": "boolean"
+        },
+        "version_constraint": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Version Constraint",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version_constraint"
+      ],
+      "title": "PluginDependencyV1",
+      "type": "object"
+    },
+    "PluginIdentityV1": {
+      "additionalProperties": false,
+      "properties": {
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "distribution": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Distribution",
+          "type": "string"
+        },
+        "entry_point": {
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Entry Point",
+          "type": "string"
+        },
+        "module": {
+          "pattern": "^[A-Za-z_][A-Za-z0-9_.]*$",
+          "title": "Module",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z0-9_.-]+$",
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "distribution",
+        "module",
+        "entry_point",
+        "content_sha256"
+      ],
+      "title": "PluginIdentityV1",
+      "type": "object"
+    },
+    "PluginInterfaceRefV1": {
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "pattern": "^\\d+\\.\\d+$",
+          "title": "Api Version",
+          "type": "string"
+        },
+        "name": {
+          "enum": [
+            "ControllerPlugin",
+            "ContextBuilderPlugin",
+            "ModelAdapterPlugin",
+            "RepositoryPlugin",
+            "RetrieverPlugin",
+            "EnvironmentPlugin",
+            "VerifierPlugin",
+            "EvaluatorAdapterPlugin",
+            "ExporterPlugin",
+            "PublisherPlugin",
+            "ReportRendererPlugin"
+          ],
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "api_version"
+      ],
+      "title": "PluginInterfaceRefV1",
+      "type": "object"
+    },
+    "PluginProvenanceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "license": {
+          "title": "License",
+          "type": "string"
+        },
+        "review_artifact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Review Artifact Id"
+        },
+        "review_status": {
+          "enum": [
+            "REVIEWED",
+            "REJECTED",
+            "EXPIRED"
+          ],
+          "title": "Review Status",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "license",
+        "review_status"
+      ],
+      "title": "PluginProvenanceV1",
+      "type": "object"
+    },
+    "PluginRuntimeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "platforms": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Platforms",
+          "type": "array"
+        },
+        "python": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Python",
+          "type": "string"
+        }
+      },
+      "required": [
+        "python",
+        "platforms"
+      ],
+      "title": "PluginRuntimeV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "configuration_schema_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Configuration Schema Sha256",
+      "type": "string"
+    },
+    "dependencies": {
+      "items": {
+        "$ref": "#/$defs/PluginDependencyV1"
+      },
+      "title": "Dependencies",
+      "type": "array"
+    },
+    "in_process": {
+      "default": true,
+      "title": "In Process",
+      "type": "boolean"
+    },
+    "interfaces": {
+      "items": {
+        "$ref": "#/$defs/PluginInterfaceRefV1"
+      },
+      "minItems": 1,
+      "title": "Interfaces",
+      "type": "array"
+    },
+    "optional_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Optional Capabilities",
+      "type": "array"
+    },
+    "plugin": {
+      "$ref": "#/$defs/PluginIdentityV1"
+    },
+    "provenance": {
+      "$ref": "#/$defs/PluginProvenanceV1"
+    },
+    "required_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Capabilities",
+      "type": "array"
+    },
+    "runtime": {
+      "$ref": "#/$defs/PluginRuntimeV1"
+    },
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "self_check": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Self Check",
+      "type": "string"
+    }
+  },
+  "required": [
+    "plugin",
+    "interfaces",
+    "configuration_schema_sha256",
+    "runtime",
+    "provenance",
+    "self_check"
+  ],
+  "title": "PluginManifestV1",
+  "type": "object"
+}

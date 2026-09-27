@@ -490,18 +490,22 @@ class PreparationController:
 
         return reconciled
 
-    def continue_prepared_run(self, run_id: str) -> Dict[str, Any]:
-        """Interface reserved for PRD 2 continuation (Section 20.3).
-        Returns handoff data or a typed NOT_IMPLEMENTED_UNTIL_PRD_2 result.
-        """
+    def continue_prepared_run(
+        self,
+        run_id: str,
+        orchestration_controller: Any,
+        stop_at: str = "action-proposed",
+    ) -> Any:
+        """Delegate a verified PREPARED run into the PRD 2 controller."""
         run = self.run_store.get_run(run_id)
         if not run:
             raise KeyError(f"Run {run_id} not found")
         if run["state"] != RunState.PREPARED.value:
             raise ValueError(f"Run {run_id} is not PREPARED (state={run['state']})")
 
-        return {
-            "status": "NOT_IMPLEMENTED_UNTIL_PRD_2",
-            "message": "Preparation is complete. Agent orchestration begins in PRD 2.",
-            "run_id": run_id,
-        }
+        if orchestration_controller is None:
+            raise PreparationError(
+                code="ORCHESTRATION_CONTROLLER_REQUIRED",
+                message="A configured PRD 2 orchestration controller is required",
+            )
+        return orchestration_controller.continue_run(run_id, stop_at=stop_at)

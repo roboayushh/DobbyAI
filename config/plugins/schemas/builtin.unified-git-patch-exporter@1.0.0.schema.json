@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "enum": [
+        "unified_git_patch_v1"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "format"
+  ],
+  "type": "object"
+}

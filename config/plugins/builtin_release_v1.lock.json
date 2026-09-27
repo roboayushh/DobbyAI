@@ -1,0 +1,79 @@
+{
+  "created_at": "2026-09-27T02:28:35.164346+00:00",
+  "kernel_api_version": "1.0",
+  "lock_sha256": "61faf8b26f42a4d8b12a3fdefe18c516be16267441a992f516fe2aa4f37a6ebb",
+  "plugin_set_id": "pset_builtin_release_v1",
+  "plugins": [
+    {
+      "configuration_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "content_sha256": "fdba968ebe1edf36910dab51eee561a29131b8b4befd21e0bd188fd49d1fc895",
+      "name": "builtin.context-builder",
+      "slot": "context",
+      "version": "1.0.0"
+    },
+    {
+      "configuration_sha256": "5479458e5e5d2bcea0517b07190712f4bae35a3692cd5efc6f7da2f0abdb341c",
+      "content_sha256": "0d3e3bd9420e06ebf0fd1d41edc8ed1f82f6c950f2fa2e6f36aa5626c8a03b84",
+      "name": "builtin.safe-controller",
+      "slot": "controller",
+      "version": "1.0.0"
+    },
+    {
+      "configuration_sha256": "4625f694192f99f03eafb13e499e901d396c739f7c835df867787a39b6fd07bb",
+      "content_sha256": "bdf8b35d4619e3e06bde79bb4ca85dadd3096889890b5693f033e797e5bda15d",
+      "name": "builtin.docker-environment",
+      "slot": "environment",
+      "version": "1.0.0"
+    },
+    {
+      "configuration_sha256": "0b1e036d423ccf5b6ae2cd077647c520551428dbf8ecd339513535a9b6006e8e",
+      "content_sha256": "8e6764a726413b2bee79d69e62ca47ca92e702227b51948cc79e26c7924e81b9",
+      "name": "builtin.native-json-evaluator",
+      "slot": "evaluator",
+      "version": "1.0.0"
+    },
+    {
+      "configuration_sha256": "353249202a523aeecc381731a2484293a5ec849338b189c7dee8500186c6b3f3",
+      "content_sha256": "2ab636bcbb278279a19cdf06cfb026a5bb3884f59cb291a5df73085f66a19881",
+      "name": "builtin.unified-git-patch-exporter",
+      "slot": "exporter",
+      "version": "1.0.0"
+    },
+    {
+      "configuration_sha256": "a893ebeb7972087f36986155821b30420c01e2c8657a211ac1f8925343e4cb23",
+      "content_sha256": "209e009da36ae11111390acf35881baf6387407aeb08acbfd925e20f9002cf38",
+      "name": "builtin.openai-compatible-model",
+      "slot": "model",
+      "version": "1.0.0"
+    },
+    {
+      "configuration_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "content_sha256": "49eea974ffc768c679ed8fbd0d936b9528ac2ee66a56b26c407e49ae2e1bb4f3",
+      "name": "builtin.markdown-report",
+      "slot": "report_renderer",
+      "version": "1.0.0"
+    },
+    {
+      "configuration_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "content_sha256": "445e57cbf38e38a8e10d341842ee1a97cc4bd1d66ac3e6211c03f86721a4a39a",
+      "name": "builtin.git-repository",
+      "slot": "repository",
+      "version": "1.0.0"
+    },
+    {
+      "configuration_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "content_sha256": "b0ee7630db04944b82e073a8eb1a9f3626f7e38d097b76eba05d664d5af9040a",
+      "name": "builtin.tree-sitter-retriever",
+      "slot": "retriever",
+      "version": "1.0.0"
+    },
+    {
+      "configuration_sha256": "ed56f94d6a009023f650452ae96a6d9934d2535aee434bb6d88aca790a98bf51",
+      "content_sha256": "a4bc70d87f5684136939bc8dec8bd29386b4d1a271ea072c594a36cc5f98dbab",
+      "name": "builtin.pytest-verifier",
+      "slot": "verifier",
+      "version": "1.0.0"
+    }
+  ],
+  "schema_version": "1.0"
+}

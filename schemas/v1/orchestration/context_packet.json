@@ -1,0 +1,206 @@
+{
+  "$defs": {
+    "ContextBudgetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "context_window_tokens": {
+          "exclusiveMinimum": 0,
+          "title": "Context Window Tokens",
+          "type": "integer"
+        },
+        "counter_mode": {
+          "enum": [
+            "tokenizer",
+            "conservative_estimate"
+          ],
+          "title": "Counter Mode",
+          "type": "string"
+        },
+        "estimated_input_tokens": {
+          "minimum": 0,
+          "title": "Estimated Input Tokens",
+          "type": "integer"
+        },
+        "max_input_tokens": {
+          "minimum": 0,
+          "title": "Max Input Tokens",
+          "type": "integer"
+        },
+        "reserved_output_tokens": {
+          "exclusiveMinimum": 0,
+          "title": "Reserved Output Tokens",
+          "type": "integer"
+        },
+        "safety_margin_tokens": {
+          "minimum": 0,
+          "title": "Safety Margin Tokens",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "context_window_tokens",
+        "reserved_output_tokens",
+        "safety_margin_tokens",
+        "max_input_tokens",
+        "estimated_input_tokens",
+        "counter_mode"
+      ],
+      "title": "ContextBudgetV1",
+      "type": "object"
+    },
+    "ContextPinnedV1": {
+      "additionalProperties": false,
+      "properties": {
+        "authorization_policy_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Authorization Policy Sha256",
+          "type": "string"
+        },
+        "candidate_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Version"
+        },
+        "role_schema_version": {
+          "title": "Role Schema Version",
+          "type": "string"
+        },
+        "task_spec_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Task Spec Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_spec_sha256",
+        "authorization_policy_sha256",
+        "role_schema_version"
+      ],
+      "title": "ContextPinnedV1",
+      "type": "object"
+    },
+    "ContextSectionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "estimated_tokens": {
+          "minimum": 0,
+          "title": "Estimated Tokens",
+          "type": "integer"
+        },
+        "item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Item Ids",
+          "type": "array"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "pinned": {
+          "title": "Pinned",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "item_ids",
+        "pinned",
+        "estimated_tokens"
+      ],
+      "title": "ContextSectionV1",
+      "type": "object"
+    },
+    "Role": {
+      "enum": [
+        "planner",
+        "coder",
+        "validator",
+        "summarizer"
+      ],
+      "title": "Role",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "budget": {
+      "$ref": "#/$defs/ContextBudgetV1"
+    },
+    "packet_id": {
+      "title": "Packet Id",
+      "type": "string"
+    },
+    "packet_revision": {
+      "minimum": 1,
+      "title": "Packet Revision",
+      "type": "integer"
+    },
+    "packet_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Packet Sha256",
+      "type": "string"
+    },
+    "pinned": {
+      "$ref": "#/$defs/ContextPinnedV1"
+    },
+    "purpose": {
+      "title": "Purpose",
+      "type": "string"
+    },
+    "role": {
+      "$ref": "#/$defs/Role"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sections": {
+      "items": {
+        "$ref": "#/$defs/ContextSectionV1"
+      },
+      "title": "Sections",
+      "type": "array"
+    },
+    "source_revision": {
+      "title": "Source Revision",
+      "type": "string"
+    },
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "packet_id",
+    "run_id",
+    "task_id",
+    "role",
+    "purpose",
+    "packet_revision",
+    "source_revision",
+    "pinned",
+    "sections",
+    "budget",
+    "packet_sha256"
+  ],
+  "title": "ContextPacketV1",
+  "type": "object"
+}

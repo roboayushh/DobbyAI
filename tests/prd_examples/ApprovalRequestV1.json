@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "approval_request_id": "apr_01J...",
+  "run_id": "run_01J...",
+  "task_id": "tsk_01J...",
+  "operation": "execute_workspace_action",
+  "purpose": "Apply the focused change and inspect its local result.",
+  "action_proposal_id": "ap_01J...",
+  "code_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "workspace_version": "wsv_01J...",
+  "capabilities": [
+    "workspace.patch",
+    "sandbox.command.argv"
+  ],
+  "paths": [
+    "src/example.py",
+    "tests/test_example.py"
+  ],
+  "runtime_profile_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "network_policy_fingerprint": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "limits_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "policy_version": 1,
+  "max_uses": 1,
+  "expires_at": "2026-09-27T01:00:00Z",
+  "consequences": "Runs untrusted code only inside the private Docker workspace; it cannot modify the original repository."
+}

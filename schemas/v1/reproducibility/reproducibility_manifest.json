@@ -1,0 +1,300 @@
+{
+  "$defs": {
+    "HarnessBuildV1": {
+      "additionalProperties": false,
+      "properties": {
+        "build_id": {
+          "title": "Build Id",
+          "type": "string"
+        },
+        "source_commit": {
+          "title": "Source Commit",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "source_commit",
+        "build_id"
+      ],
+      "title": "HarnessBuildV1",
+      "type": "object"
+    },
+    "ReproAdapterV1": {
+      "additionalProperties": false,
+      "properties": {
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "content_sha256"
+      ],
+      "title": "ReproAdapterV1",
+      "type": "object"
+    },
+    "ReproModelV1": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter_version": {
+          "title": "Adapter Version",
+          "type": "string"
+        },
+        "config_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "provider": {
+          "title": "Provider",
+          "type": "string"
+        },
+        "sampling": {
+          "title": "Sampling",
+          "type": "object"
+        }
+      },
+      "required": [
+        "provider",
+        "model",
+        "adapter_version",
+        "config_sha256",
+        "sampling"
+      ],
+      "title": "ReproModelV1",
+      "type": "object"
+    },
+    "ReproRuntimeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "architecture": {
+          "title": "Architecture",
+          "type": "string"
+        },
+        "dependency_lock_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Dependency Lock Sha256",
+          "type": "string"
+        },
+        "image_digest": {
+          "title": "Image Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "image_digest",
+        "architecture",
+        "dependency_lock_sha256"
+      ],
+      "title": "ReproRuntimeV1",
+      "type": "object"
+    },
+    "ReproSourceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "baseline_commit": {
+          "title": "Baseline Commit",
+          "type": "string"
+        },
+        "baseline_tree": {
+          "title": "Baseline Tree",
+          "type": "string"
+        },
+        "candidate_commit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Commit"
+        },
+        "candidate_tree": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Tree"
+        }
+      },
+      "required": [
+        "baseline_commit",
+        "baseline_tree"
+      ],
+      "title": "ReproSourceV1",
+      "type": "object"
+    },
+    "ReproVerificationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "contract_set_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contract Set Sha256"
+        },
+        "environment_set_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Environment Set Sha256"
+        },
+        "test_command_set_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Test Command Set Sha256"
+        }
+      },
+      "title": "ReproVerificationV1",
+      "type": "object"
+    },
+    "SchemaVersionsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "database_migration": {
+          "minimum": 1,
+          "title": "Database Migration",
+          "type": "integer"
+        },
+        "event": {
+          "title": "Event",
+          "type": "string"
+        },
+        "request": {
+          "title": "Request",
+          "type": "string"
+        },
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request",
+        "event",
+        "result",
+        "database_migration"
+      ],
+      "title": "SchemaVersionsV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "effective_configuration_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Effective Configuration Sha256",
+      "type": "string"
+    },
+    "evaluator_adapter": {
+      "$ref": "#/$defs/ReproAdapterV1"
+    },
+    "harness": {
+      "$ref": "#/$defs/HarnessBuildV1"
+    },
+    "manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Manifest Sha256",
+      "type": "string"
+    },
+    "model": {
+      "$ref": "#/$defs/ReproModelV1"
+    },
+    "plugin_set_lock_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Plugin Set Lock Sha256",
+      "type": "string"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime": {
+      "$ref": "#/$defs/ReproRuntimeV1"
+    },
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "schemas": {
+      "$ref": "#/$defs/SchemaVersionsV1"
+    },
+    "source": {
+      "$ref": "#/$defs/ReproSourceV1"
+    },
+    "verification": {
+      "$ref": "#/$defs/ReproVerificationV1"
+    }
+  },
+  "required": [
+    "run_id",
+    "harness",
+    "schemas",
+    "evaluator_adapter",
+    "plugin_set_lock_sha256",
+    "model",
+    "source",
+    "runtime",
+    "verification",
+    "effective_configuration_sha256",
+    "manifest_sha256",
+    "created_at"
+  ],
+  "title": "ReproducibilityManifestV1",
+  "type": "object"
+}

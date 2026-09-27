@@ -1,0 +1,129 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "action_proposal_id": {
+      "title": "Action Proposal Id",
+      "type": "string"
+    },
+    "authorization_policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Authorization Policy Sha256",
+      "type": "string"
+    },
+    "baseline_commit": {
+      "title": "Baseline Commit",
+      "type": "string"
+    },
+    "code_artifact_id": {
+      "title": "Code Artifact Id",
+      "type": "string"
+    },
+    "code_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Code Sha256",
+      "type": "string"
+    },
+    "declared_paths": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Declared Paths",
+      "type": "array"
+    },
+    "lifecycle_version": {
+      "minimum": 1,
+      "title": "Lifecycle Version",
+      "type": "integer"
+    },
+    "plan_artifact_id": {
+      "title": "Plan Artifact Id",
+      "type": "string"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "plan_revision": {
+      "minimum": 1,
+      "title": "Plan Revision",
+      "type": "integer"
+    },
+    "plan_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Plan Sha256",
+      "type": "string"
+    },
+    "proposal_artifact_id": {
+      "title": "Proposal Artifact Id",
+      "type": "string"
+    },
+    "remaining_budget": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Remaining Budget",
+      "type": "object"
+    },
+    "requested_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Requested Capabilities",
+      "type": "array"
+    },
+    "requested_timeout_seconds": {
+      "exclusiveMinimum": 0,
+      "title": "Requested Timeout Seconds",
+      "type": "integer"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    },
+    "task_revision": {
+      "minimum": 1,
+      "title": "Task Revision",
+      "type": "integer"
+    },
+    "workspace_version": {
+      "title": "Workspace Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "task_id",
+    "task_revision",
+    "lifecycle_version",
+    "workspace_version",
+    "baseline_commit",
+    "plan_id",
+    "plan_revision",
+    "plan_artifact_id",
+    "plan_sha256",
+    "action_proposal_id",
+    "proposal_artifact_id",
+    "code_artifact_id",
+    "code_sha256",
+    "requested_capabilities",
+    "declared_paths",
+    "requested_timeout_seconds",
+    "authorization_policy_sha256",
+    "remaining_budget"
+  ],
+  "title": "PRD3ActionHandoffV1",
+  "type": "object"
+}

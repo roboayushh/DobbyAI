@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "policy_id": "qpol_default_v1",
+  "max_tasks_default": 3,
+  "max_tasks_hard": 20,
+  "max_edges": 80,
+  "single_writer": true,
+  "continue_independent_after_failure": true,
+  "fail_fast": false,
+  "one_commit_per_task": true,
+  "require_post_advance_verification": true,
+  "require_final_aggregate_verification": true,
+  "checkpoint_limit_per_task": 20,
+  "final_reserve": {
+    "model_calls": 2,
+    "wall_seconds": 300,
+    "check_runs": 8,
+    "output_bytes": 2000000
+  },
+  "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}

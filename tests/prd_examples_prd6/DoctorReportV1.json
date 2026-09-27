@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "profile": "evaluation_strict_v1",
+  "status": "READY",
+  "checks": [
+    {
+      "id": "python",
+      "status": "PASS",
+      "observed": "3.12.x",
+      "required": ">=3.12,<3.13"
+    },
+    {
+      "id": "sandbox",
+      "status": "PASS",
+      "observed": "docker-compatible-runtime",
+      "required": "approved-container-runtime"
+    },
+    {
+      "id": "api_key",
+      "status": "PASS",
+      "observed": "present-and-not-exported",
+      "required": "AI_API_KEY"
+    },
+    {
+      "id": "official_adapter",
+      "status": "PASS",
+      "observed": "native_json_v1",
+      "required": "native_json_v1"
+    }
+  ],
+  "blocking_check_ids": [],
+  "warnings": [],
+  "report_sha256": "3939393939393939393939393939393939393939393939393939393939393939",
+  "created_at": "2026-09-27T00:00:00Z"
+}

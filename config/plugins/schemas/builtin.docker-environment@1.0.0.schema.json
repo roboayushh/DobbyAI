@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "network_default": {
+      "enum": [
+        "none"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "network_default"
+  ],
+  "type": "object"
+}

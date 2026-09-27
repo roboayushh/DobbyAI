@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "queue_id": "que_01J...",
+  "queue_version_id": "qver_01J...",
+  "run_id": "run_01J...",
+  "version": 1,
+  "task_snapshot_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "policy_id": "qpol_default_v1",
+  "state": "FROZEN",
+  "items": [
+    {
+      "queue_item_id": "qitem_01J_A",
+      "task_id": "tsk_01J_A",
+      "ordinal": 0,
+      "classification": "ACTIONABLE",
+      "canonical_item_id": null,
+      "priority": 100,
+      "reason_codes": []
+    },
+    {
+      "queue_item_id": "qitem_01J_B",
+      "task_id": "tsk_01J_B",
+      "ordinal": 1,
+      "classification": "DEPENDENT",
+      "canonical_item_id": null,
+      "priority": 90,
+      "reason_codes": [
+        "REQUIRES_TASK_A"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "qedge_01J_AB",
+      "predecessor_item_id": "qitem_01J_A",
+      "dependent_item_id": "qitem_01J_B",
+      "kind": "REQUIRES",
+      "source": "PLANNER_PROPOSED_HOST_VALIDATED"
+    }
+  ],
+  "plan_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "frozen_at": "2026-09-26T00:00:00Z"
+}

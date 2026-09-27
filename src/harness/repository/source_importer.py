@@ -22,6 +22,13 @@ from harness.persistence.run_store import canonical_json
 from harness.repository.git_runner import GitCommandError, GitRunner
 
 
+def is_disposable(path: str) -> bool:
+    # Imported lazily: harness.workspace.manifest -> harness.gitflow -> harness.repository would cycle.
+    from harness.workspace.manifest import is_disposable as _is_disposable
+
+    return _is_disposable(path)
+
+
 class SourceChangedDuringImportError(Exception):
     pass
 
@@ -42,6 +49,8 @@ class SourceImporter:
         self,
         source_dir: Path,
         limits: LimitsV1,
+        *,
+        use_git_ignores: bool = True,
     ) -> Tuple[Dict[str, Dict[str, Any]], int, int]:
         """Scan worktree files (excluding .git), enforce limits and policies,
         and generate canonical file manifest.
@@ -55,6 +64,8 @@ class SourceImporter:
         # Discover ignored files via git if available
         ignored_relpaths: Set[str] = set()
         try:
+            if not use_git_ignores:
+                raise LookupError("git ignore rules do not apply to a non-Git folder")
             out, _ = self.git.run(
                 ["status", "--ignored", "--porcelain=v1"],
                 cwd=str(source_resolved),
@@ -80,9 +91,14 @@ class SourceImporter:
                 if str(rel_root / d if str(rel_root) != "." else d) not in ignored_relpaths
             ]
 
+            # Tool caches (__pycache__, .pytest_cache, ...) are never part of a baseline:
+            # stale bytecode can shadow real sources inside the sandbox.
+            dirs[:] = [d for d in dirs if not is_disposable(str(rel_root / d if str(rel_root) != "." else d) + "/x")]
             for fname in files:
                 rel_path = (rel_root / fname if str(rel_root) != "." else Path(fname))
                 rel_str = str(rel_path)
+                if is_disposable(rel_str):
+                    continue
 
                 # Skip ignored files
                 if rel_str in ignored_relpaths or any(
@@ -214,6 +230,12 @@ class SourceImporter:
             cwd=str(private_bare_repo),
         )
 
+        if is_dirty:
+            # `git status` also reports ignored-by-us caches; the checkout is dirty only
+            # when the imported content really differs from U's tree.
+            upstream_tree = self.git.run(["rev-parse", f"{upstream_commit}^{{tree}}"], cwd=str(private_bare_repo))[0].strip()
+            upstream_manifest, _, _ = self._manifest_from_tree(private_bare_repo, upstream_tree, limits)
+            is_dirty = self.compute_manifest_sha(upstream_manifest) != content_tree_sha
         if not is_dirty:
             # Clean checkout: baseline B is U
             baseline_commit = upstream_commit
@@ -223,60 +245,12 @@ class SourceImporter:
             )
             baseline_tree = tree_out.strip()
         else:
-            # Dirty checkout: create synthetic commit B with parent U
-            # We construct a temporary index to write the exact tree
-            temp_index = private_bare_repo / f"index_{run_id}"
-            env = {"GIT_INDEX_FILE": str(temp_index)}
-
-            # Read base tree from upstream
-            self.git.run(
-                ["read-tree", upstream_commit],
-                cwd=str(private_bare_repo),
-                extra_env=env,
-            )
-
-            # Add all non-ignored modified/untracked files
-            for rel_str, meta in manifest_entries.items():
-                src_file = source_dir / rel_str
-                if meta["mode"] == "120000":
-                    continue  # symlinks handled separately if needed
-                # Hash object into bare repo
-                obj_id, _ = self.git.run(
-                    ["hash-object", "-w", str(src_file)],
-                    cwd=str(private_bare_repo),
-                )
-                obj_id = obj_id.strip()
-                # Update index cacheinfo
-                self.git.run(
-                    ["update-index", "--add", "--cacheinfo", meta["mode"], obj_id, rel_str],
-                    cwd=str(private_bare_repo),
-                    extra_env=env,
-                )
-
-            # Write tree
-            tree_id, _ = self.git.run(
-                ["write-tree"],
-                cwd=str(private_bare_repo),
-                extra_env=env,
-            )
-            baseline_tree = tree_id.strip()
-
-            # Create synthetic commit
-            commit_msg = f"harness baseline import for run {run_id}"
-            commit_id, _ = self.git.run(
-                ["commit-tree", baseline_tree, "-p", upstream_commit, "-m", commit_msg],
-                cwd=str(private_bare_repo),
-            )
-            baseline_commit = commit_id.strip()
-
-            # Update ref
-            self.git.run(
-                ["update-ref", "refs/heads/main", baseline_commit],
-                cwd=str(private_bare_repo),
-            )
-
-            if temp_index.exists():
-                temp_index.unlink()
+            # Dirty checkout: synthetic commit B (parent U) built byte-exactly from the
+            # scanned working tree, so deletions and symlinks are represented and no
+            # .gitattributes filter can alter content.
+            baseline_tree = self._tree_from_manifest(private_bare_repo, source_dir, manifest_entries)
+            baseline_commit = self._commit(private_bare_repo, baseline_tree, [upstream_commit],
+                                           f"harness baseline import for run {run_id}")
 
         # Build import manifest artifact
         now_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -340,43 +314,7 @@ class SourceImporter:
             shutil.rmtree(private_bare_repo)
         shutil.copytree(clone_dest, private_bare_repo)
 
-        # In bare repo, list files in tree to build manifest
-        tree_files_out, _ = self.git.run(
-            ["ls-tree", "-r", "--full-tree", "-l", baseline_tree],
-            cwd=str(private_bare_repo),
-        )
-
-        manifest_entries: Dict[str, Dict[str, Any]] = {}
-        total_bytes = 0
-        file_count = 0
-
-        for line in tree_files_out.splitlines():
-            # Format: <mode> <type> <object> <size>\t<file>
-            parts = line.split(maxsplit=4)
-            if len(parts) < 5:
-                continue
-            mode, obj_type, obj_sha, size_str, rel_path = parts
-            rel_path = rel_path.strip()
-            size = int(size_str.strip()) if size_str.strip() != "-" else 0
-            total_bytes += size
-            file_count += 1
-
-            if total_bytes > limits.max_repo_bytes:
-                raise LimitsExceededError("Repository size exceeds limit")
-            if file_count > limits.max_file_count:
-                raise LimitsExceededError("File count exceeds limit")
-
-            # Get file content sha256
-            cat_out, _ = self.git.run(["cat-file", "-p", obj_sha], cwd=str(private_bare_repo))
-            content_sha = compute_sha256(cat_out)
-
-            manifest_entries[rel_path] = {
-                "path": rel_path,
-                "mode": mode,
-                "size": size,
-                "sha256": content_sha,
-                "mtime_ns": 0,
-            }
+        manifest_entries, total_bytes, file_count = self._manifest_from_tree(private_bare_repo, baseline_tree, limits)
 
         content_tree_sha = self.compute_manifest_sha(manifest_entries)
         now_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -411,3 +349,125 @@ class SourceImporter:
         )
 
         return source_identity, import_manifest, total_bytes, file_count
+
+    # ------------------------------------------------------------ helpers
+    @staticmethod
+    def _private_git(private_bare_repo: Path):
+        from harness.gitflow.private_git import PrivateGit
+
+        return PrivateGit(private_bare_repo)
+
+    def _manifest_from_tree(self, private_bare_repo: Path, tree: str, limits: LimitsV1) -> Tuple[Dict[str, Dict[str, Any]], int, int]:
+        git = self._private_git(private_bare_repo)
+        entries = [entry for entry in git.ls_tree(tree) if entry.object_type == "blob"]
+        manifest: Dict[str, Dict[str, Any]] = {}
+        total_bytes = 0
+        for start in range(0, len(entries), 500):
+            batch = entries[start:start + 500]
+            blobs = git.cat_blobs(entry.oid for entry in batch)
+            for entry in batch:
+                data = blobs[entry.oid]
+                total_bytes += len(data)
+                if total_bytes > limits.max_repo_bytes:
+                    raise LimitsExceededError("Repository size exceeds limit")
+                manifest[entry.path] = {"path": entry.path, "mode": entry.mode, "size": len(data),
+                                        "sha256": hashlib.sha256(data).hexdigest(), "mtime_ns": 0}
+            if len(manifest) > limits.max_file_count:
+                raise LimitsExceededError("File count exceeds limit")
+        return manifest, total_bytes, len(manifest)
+
+    def _tree_from_manifest(self, private_bare_repo: Path, source_dir: Path, entries: Dict[str, Dict[str, Any]]) -> str:
+        git = self._private_git(private_bare_repo)
+        regular = [path for path, meta in sorted(entries.items()) if meta["mode"] != "120000"]
+        oids = dict(zip(regular, git.hash_files([source_dir / path for path in regular])))
+        rows = []
+        for path, meta in sorted(entries.items()):
+            if meta["mode"] == "120000":
+                oid = git.hash_bytes(os.readlink(source_dir / path).encode("utf-8", "surrogateescape"))
+            else:
+                oid = oids[path]
+            rows.append((meta["mode"], oid, path))
+        return git.write_tree(rows)
+
+    def _commit(self, private_bare_repo: Path, tree: str, parents: List[str], message: str) -> str:
+        git = self._private_git(private_bare_repo)
+        commit = git.commit_tree(tree, parents, message + "\n")
+        self.git.run(["update-ref", "refs/heads/main", commit], cwd=str(private_bare_repo))
+        return commit
+
+    def import_folder(
+        self,
+        source_path: str,
+        private_bare_repo: Path,
+        run_id: str,
+        limits: LimitsV1,
+        *,
+        source_kind: str = "local_folder",
+        canonical_locator: Optional[str] = None,
+        extra_manifest: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[SourceIdentityV1, Dict[str, Any], int, int]:
+        """Import an ordinary (non-Git) folder; only the private copy gets Git metadata (FR03)."""
+        source_dir = Path(source_path).resolve()
+        if not source_dir.is_dir():
+            raise ValueError(f"Local source is not a directory: {source_path}")
+        manifest_entries, total_bytes, file_count = self.scan_worktree(source_dir, limits, use_git_ignores=False)
+        if not self.check_concurrent_mutation(source_dir, manifest_entries):
+            manifest_entries, total_bytes, file_count = self.scan_worktree(source_dir, limits, use_git_ignores=False)
+            if not self.check_concurrent_mutation(source_dir, manifest_entries):
+                raise SourceChangedDuringImportError("Source changed during import")
+        content_tree_sha = self.compute_manifest_sha(manifest_entries)
+        private_bare_repo.mkdir(parents=True, exist_ok=True)
+        self.git.run(["init", "--bare"], cwd=str(private_bare_repo))
+        baseline_tree = self._tree_from_manifest(private_bare_repo, source_dir, manifest_entries)
+        baseline_commit = self._commit(private_bare_repo, baseline_tree, [], f"harness baseline import ({source_kind}) for run {run_id}")
+        now_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        import_manifest = {
+            "run_id": run_id,
+            "source_path": canonical_locator or str(source_dir),
+            "source_kind": source_kind,
+            "upstream_commit": None,
+            "baseline_commit": baseline_commit,
+            "baseline_tree": baseline_tree,
+            "content_tree_sha256": content_tree_sha,
+            "dirty_source_imported": False,
+            "file_count": file_count,
+            "total_bytes": total_bytes,
+            "files": manifest_entries,
+            "created_at": now_utc,
+            **(extra_manifest or {}),
+        }
+        identity = SourceIdentityV1(
+            schema_version="1.0",
+            source_kind=source_kind,
+            canonical_locator=canonical_locator or str(source_dir),
+            upstream_commit=None,
+            baseline_commit=baseline_commit,
+            baseline_tree=baseline_tree,
+            content_tree_sha256=content_tree_sha,
+            import_manifest_sha256=compute_sha256(canonical_json(import_manifest)),
+            dirty_source_imported=False,
+            created_at=now_utc,
+        )
+        return identity, import_manifest, total_bytes, file_count
+
+    def import_zip(
+        self,
+        zip_path: str,
+        private_bare_repo: Path,
+        staging_dir: Path,
+        run_id: str,
+        limits: LimitsV1,
+    ) -> Tuple[SourceIdentityV1, Dict[str, Any], int, int]:
+        """Stream a ZIP through a bounded, validating extractor into private staging (FR05)."""
+        from harness.repository.zip_import import extract_zip
+
+        archive = Path(zip_path).resolve()
+        target = Path(staging_dir) / "zip-extract"
+        info = extract_zip(archive, target, limits)
+        return self.import_folder(
+            str(info["root"]), private_bare_repo, run_id, limits, source_kind="local_zip",
+            canonical_locator=str(archive),
+            extra_manifest={"zip_sha256": info["zip_sha256"], "zip_entries": info["entries"],
+                            "stripped_root": info["stripped_root"]},
+        )
+

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "integration_result_id": "ires_01J...",
+  "integration_intent_id": "iint_01J...",
+  "status": "APPLIED_AND_VERIFIED",
+  "observed_before_commit": "2222222222222222222222222222222222222222",
+  "observed_after_commit": "4444444444444444444444444444444444444444",
+  "integration_sequence": 3,
+  "post_advance_verification": {
+    "status": "PASS",
+    "verification_id": "iver_01J...",
+    "contract_set_sha256": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+    "report_artifact_id": "art_01K..."
+  },
+  "settled_at": "2026-09-26T00:29:00Z"
+}

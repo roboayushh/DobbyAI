@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run_01J...",
+  "task_id": "tsk_01J...",
+  "candidate_id": "cand_01J...",
+  "status": "PASS",
+  "baseline": {
+    "state": "CAPTURED",
+    "commit": "baseline-commit-B",
+    "limitations": []
+  },
+  "candidate_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+  "contract_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "checks": {
+    "required_total": 3,
+    "required_passed": 3,
+    "optional_total": 1,
+    "optional_passed": 1,
+    "not_run": []
+  },
+  "regressions": {
+    "new": 0,
+    "pre_existing": 2,
+    "resolved_targets": 1
+  },
+  "validator": {
+    "decision": "NO_OBJECTION",
+    "overlay_checks_run": 1
+  },
+  "diff_review": {
+    "status": "CLEAN",
+    "warnings": []
+  },
+  "usage": {
+    "verification_attempts": 1,
+    "check_runs": 5,
+    "validator_calls": 1,
+    "repair_attempts": 0,
+    "wall_seconds": 84
+  },
+  "artifacts": {
+    "report": "art_01R...",
+    "candidate_diff": "art_01M...",
+    "comparison": "art_01S..."
+  },
+  "limitations": [
+    "PASS means the declared checks passed on this candidate; hidden evaluator tests were not available."
+  ]
+}

@@ -52,6 +52,7 @@ class ExistingIssueIntakeAdapter(ExistingIssueIntakePort):
         filters = IssueFilters(
             state=state,
             labels=include_labels or [],
+            per_page=max(1, min(100, limit)),  # GitHub caps a page at 100
         )
         page = self._service.browse(
             owner=owner,
@@ -65,9 +66,10 @@ class ExistingIssueIntakeAdapter(ExistingIssueIntakePort):
         candidates: List[IssueRecord] = []
         exclude_set = set(exclude_labels or [])
 
-        for item in page.items:
-            # Exclude pull requests (PRD 8.1 item 2, AT-005)
-            if item.is_pull_request:
+        for item in page.issues:
+            # Exclude pull requests (PRD 8.1 item 2, AT-005). The provider already drops
+            # them; IssueRecord has no pull-request flag, so this is only a guard.
+            if getattr(item, "is_pull_request", False):
                 continue
             # Exclude items lacking a usable title
             if not item.title or not item.title.strip():

@@ -4,6 +4,9 @@ CLIController – Typer application.
 Commands:
   harness prepare --request request.json --json
   harness run [--request request.json] [--json]
+  harness continue RUN_ID --until plan|action-proposed|verification-required|complete --json
+  harness resume RUN_ID / queue ... / verification ... / sandbox ... (see `harness --help`)
+  harness plan RUN_ID --json
   harness status RUN_ID [--json]
   harness inspect RUN_ID
   harness intake list --repo OWNER/REPO [--json]
@@ -55,6 +58,8 @@ from .models import (
     JSONEnvelope,
     Repository,
 )
+from .model import CredentialProvider, ModelProfileResolver
+from .orchestration import BudgetLedgerService, OrchestrationController
 from .persistence import ArtifactStore, RunStore
 from .renderer import TerminalRenderer, _safe
 from .repository import (
@@ -88,6 +93,15 @@ app.add_typer(intake_app, name="intake")
 cache_app = typer.Typer(help="Cache management")
 app.add_typer(cache_app, name="cache")
 
+context_app = typer.Typer(help="Inspect filtered model context packets")
+app.add_typer(context_app, name="context")
+
+evidence_app = typer.Typer(help="Inspect versioned repository evidence")
+app.add_typer(evidence_app, name="evidence")
+
+model_app = typer.Typer(help="Inspect designated model configuration")
+app.add_typer(model_app, name="model")
+
 _err_console = Console(file=sys.stderr, highlight=False, markup=True)
 _renderer = ResultRenderer(_err_console)
 
@@ -118,26 +132,68 @@ def _get_services(
     return controller, run_store, artifact_store
 
 
-def _map_exit_code_and_status(exc: Exception) -> Tuple[int, str, str]:
+def _get_orchestration_controller(
+    cfg: Optional[HarnessConfig] = None,
+) -> Tuple[OrchestrationController, RunStore, ArtifactStore]:
+    config = cfg or get_config()
+    _, run_store, artifact_store = _get_services(config)
+    controller = OrchestrationController(
+        run_store=run_store,
+        artifact_store=artifact_store,
+        data_root=config.data_dir,
+        profile_resolver=ModelProfileResolver(config.model_profiles_path),
+        profile_id=config.model_profile,
+    )
+    return controller, run_store, artifact_store
+
+
+def _map_exit_code_and_status(exc: BaseException) -> Tuple[int, str, str]:
     """Map exception to (exit_code, status, code_name)."""
-    if isinstance(exc, (ValidationError, ValueError, json.JSONDecodeError)):
+    if isinstance(exc, (ValidationError, json.JSONDecodeError)):
         return 2, "BLOCKED", "INVALID_REQUEST"
 
     code = getattr(exc, "code", "")
-    if "IDEMPOTENCY" in code or "INVALID" in code:
-        return 2, "FAILED", code or "INVALID_REQUEST"
-    if "POLICY" in code or "LIMITS" in code or isinstance(exc, (SourcePolicyError, LimitsExceededError, WorkspacePolicyError)):
+    if isinstance(exc, ValueError) and not code:
+        return 2, "BLOCKED", "INVALID_REQUEST"
+    if "INTEGRITY" in code or "PERSIST" in code or "SQLITE" in code:
+        return 7, "FAILED", code or "INTEGRITY_FAILURE"
+    if "BUDGET" in code:
+        return 5, "BUDGET_EXHAUSTED", code or "MODEL_BUDGET_EXHAUSTED"
+    if "NEEDS_INPUT" in code:
+        return 6, "NEEDS_INPUT", code
+    if (
+        "POLICY" in code
+        or "LIMITS" in code
+        or "CONTEXT" in code
+        or "CAPABILITY" in code
+        or isinstance(exc, (SourcePolicyError, LimitsExceededError, WorkspacePolicyError))
+    ):
         return 3, "BLOCKED", code or "POLICY_BLOCKED"
-    if "ACQUISITION" in code or "REVISION" in code or isinstance(exc, GitCommandError):
+    if (
+        "ACQUISITION" in code
+        or "REVISION" in code
+        or "ROLE_SCHEMA" in code
+        or "PLANNER" in code
+        or "CODER" in code
+        or "ACTION_PROPOSAL" in code
+        or isinstance(exc, GitCommandError)
+    ):
         return 4, "FAILED", code or "REPOSITORY_ACQUISITION_FAILED"
-    if "INTEGRITY" in code:
-        return 5, "FAILED", code or "INTEGRITY_FAILURE"
+    if (
+        "IDEMPOTENCY" in code
+        or "INVALID" in code
+        or "MODEL_PROFILE" in code
+        or "MODEL_AUTH" in code
+        or "MODEL_QUOTA" in code
+        or "MODEL_OR_ENDPOINT" in code
+    ):
+        return 2, "FAILED", code or "INVALID_REQUEST"
     if isinstance(exc, KeyboardInterrupt):
         return 130, "CANCELLED", "CANCELLED_BY_USER"
-    return 10, "FAILED", code or "INTERNAL_FAILURE"
+    return 7, "FAILED", code or "INTERNAL_FAILURE"
 
 
-def _handle_cli_error(exc: Exception, json_mode: bool, run_id: Optional[str] = None) -> None:
+def _handle_cli_error(exc: BaseException, json_mode: bool, run_id: Optional[str] = None) -> None:
     exit_code, status, code_name = _map_exit_code_and_status(exc)
     msg = str(exc)
 
@@ -158,6 +214,12 @@ def _handle_cli_error(exc: Exception, json_mode: bool, run_id: Optional[str] = N
         _err_console.print(f"[bold red]✗ [{code_name}] Error:[/bold red] {msg}")
 
     sys.exit(exit_code)
+
+
+def _orchestration_exit_code(status: str) -> int:
+    from .cli_execution import release_exit_code
+
+    return release_exit_code(status)
 
 
 # ── prepare command ───────────────────────────────────────────────────────────
@@ -190,6 +252,8 @@ def cmd_prepare(
         # Reconcile any prior interrupted runs
         controller.reconcile_interrupted()
         result = controller.prepare(run_request)
+    except KeyboardInterrupt as exc:
+        _handle_cli_error(exc, json_mode)
     except Exception as exc:
         _handle_cli_error(exc, json_mode)
 
@@ -214,114 +278,182 @@ def cmd_run(
     ] = None,
     mode: Annotated[
         Optional[str],
-        typer.Option("--mode", "-m", help="Task mode: single_issue or repository"),
+        typer.Option("--mode", "--task-mode", "-m", help="Task mode: single_issue or repository"),
     ] = None,
+    execution_mode: Annotated[
+        str,
+        typer.Option("--execution-mode", help="development (cumulative integration) or evaluation (independent cases)"),
+    ] = "development",
+    max_tasks: Annotated[
+        Optional[int],
+        typer.Option("--max-tasks", help="Repository mode: maximum selected issues (1-20, default 3)"),
+    ] = None,
+    until: Annotated[
+        str,
+        typer.Option("--until", help="Stop boundary: plan, action-proposed, verification-required, or complete"),
+    ] = "complete",
     request: Annotated[
         Optional[str],
-        typer.Option("--request", "-r", help="Path to request JSON file (headless)"),
+        typer.Option("--request", "-r", help="Path to an internal RunRequestV1 JSON file (headless)"),
+    ] = None,
+    input_path: Annotated[
+        Optional[str],
+        typer.Option("--input", "-i", help="Evaluator request (native_json_v1 EvaluatorRequestV1); implies machine mode"),
+    ] = None,
+    non_interactive: Annotated[
+        bool,
+        typer.Option("--non-interactive", help="Never prompt; fail with exit 2 if an input is missing"),
+    ] = False,
+    repo: Annotated[
+        Optional[str],
+        typer.Option("--repo", help="Repository: GitHub URL, local folder, local Git checkout, or ZIP path"),
+    ] = None,
+    task: Annotated[
+        Optional[str],
+        typer.Option("--task", "-t", help="Task text, issue URL/#number, or 'all open issues'"),
     ] = None,
     json_mode: Annotated[
         bool,
         typer.Option("--json", help="Emit single schema-valid JSON object to stdout"),
     ] = False,
 ) -> None:
-    """Launch preparation run (automated, fast, minimal prompts)."""
+    """Prepare, plan, act in the sandbox, verify, integrate, and report a truthful final result."""
+    if input_path:
+        from .cli_release import run_evaluator_request
+
+        run_evaluator_request(input_path)
+    if until not in {"plan", "action-proposed", "verification-required", "complete"}:
+        _handle_cli_error(ValueError(f"Unsupported --until boundary: {until}"), json_mode)
+    target = target or repo
+    prompt = prompt or task
     if request:
-        cmd_prepare(request=request, json_mode=json_mode)
-        return
-
-    _err_console.print("\n[bold cyan]AI Coding Harness[/bold cyan] [dim]– Automated Preparation[/dim]\n")
-
-    # 1. Mode prompt: single issue vs whole repo
-    task_mode: Optional[TaskMode] = None
-    if mode:
-        task_mode = TaskMode(mode)
-    elif prompt:
-        task_mode = TaskMode.SINGLE_ISSUE
-
-    if not target and not task_mode:
-        _err_console.print("[bold]Select Mode:[/bold]")
-        _err_console.print("   1) Single issue / task (default)")
-        _err_console.print("   2) Whole repository")
-        mode_choice = Prompt.ask("Choose mode", choices=["1", "2"], default="1")
-        task_mode = TaskMode.SINGLE_ISSUE if mode_choice == "1" else TaskMode.REPOSITORY
-
-    # 2. Target repository or issue URL
-    if not target:
-        target = Prompt.ask("\n[bold]Enter GitHub repo link (or issue URL, or local path)[/bold]", default=".").strip()
-
-    # Automatically detect if target is a GitHub issue URL
-    issue_ref = InputValidator.parse_issue_ref(target)
-    if issue_ref:
-        task_mode = TaskMode.SINGLE_ISSUE
-        repo_locator = f"https://github.com/{issue_ref.owner}/{issue_ref.repo}.git"
-        repo_kind = RepositoryKind.PUBLIC_HTTPS
-        task_input = TaskInputV1(issue_url=target)
-        _err_console.print(f"  [green]✓[/green] Detected issue #{issue_ref.number} on [cyan]{issue_ref.owner}/{issue_ref.repo}[/cyan]")
-    else:
-        if not task_mode:
-            _err_console.print("[bold]Select Mode:[/bold]")
-            _err_console.print("   1) Single issue / task (default)")
-            _err_console.print("   2) Whole repository")
-            mode_choice = Prompt.ask("Choose mode", choices=["1", "2"], default="1")
-            task_mode = TaskMode.SINGLE_ISSUE if mode_choice == "1" else TaskMode.REPOSITORY
-
-        # Determine repository locator and kind
-        if target.startswith("http://") or target.startswith("https://"):
-            repo_locator = target if target.endswith(".git") else f"{target.rstrip('/')}.git"
-            repo_kind = RepositoryKind.PUBLIC_HTTPS
-        elif "/" in target and not Path(target).exists():
-            parts = target.split("/")
-            if len(parts) == 2:
-                repo_locator = f"https://github.com/{parts[0]}/{parts[1]}.git"
-                repo_kind = RepositoryKind.PUBLIC_HTTPS
-            else:
-                repo_locator = str(Path(target).resolve())
-                repo_kind = RepositoryKind.LOCAL_GIT
+        req_path = Path(request)
+        if not req_path.is_file():
+            _handle_cli_error(ValueError(f"Request file not found: {request}"), json_mode)
+        try:
+            run_req = RunRequestV1.model_validate_json(req_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            _handle_cli_error(exc, json_mode)
+        prep_controller, _, _ = _get_services()
+        try:
+            prep_controller.reconcile_interrupted()
+            prepared = prep_controller.prepare(run_req)
+        except KeyboardInterrupt as exc:
+            _handle_cli_error(exc, json_mode=json_mode)
+        except Exception as exc:
+            _handle_cli_error(exc, json_mode=json_mode)
+        _run_after_prepare(prepared.run_id, until, json_mode)
+        try:
+            orchestration, _, _ = _get_orchestration_controller()
+            result = prep_controller.continue_prepared_run(
+                prepared.run_id, orchestration, stop_at=until
+            )
+        except KeyboardInterrupt as exc:
+            _handle_cli_error(exc, json_mode=json_mode)
+        except Exception as exc:
+            _handle_cli_error(exc, json_mode=json_mode)
+        if json_mode:
+            _renderer.render_json(result)
         else:
-            repo_locator = str(Path(target).resolve())
-            repo_kind = RepositoryKind.LOCAL_GIT
+            _err_console.print(f"[bold green]{result.status.value}[/bold green] for {result.task_id}")
+            _err_console.print("[dim]The generated action is stored and has not been executed.[/dim]")
+        raise typer.Exit(_orchestration_exit_code(result.status.value))
 
-        # 3. User prompt
-        if task_mode == TaskMode.SINGLE_ISSUE:
-            if not prompt:
-                prompt = Prompt.ask("\n[bold]Enter user prompt (or issue #)[/bold]").strip()
-            if prompt.lstrip("#").isdigit() and repo_kind == RepositoryKind.PUBLIC_HTTPS:
-                clean_base = repo_locator.removesuffix(".git")
-                task_input = TaskInputV1(issue_url=f"{clean_base}/issues/{prompt.lstrip('#')}")
-            else:
-                task_input = TaskInputV1(text=prompt)
-        else:
-            task_input = TaskInputV1(repository_query=RepositoryQueryV1(state="open"))
+    if not json_mode:
+        _err_console.print("\n[bold cyan]AI Coding Harness[/bold cyan] [dim]– plan, sandboxed fix, verification, private commit[/dim]\n")
+    from .cli_release import build_interactive_request, ensure_model_profile, show_run_plan
 
-    idempotency_key = f"run-{uuid.uuid4().hex[:12]}"
-    run_req = RunRequestV1(
-        schema_version="1.0",
-        idempotency_key=idempotency_key,
-        task_mode=task_mode,
-        execution_mode=ExecutionMode.DEVELOPMENT,
-        repository=RepositoryRefV1(
-            kind=repo_kind,
-            locator=repo_locator,
-            revision=None,
-        ),
-        task=task_input,
-        limits=LimitsV1(max_tasks=1 if task_mode == TaskMode.SINGLE_ISSUE else 3),
-    )
+    try:
+        ensure_model_profile(get_config(), non_interactive or json_mode)
+        run_req = build_interactive_request(target, prompt, mode, execution_mode, max_tasks, non_interactive or json_mode)
+    except Exception as exc:
+        _handle_cli_error(exc if isinstance(exc, ValueError) else ValueError(str(exc)), json_mode)
+    if not json_mode:
+        show_run_plan(run_req, get_config())
 
     controller, _, _ = _get_services()
     try:
         controller.reconcile_interrupted()
-        result = controller.prepare(run_req)
+        prepared = controller.prepare(run_req)
+    except KeyboardInterrupt as exc:
+        _handle_cli_error(exc, json_mode=json_mode)
+    except Exception as exc:
+        _handle_cli_error(exc, json_mode=json_mode)
+    if not json_mode:
+        _err_console.print(f"  [green]✓[/green] Prepared run [bold]{prepared.run_id}[/bold] ({len(prepared.tasks)} task(s))")
+    _run_after_prepare(prepared.run_id, until, json_mode)
+    try:
+        orchestration, _, _ = _get_orchestration_controller()
+        result = controller.continue_prepared_run(
+            prepared.run_id, orchestration, stop_at=until
+        )
+    except KeyboardInterrupt as exc:
+        _handle_cli_error(exc, json_mode=json_mode)
     except Exception as exc:
         _handle_cli_error(exc, json_mode=json_mode)
 
     if json_mode:
         _renderer.render_json(result)
     else:
-        _renderer.render_terminal(result)
+        _err_console.print(f"[bold green]{result.status.value}[/bold green] for {result.task_id}")
+        _err_console.print("[dim]The generated action is stored and has not been executed.[/dim]")
         _err_console.print("\n[dim]Run [bold]harness status[/bold] or [bold]harness inspect[/bold] anytime to review.[/dim]\n")
-    sys.exit(0)
+    raise typer.Exit(_orchestration_exit_code(result.status.value))
+
+
+# ── PRD 2 continuation commands ─────────────────────────────────────────────
+
+@app.command("continue")
+def cmd_continue(
+    run_id: Annotated[str, typer.Argument(help="Prepared run ID")],
+    until: Annotated[
+        str,
+        typer.Option("--until", help="Stop boundary: plan, action-proposed, verification-required, or complete"),
+    ] = "action-proposed",
+    json_mode: Annotated[
+        bool,
+        typer.Option("--json", help="Emit exactly one final JSON object to stdout"),
+    ] = False,
+) -> None:
+    """Continue a prepared run through deterministic orchestration to a stop boundary."""
+    if until in {"verification-required", "complete"}:
+        from .cli_execution import continue_with_execution
+
+        continue_with_execution(run_id, until, json_mode)
+    controller, _, _ = _get_orchestration_controller()
+    try:
+        result = controller.continue_run(run_id, stop_at=until)
+    except KeyboardInterrupt as exc:
+        _handle_cli_error(exc, json_mode, run_id)
+    except Exception as exc:
+        _handle_cli_error(exc, json_mode, run_id)
+    if json_mode:
+        _renderer.render_json(result)
+    else:
+        _err_console.print(f"Run: [bold]{run_id}[/bold]")
+        _err_console.print(f"State: [bold green]{result.status.value}[/bold green]")
+        _err_console.print(f"Model calls used: {result.usage.model_calls_used}")
+        if result.proposal:
+            _err_console.print("[dim]Proposal persisted; no generated action was executed.[/dim]")
+        if result.questions:
+            for question in result.questions:
+                _err_console.print(f"Question: {question.question}")
+                _err_console.print(f"Impact: {question.impact}")
+        if result.required_capability:
+            _err_console.print(f"Required capability: {result.required_capability}")
+    raise typer.Exit(_orchestration_exit_code(result.status.value))
+
+
+@app.command("plan")
+def cmd_plan(
+    run_id: Annotated[str, typer.Argument(help="Prepared run ID")],
+    json_mode: Annotated[
+        bool,
+        typer.Option("--json", help="Emit exactly one final JSON object to stdout"),
+    ] = False,
+) -> None:
+    """Continue a prepared run only through PLAN_READY."""
+    cmd_continue(run_id=run_id, until="plan", json_mode=json_mode)
 
 
 # ── status command ────────────────────────────────────────────────────────────
@@ -349,6 +481,53 @@ def cmd_status(
         run = run_store.get_run(run_id)
         if not run:
             _handle_cli_error(ValueError(f"Run not found: {run_id}"), json_mode, run_id=run_id)
+
+    with run_store.get_connection() as conn:
+        lifecycle = conn.execute(
+            "SELECT * FROM h_run_lifecycle WHERE run_id = ?", (run_id,)
+        ).fetchone()
+        budget = conn.execute(
+            "SELECT * FROM h_budget_ledgers WHERE run_id = ?", (run_id,)
+        ).fetchone()
+        remaining_tasks = (
+            conn.execute(
+                "SELECT COUNT(*) FROM h_tasks WHERE run_id = ? AND task_id <> ?",
+                (run_id, lifecycle["active_task_id"]),
+            ).fetchone()[0]
+            if lifecycle
+            else None
+        )
+
+    if lifecycle:
+        status_data = {
+            "schema_version": "1.0",
+            "run_id": run_id,
+            "status": lifecycle["state"],
+            "preparation_status": run["state"],
+            "active_task_id": lifecycle["active_task_id"],
+            "remaining_repository_tasks": remaining_tasks,
+            "lifecycle_version": lifecycle["version"],
+            "stop_reason_code": lifecycle["stop_reason_code"],
+            "usage": (
+                {
+                    "used_calls": budget["used_calls"],
+                    "used_input_tokens": budget["used_input_tokens"],
+                    "used_output_tokens": budget["used_output_tokens"],
+                    "reserved_future_calls": budget["reserved_future_calls"],
+                }
+                if budget
+                else None
+            ),
+        }
+        if json_mode:
+            _renderer.render_json(status_data)
+        else:
+            _err_console.print(f"Run ID: [bold]{run_id}[/bold]")
+            _err_console.print(f"PRD 2 State: [bold green]{lifecycle['state']}[/bold green]")
+            _err_console.print(f"Active task: {lifecycle['active_task_id']}")
+            if lifecycle["stop_reason_code"]:
+                _err_console.print(f"Stop reason: {lifecycle['stop_reason_code']}")
+        raise typer.Exit(0)
 
     if run["state"] == RunState.PREPARED.value:
         try:
@@ -409,10 +588,24 @@ def cmd_inspect(
     source = run_store.get_source_snapshot(run_id)
     workspace = run_store.get_workspace(run_id)
     tasks = run_store.get_tasks(run_id)
-    artifacts = run_store.get_connection().execute(
-        "SELECT * FROM h_artifacts WHERE run_id = ?", (run_id,)
-    ).fetchall()
     events = run_store.get_events(run_id)
+
+    with run_store.get_connection() as conn:
+        artifacts = conn.execute(
+            "SELECT * FROM h_artifacts WHERE run_id = ?", (run_id,)
+        ).fetchall()
+        lifecycle = conn.execute(
+            "SELECT * FROM h_run_lifecycle WHERE run_id = ?", (run_id,)
+        ).fetchone()
+        budget = conn.execute(
+            "SELECT * FROM h_budget_ledgers WHERE run_id = ?", (run_id,)
+        ).fetchone()
+        plans = conn.execute(
+            "SELECT * FROM h_plans WHERE run_id = ? ORDER BY plan_revision", (run_id,)
+        ).fetchall()
+        proposals = conn.execute(
+            "SELECT * FROM h_action_proposals WHERE run_id = ? ORDER BY created_at", (run_id,)
+        ).fetchall()
 
     _renderer.render_inspect(
         run=run,
@@ -422,7 +615,198 @@ def cmd_inspect(
         artifacts=[dict(a) for a in artifacts],
         events=events,
     )
+    if lifecycle:
+        _err_console.print("\n[bold]PRD 2 Orchestration[/bold]")
+        _err_console.print(
+            f"State: [bold green]{lifecycle['state']}[/bold green]  "
+            f"Version: {lifecycle['version']}  Active task: {lifecycle['active_task_id']}"
+        )
+    if budget:
+        _err_console.print(
+            f"Budget: {budget['used_calls']}/{budget['max_calls']} calls, "
+            f"{budget['used_input_tokens']}/{budget['max_input_tokens']} input tokens, "
+            f"{budget['used_output_tokens']}/{budget['max_output_tokens']} output tokens"
+        )
+    if plans:
+        _err_console.print(f"Plans: {len(plans)} (active revision {plans[-1]['plan_revision']})")
+    if proposals:
+        _err_console.print(
+            f"Action proposals: {len(proposals)} (latest state {proposals[-1]['state']}; unexecuted by PRD 2)"
+        )
     sys.exit(0)
+
+
+# ── PRD 2 inspection commands ───────────────────────────────────────────────
+
+@app.command("budget")
+def cmd_budget(
+    run_id: Annotated[str, typer.Argument(help="Run ID")],
+    json_mode: Annotated[
+        bool,
+        typer.Option("--json", help="Emit exactly one JSON object to stdout"),
+    ] = False,
+) -> None:
+    """Show shared model-call and token budget accounting."""
+    _, run_store, _ = _get_services()
+    try:
+        data = BudgetLedgerService(run_store).get(run_id)
+    except Exception as exc:
+        _handle_cli_error(exc, json_mode, run_id)
+    if json_mode:
+        _renderer.render_json({"schema_version": "1.0", **data})
+    else:
+        _err_console.print(
+            f"Calls: {data['used_calls']} used, {data['reserved_calls']} active, "
+            f"{data['reserved_future_calls']} reserved for verification"
+        )
+        _err_console.print(
+            f"Tokens: {data['used_input_tokens']} input / {data['used_output_tokens']} output"
+        )
+    raise typer.Exit(0)
+
+
+@context_app.command("inspect")
+def cmd_context_inspect(
+    run_id: Annotated[str, typer.Argument(help="Run ID")],
+    role: Annotated[str, typer.Option("--role", help="planner, coder, or validator")],
+    packet_id: Annotated[str, typer.Option("--packet", help="Context packet ID")],
+) -> None:
+    """Print one exact filtered model-visible packet and its metadata."""
+    _, run_store, artifact_store = _get_services()
+    with run_store.get_connection() as conn:
+        row = conn.execute(
+            """
+            SELECT p.*, a.relative_path, a.sha256 AS artifact_sha256
+            FROM h_context_packets p JOIN h_artifacts a ON a.artifact_id = p.artifact_id
+            WHERE p.run_id = ? AND p.packet_id = ? AND p.role = ?
+            """,
+            (run_id, packet_id, role),
+        ).fetchone()
+    if not row:
+        _handle_cli_error(ValueError("Context packet not found"), True, run_id)
+    relative = row["relative_path"].split("/artifacts/", 1)[-1]
+    if not artifact_store.verify(run_id, relative):
+        _handle_cli_error(RuntimeError("Context packet integrity verification failed"), True, run_id)
+    exact = json.loads(artifact_store.open_readonly(run_id, relative))
+    _renderer.render_json(
+        {
+            "schema_version": "1.0",
+            "packet": {
+                "packet_id": row["packet_id"],
+                "role": row["role"],
+                "purpose": row["purpose"],
+                "source_revision": row["source_revision"],
+                "estimated_input_tokens": row["estimated_input_tokens"],
+                "counter_mode": row["counter_mode"],
+                "sha256": row["packet_sha256"],
+            },
+            "exact_filtered_packet": exact,
+        }
+    )
+    raise typer.Exit(0)
+
+
+@evidence_app.command("list")
+def cmd_evidence_list(
+    run_id: Annotated[str, typer.Argument(help="Run ID")],
+    task_id: Annotated[str, typer.Option("--task", help="Task ID")],
+    json_mode: Annotated[
+        bool,
+        typer.Option("--json", help="Emit exactly one JSON object to stdout"),
+    ] = False,
+) -> None:
+    """List versioned evidence metadata without mutating the run."""
+    _, run_store, _ = _get_services()
+    with run_store.get_connection() as conn:
+        rows = [
+            dict(row)
+            for row in conn.execute(
+                """
+                SELECT evidence_id, source_revision, relative_path, start_line,
+                       end_line, symbol, evidence_type, retrieval_reason,
+                       truth_status, content_sha256, valid, invalidated_at
+                FROM h_evidence WHERE run_id = ? AND task_id = ?
+                ORDER BY created_at, evidence_id
+                """,
+                (run_id, task_id),
+            ).fetchall()
+        ]
+    payload = {
+        "schema_version": "1.0",
+        "run_id": run_id,
+        "task_id": task_id,
+        "evidence": rows,
+    }
+    if json_mode:
+        _renderer.render_json(payload)
+    else:
+        for row in rows:
+            _err_console.print(
+                f"{row['evidence_id']}  {row['truth_status']}  "
+                f"{row['relative_path']}:{row['start_line'] or '-'}  valid={bool(row['valid'])}"
+            )
+    raise typer.Exit(0)
+
+
+@model_app.command("doctor")
+def cmd_model_doctor(
+    profile_id: Annotated[
+        Optional[str],
+        typer.Option("--profile", help="Trusted model profile ID (default: HARNESS_MODEL_PROFILE)"),
+    ] = None,
+    live: Annotated[
+        bool,
+        typer.Option("--live", help="Send one tiny structured probe request to the provider"),
+    ] = False,
+    json_mode: Annotated[
+        bool,
+        typer.Option("--json", help="Emit exactly one JSON object to stdout"),
+    ] = False,
+) -> None:
+    """Validate the selected model profile and credential presence; optionally probe the provider live."""
+    profile_id = profile_id or get_config().model_profile
+    probe = None
+    try:
+        resolver = ModelProfileResolver(get_config().model_profiles_path)
+        resolved = resolver.resolve(profile_id)
+        resolver.validate_live(resolved)
+        try:
+            CredentialProvider().get_ai_api_key()
+            credential_available = True
+        except Exception:
+            credential_available = False
+        if live and credential_available:
+            from .model.probe import probe_model
+
+            probe = probe_model(resolved)
+        status = "READY" if credential_available else "MODEL_AUTH_MISSING"
+        if probe is not None and probe["status"] != "PASS":
+            status = probe["error_code"] or "MODEL_PROBE_FAILED"
+        payload = {
+            "schema_version": "1.0",
+            "status": status,
+            "profile_id": profile_id,
+            "profile": resolved.contract.model_dump(mode="json"),
+            "structured_output": resolved.response_format,
+            "environment_overrides": sorted(resolved.overrides),
+            "adapter": resolved.adapter_name,
+            "credential_env": "AI_API_KEY",
+            "credential_available": credential_available,
+            "live_probe": probe,
+        }
+    except Exception as exc:
+        _handle_cli_error(exc, json_mode)
+    if json_mode:
+        _renderer.render_json(payload)
+    else:
+        _err_console.print(f"Profile: [bold]{profile_id}[/bold]")
+        _err_console.print(f"Model: {payload['profile']['model']}")
+        _err_console.print(f"Endpoint: {payload['profile']['endpoint_origin']}  (structured output: {payload['structured_output']})")
+        _err_console.print(f"Credential (AI_API_KEY) available: {payload['credential_available']}")
+        if probe is not None:
+            _err_console.print(f"Live probe: {probe['status']} ({probe.get('latency_ms')} ms, usage reported: {probe.get('usage_reported')})"
+                               + (f" error {probe['error_code']}: {probe.get('message', '')}" if probe['status'] != 'PASS' else ""))
+    raise typer.Exit(0 if payload["status"] == "READY" else 2)
 
 
 # ── intake commands ───────────────────────────────────────────────────────────
@@ -682,14 +1066,8 @@ def cmd_cache_clear(
     sys.exit(0)
 
 
-@app.command("clean")
-def cmd_clean(
-    force: Annotated[
-        bool,
-        typer.Option("--force", "-f", "--yes", "-y", help="Skip confirmation prompt"),
-    ] = False,
-) -> None:
-    """Clean all run workspaces, temporary clones, and quarantine data."""
+def legacy_clean_all(force: bool = False) -> None:
+    """Developer reset (`harness clean --all`): remove ALL runs and the database (never original sources)."""
     if not force:
         confirm = Confirm.ask(
             "[bold red]⚠️  Are you sure you want to clean all harness workspaces and temporary runs?[/bold red]",
@@ -741,6 +1119,24 @@ def cmd_clean(
             pass
     _err_console.print(f"[bold green]✓ Cleaned {cleaned_items} workspace/temporary run items and database.[/bold green] [dim](data/snapshots/ preserved)[/dim]")
     sys.exit(0)
+
+
+def _run_after_prepare(run_id: str, until: str, json_mode: bool) -> None:
+    """Route a freshly prepared run: `complete` runs the full queue pipeline."""
+    from .cli_execution import continue_with_execution, run_pipeline
+
+    if until == "complete":
+        run_pipeline(run_id, json_mode)
+    if until == "verification-required":
+        continue_with_execution(run_id, until, json_mode)
+
+
+from .cli_execution import register as _register_execution_commands  # noqa: E402
+from .cli_release import cmd_clean as _cmd_clean, register as _register_release_commands  # noqa: E402
+
+_register_execution_commands(app)
+_register_release_commands(app)
+app.command("clean")(_cmd_clean)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,38 @@
+{
+  "configuration_schema_sha256": "042b35e50dd5dd505f0228e829f17a8aeaae50e49d865c4754cf9ba1edba9bd0",
+  "dependencies": [],
+  "in_process": true,
+  "interfaces": [
+    {
+      "api_version": "1.0",
+      "name": "RepositoryPlugin"
+    }
+  ],
+  "optional_capabilities": [],
+  "plugin": {
+    "content_sha256": "445e57cbf38e38a8e10d341842ee1a97cc4bd1d66ac3e6211c03f86721a4a39a",
+    "distribution": "ai-coding-harness",
+    "entry_point": "RepositoryService",
+    "module": "harness.repository.repository_service",
+    "name": "builtin.git-repository",
+    "version": "1.0.0"
+  },
+  "provenance": {
+    "license": "project-license",
+    "review_artifact_id": null,
+    "review_status": "REVIEWED",
+    "source": "project-built-in"
+  },
+  "required_capabilities": [
+    "REPOSITORY_SNAPSHOT"
+  ],
+  "runtime": {
+    "platforms": [
+      "linux",
+      "darwin"
+    ],
+    "python": ">=3.12,<3.14"
+  },
+  "schema_version": "1.0",
+  "self_check": "import_only_v1"
+}

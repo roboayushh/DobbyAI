@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run_01J...",
+  "source_identity_artifact_id": "art_source_01J...",
+  "queue_final_result_artifact_id": "art_queue_result_01J...",
+  "baseline_commit": "0000000000000000000000000000000000000000",
+  "final_candidate_commit": "4444444444444444444444444444444444444444",
+  "final_candidate_tree": "5555555555555555555555555555555555555555",
+  "aggregate_status": "PASS",
+  "task_commit_ids": [
+    "tcmt_01J_A",
+    "tcmt_01J_D",
+    "tcmt_01J_E"
+  ],
+  "final_patch_input": {
+    "base": "0000000000000000000000000000000000000000",
+    "head": "4444444444444444444444444444444444444444",
+    "artifact_id": "art_patch_input_01J..."
+  },
+  "dirty_or_synthetic_baseline": false,
+  "allowed_next_actions": [
+    "EXPORT_PATCH",
+    "EXPORT_RESULT_BUNDLE"
+  ],
+  "publication_authorized": false
+}

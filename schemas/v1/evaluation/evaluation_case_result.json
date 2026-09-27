@@ -1,0 +1,114 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "baseline_commit": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Baseline Commit",
+      "type": "string"
+    },
+    "batch_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Batch Id",
+      "type": "string"
+    },
+    "candidate_commit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Candidate Commit"
+    },
+    "carried_state_from_case_id": {
+      "const": null,
+      "default": null,
+      "enum": [
+        null
+      ],
+      "title": "Carried State From Case Id",
+      "type": "null"
+    },
+    "case_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Case Id",
+      "type": "string"
+    },
+    "completion_decision_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Completion Decision Id"
+    },
+    "context_isolation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Context Isolation Id",
+      "type": "string"
+    },
+    "outcome": {
+      "enum": [
+        "PASS",
+        "FAILED",
+        "UNVERIFIED",
+        "BLOCKED_ENVIRONMENT",
+        "BUDGET_EXHAUSTED",
+        "NEEDS_INPUT",
+        "CANCELLED"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "result_artifact_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Result Artifact Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "workspace_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Workspace Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "batch_id",
+    "case_id",
+    "task_id",
+    "baseline_commit",
+    "outcome",
+    "context_isolation_id",
+    "workspace_id",
+    "result_artifact_id"
+  ],
+  "title": "EvaluationCaseResultV1",
+  "type": "object"
+}

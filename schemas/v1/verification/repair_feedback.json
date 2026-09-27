@@ -1,0 +1,283 @@
+{
+  "$defs": {
+    "CheckFailureV1": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Check Id"
+        },
+        "check_run_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Check Run Id",
+          "type": "string"
+        },
+        "failing_tests": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Failing Tests",
+          "type": "array"
+        },
+        "failure_signature": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Failure Signature"
+        },
+        "log_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Log Artifact Ids",
+          "type": "array"
+        },
+        "output_excerpt": {
+          "default": "",
+          "maxLength": 8000,
+          "title": "Output Excerpt",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/CheckStatus"
+        }
+      },
+      "required": [
+        "check_run_id",
+        "status"
+      ],
+      "title": "CheckFailureV1",
+      "type": "object"
+    },
+    "CheckStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "TIMEOUT",
+        "OOM",
+        "OUTPUT_LIMIT",
+        "ZERO_TESTS",
+        "ALL_SKIPPED",
+        "BLOCKED_ENVIRONMENT",
+        "UNPARSABLE",
+        "UNEXPECTED_MUTATION",
+        "CANCELLED",
+        "INTERNAL_ERROR"
+      ],
+      "title": "CheckStatus",
+      "type": "string"
+    },
+    "ScopeFindingV1": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Category",
+          "type": "string"
+        },
+        "detail": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Detail",
+          "type": "string"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "severity": {
+          "enum": [
+            "WARN",
+            "BLOCKING"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "severity",
+        "category",
+        "detail"
+      ],
+      "title": "ScopeFindingV1",
+      "type": "object"
+    },
+    "ValidatorFindingRecordV1": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Category",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "severity": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "statement": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "severity",
+        "category",
+        "statement"
+      ],
+      "title": "ValidatorFindingRecordV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "check_failures": {
+      "items": {
+        "$ref": "#/$defs/CheckFailureV1"
+      },
+      "maxItems": 32,
+      "title": "Check Failures",
+      "type": "array"
+    },
+    "diff_findings": {
+      "items": {
+        "$ref": "#/$defs/ScopeFindingV1"
+      },
+      "maxItems": 100,
+      "title": "Diff Findings",
+      "type": "array"
+    },
+    "failed_criteria": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Failed Criteria",
+      "type": "array"
+    },
+    "feedback_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Feedback Sha256",
+      "type": "string"
+    },
+    "from_candidate_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "From Candidate Id",
+      "type": "string"
+    },
+    "new_regressions": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 200,
+      "title": "New Regressions",
+      "type": "array"
+    },
+    "remaining_repairs": {
+      "minimum": 0,
+      "title": "Remaining Repairs",
+      "type": "integer"
+    },
+    "repair_attempt_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Repair Attempt Id",
+      "type": "string"
+    },
+    "repair_number": {
+      "minimum": 1,
+      "title": "Repair Number",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "trigger": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Trigger",
+      "type": "string"
+    },
+    "validator_findings": {
+      "items": {
+        "$ref": "#/$defs/ValidatorFindingRecordV1"
+      },
+      "maxItems": 50,
+      "title": "Validator Findings",
+      "type": "array"
+    },
+    "workspace_start_candidate_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Workspace Start Candidate Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "repair_attempt_id",
+    "task_id",
+    "from_candidate_id",
+    "repair_number",
+    "trigger",
+    "workspace_start_candidate_sha256",
+    "remaining_repairs",
+    "feedback_sha256"
+  ],
+  "title": "RepairFeedbackV1",
+  "type": "object"
+}

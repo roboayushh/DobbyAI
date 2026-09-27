@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "integration_intent_id": "iint_01J...",
+  "ref_operation_id": "grop_01J...",
+  "run_id": "run_01J...",
+  "queue_item_id": "qitem_01J_D",
+  "task_commit_id": "tcmt_01J...",
+  "strategy": "FAST_FORWARD_EXACT",
+  "integration_ref": "refs/harness/runs/run_01J/integration",
+  "expected_old_commit": "2222222222222222222222222222222222222222",
+  "desired_new_commit": "4444444444444444444444444444444444444444",
+  "desired_tree": "5555555555555555555555555555555555555555",
+  "lease_fencing_token": 7,
+  "state": "PREPARED",
+  "intent_sha256": "abababababababababababababababababababababababababababababababab",
+  "created_at": "2026-09-26T00:25:00Z"
+}

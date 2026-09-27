@@ -1,0 +1,225 @@
+{
+  "$defs": {
+    "ProcessSummaryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "elapsed_ms": {
+          "minimum": 0,
+          "title": "Elapsed Ms",
+          "type": "integer"
+        },
+        "exit_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exit Code"
+        },
+        "oom_killed": {
+          "default": false,
+          "title": "Oom Killed",
+          "type": "boolean"
+        },
+        "output_limit_exceeded": {
+          "default": false,
+          "title": "Output Limit Exceeded",
+          "type": "boolean"
+        },
+        "signal": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Signal"
+        },
+        "timed_out": {
+          "default": false,
+          "title": "Timed Out",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "elapsed_ms"
+      ],
+      "title": "ProcessSummaryV1",
+      "type": "object"
+    },
+    "TestCountsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "discovered": {
+          "minimum": 0,
+          "title": "Discovered",
+          "type": "integer"
+        },
+        "errors": {
+          "minimum": 0,
+          "title": "Errors",
+          "type": "integer"
+        },
+        "failed": {
+          "minimum": 0,
+          "title": "Failed",
+          "type": "integer"
+        },
+        "passed": {
+          "minimum": 0,
+          "title": "Passed",
+          "type": "integer"
+        },
+        "skipped": {
+          "minimum": 0,
+          "title": "Skipped",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "discovered",
+        "passed",
+        "failed",
+        "skipped",
+        "errors"
+      ],
+      "title": "TestCountsV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "baseline_commit": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Baseline Commit",
+      "type": "string"
+    },
+    "baseline_result_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Baseline Result Id",
+      "type": "string"
+    },
+    "captured_at": {
+      "title": "Captured At",
+      "type": "string"
+    },
+    "check_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Check Id",
+      "type": "string"
+    },
+    "contract_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Contract Id",
+      "type": "string"
+    },
+    "environment_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Environment Sha256",
+      "type": "string"
+    },
+    "failure_signatures": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10000,
+      "title": "Failure Signatures",
+      "type": "array"
+    },
+    "process": {
+      "$ref": "#/$defs/ProcessSummaryV1"
+    },
+    "report_artifact_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Report Artifact Id"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "EXPECTED_REPRODUCTION_FAILURE",
+        "PRE_EXISTING_FAILURE",
+        "BLOCKED_ENVIRONMENT",
+        "TIMEOUT",
+        "OOM",
+        "OUTPUT_LIMIT",
+        "ZERO_TESTS",
+        "ALL_SKIPPED",
+        "UNPARSABLE",
+        "FLAKY",
+        "UNEXPECTED_MUTATION",
+        "CANCELLED",
+        "INTERNAL_ERROR"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "stderr_artifact_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stderr Artifact Id"
+    },
+    "stdout_artifact_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stdout Artifact Id"
+    },
+    "tests": {
+      "$ref": "#/$defs/TestCountsV1"
+    }
+  },
+  "required": [
+    "baseline_result_id",
+    "contract_id",
+    "check_id",
+    "baseline_commit",
+    "environment_sha256",
+    "status",
+    "process",
+    "tests",
+    "captured_at"
+  ],
+  "title": "BaselineResultV1",
+  "type": "object"
+}

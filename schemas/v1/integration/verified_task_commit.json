@@ -1,0 +1,147 @@
+{
+  "$defs": {
+    "CommitVerificationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "contract_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Contract Sha256",
+          "type": "string"
+        },
+        "environment_set_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Environment Set Sha256",
+          "type": "string"
+        },
+        "report_artifact_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Report Artifact Id",
+          "type": "string"
+        },
+        "status": {
+          "const": "PASS",
+          "enum": [
+            "PASS"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "test_set_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Test Set Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "contract_sha256",
+        "test_set_sha256",
+        "environment_set_sha256",
+        "report_artifact_id"
+      ],
+      "title": "CommitVerificationV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "candidate_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Candidate Id",
+      "type": "string"
+    },
+    "commit": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Commit",
+      "type": "string"
+    },
+    "completion_decision_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Completion Decision Id",
+      "type": "string"
+    },
+    "metadata_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Metadata Sha256",
+      "type": "string"
+    },
+    "object_format": {
+      "default": "sha1",
+      "enum": [
+        "sha1",
+        "sha256"
+      ],
+      "title": "Object Format",
+      "type": "string"
+    },
+    "parent": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Parent",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "shape": {
+      "enum": [
+        "SINGLE_DIRECT_PARENT",
+        "LEGACY_VERIFIED_RANGE"
+      ],
+      "title": "Shape",
+      "type": "string"
+    },
+    "task_commit_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Commit Id",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "tree": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Tree",
+      "type": "string"
+    },
+    "verification": {
+      "$ref": "#/$defs/CommitVerificationV1"
+    }
+  },
+  "required": [
+    "task_commit_id",
+    "run_id",
+    "task_id",
+    "candidate_id",
+    "commit",
+    "tree",
+    "parent",
+    "shape",
+    "completion_decision_id",
+    "verification",
+    "metadata_sha256"
+  ],
+  "title": "VerifiedTaskCommitV1",
+  "type": "object"
+}

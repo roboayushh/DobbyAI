@@ -1,0 +1,109 @@
+{
+  "$defs": {
+    "ToolCallState": {
+      "enum": [
+        "STARTED",
+        "SUCCEEDED",
+        "FAILED",
+        "TRUNCATED",
+        "REJECTED"
+      ],
+      "title": "ToolCallState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "action_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Action Id",
+      "type": "string"
+    },
+    "arguments_summary": {
+      "title": "Arguments Summary",
+      "type": "object"
+    },
+    "capability": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Capability",
+      "type": "string"
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Finished At"
+    },
+    "result_summary": {
+      "title": "Result Summary",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sequence": {
+      "maximum": 100000,
+      "minimum": 1,
+      "title": "Sequence",
+      "type": "integer"
+    },
+    "started_at": {
+      "title": "Started At",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/ToolCallState"
+    },
+    "tool": {
+      "enum": [
+        "search",
+        "read_file",
+        "symbols",
+        "apply_patch",
+        "run",
+        "read_artifact",
+        "emit_result"
+      ],
+      "title": "Tool",
+      "type": "string"
+    },
+    "tool_call_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Tool Call Id",
+      "type": "string"
+    },
+    "tool_version": {
+      "maxLength": 16,
+      "minLength": 1,
+      "title": "Tool Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "action_id",
+    "tool_call_id",
+    "sequence",
+    "tool",
+    "tool_version",
+    "capability",
+    "state",
+    "started_at"
+  ],
+  "title": "ToolCallEventV1",
+  "type": "object"
+}

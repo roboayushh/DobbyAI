@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "credential_env": {
+      "enum": [
+        "AI_API_KEY"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "credential_env"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "check_run_id": "crun_01J...",
+  "attempt_id": "vatt_01J...",
+  "check_id": "check_focused_1",
+  "candidate_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+  "overlay_sha256": null,
+  "environment_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+  "command_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+  "status": "PASS",
+  "process": {
+    "exit_code": 0,
+    "signal": null,
+    "timed_out": false,
+    "oom_killed": false,
+    "output_limit_exceeded": false,
+    "elapsed_ms": 2100
+  },
+  "tests": {
+    "discovered": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "errors": 0
+  },
+  "unexpected_source_mutation": false,
+  "stdout_artifact_id": "art_01M...",
+  "stderr_artifact_id": "art_01N...",
+  "report_artifact_id": "art_01O...",
+  "settled_at": "2026-09-27T01:10:00Z"
+}

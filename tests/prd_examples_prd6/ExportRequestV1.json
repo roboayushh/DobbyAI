@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "export_request_id": "xreq_01J...",
+  "run_id": "run_01J...",
+  "release_handoff_artifact_id": "art_release_handoff_01J...",
+  "candidate": {
+    "base_commit": "0123456789012345678901234567890123456789",
+    "head_commit": "2222222222222222222222222222222222222222",
+    "head_tree": "3333333333333333333333333333333333333333",
+    "head_content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "format": "unified_git_patch_v1",
+  "output_path": "/evaluator/output/bundle",
+  "replace_existing": false,
+  "include_artifact_kinds": [
+    "verification_summary",
+    "task_results",
+    "usage",
+    "provenance"
+  ],
+  "max_bundle_bytes": 25000000,
+  "request_sha256": "1616161616161616161616161616161616161616161616161616161616161616"
+}

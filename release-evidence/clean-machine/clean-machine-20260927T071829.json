@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "environment": "python:3.12-bookworm (linux container, host arm64)",
+  "model_profile": "claude-bridge",
+  "prescribed_model": false,
+  "summary": "setup rc=0; test: 453 passed in 312.77s (0:05:12); headless run: PASS",
+  "steps": {
+    "setup": {
+      "exit_code": 0,
+      "seconds": 29
+    },
+    "test": {
+      "exit_code": 0,
+      "seconds": 313,
+      "summary": "453 passed in 312.77s (0:05:12)"
+    },
+    "run": {
+      "exit_code": 0,
+      "seconds": 42,
+      "status": "PASS",
+      "export": "VALID"
+    }
+  },
+  "created_at": "2026-09-27T01:48:29.181419+00:00"
+}

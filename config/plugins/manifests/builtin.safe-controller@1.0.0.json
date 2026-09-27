@@ -1,0 +1,51 @@
+{
+  "configuration_schema_sha256": "bea57f22730fa75ba0359e6b540d95d3d723110ad621c914bbd41cde860a354a",
+  "dependencies": [
+    {
+      "name": "builtin.openai-compatible-model",
+      "optional": false,
+      "version_constraint": ">=1.0.0,<2.0.0"
+    },
+    {
+      "name": "builtin.docker-environment",
+      "optional": false,
+      "version_constraint": ">=1.0.0,<2.0.0"
+    }
+  ],
+  "in_process": true,
+  "interfaces": [
+    {
+      "api_version": "1.0",
+      "name": "ControllerPlugin"
+    }
+  ],
+  "optional_capabilities": [],
+  "plugin": {
+    "content_sha256": "0d3e3bd9420e06ebf0fd1d41edc8ed1f82f6c950f2fa2e6f36aa5626c8a03b84",
+    "distribution": "ai-coding-harness",
+    "entry_point": "OrchestrationController",
+    "module": "harness.orchestration.controller",
+    "name": "builtin.safe-controller",
+    "version": "1.0.0"
+  },
+  "provenance": {
+    "license": "project-license",
+    "review_artifact_id": null,
+    "review_status": "REVIEWED",
+    "source": "project-built-in"
+  },
+  "required_capabilities": [
+    "READ_STATE_VIEW",
+    "MODEL_CALL_SERVICE",
+    "ADMITTED_ACTION_EXECUTION"
+  ],
+  "runtime": {
+    "platforms": [
+      "linux",
+      "darwin"
+    ],
+    "python": ">=3.12,<3.14"
+  },
+  "schema_version": "1.0",
+  "self_check": "controller_transition_table_v1"
+}

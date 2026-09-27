@@ -1,0 +1,6 @@
+# Only the runtime definition and the reviewed worker library enter the build.
+*
+!runtime/python/**
+!src/harness/worker/**
+**/__pycache__
+**/*.pyc

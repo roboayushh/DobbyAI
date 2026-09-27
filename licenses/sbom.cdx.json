@@ -1,0 +1,700 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:fd8802ba-bf18-4d21-85c1-5dfb30824f92",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-09-27T00:40:30.894569+00:00",
+    "component": {
+      "type": "application",
+      "name": "ai-coding-harness",
+      "version": "0.1.0"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "annotated-types",
+      "version": "0.7.0",
+      "purl": "pkg:pypi/annotated-types@0.7.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "anyio",
+      "version": "4.7.0",
+      "purl": "pkg:pypi/anyio@4.7.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "certifi",
+      "version": "2024.8.30",
+      "purl": "pkg:pypi/certifi@2024.8.30",
+      "licenses": [
+        {
+          "license": {
+            "name": "Mozilla Public License 2.0 (MPL 2.0)"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "click",
+      "version": "8.1.7",
+      "purl": "pkg:pypi/click@8.1.7",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "coverage",
+      "version": "7.16.1",
+      "purl": "pkg:pypi/coverage@7.16.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "h11",
+      "version": "0.14.0",
+      "purl": "pkg:pypi/h11@0.14.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "httpcore",
+      "version": "1.0.6",
+      "purl": "pkg:pypi/httpcore@1.0.6",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "httpx",
+      "version": "0.27.2",
+      "purl": "pkg:pypi/httpx@0.27.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "idna",
+      "version": "3.10",
+      "purl": "pkg:pypi/idna@3.10",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "iniconfig",
+      "version": "2.3.0",
+      "purl": "pkg:pypi/iniconfig@2.3.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "markdown-it-py",
+      "version": "3.0.0",
+      "purl": "pkg:pypi/markdown-it-py@3.0.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "mdurl",
+      "version": "0.1.2",
+      "purl": "pkg:pypi/mdurl@0.1.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "packaging",
+      "version": "26.3",
+      "purl": "pkg:pypi/packaging@26.3",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 OR BSD-2-Clause"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pluggy",
+      "version": "1.6.0",
+      "purl": "pkg:pypi/pluggy@1.6.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pydantic",
+      "version": "2.9.2",
+      "purl": "pkg:pypi/pydantic@2.9.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pydantic-core",
+      "version": "2.23.4",
+      "purl": "pkg:pypi/pydantic-core@2.23.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pydantic-settings",
+      "version": "2.5.2",
+      "purl": "pkg:pypi/pydantic-settings@2.5.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pygments",
+      "version": "2.18.0",
+      "purl": "pkg:pypi/pygments@2.18.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pytest",
+      "version": "8.3.3",
+      "purl": "pkg:pypi/pytest@8.3.3",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pytest-asyncio",
+      "version": "0.24.0",
+      "purl": "pkg:pypi/pytest-asyncio@0.24.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache Software License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pytest-cov",
+      "version": "5.0.0",
+      "purl": "pkg:pypi/pytest-cov@5.0.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "python-dotenv",
+      "version": "1.2.3",
+      "purl": "pkg:pypi/python-dotenv@1.2.3",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "respx",
+      "version": "0.21.1",
+      "purl": "pkg:pypi/respx@0.21.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "rich",
+      "version": "13.9.4",
+      "purl": "pkg:pypi/rich@13.9.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "shellingham",
+      "version": "1.5.4",
+      "purl": "pkg:pypi/shellingham@1.5.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "ISC License (ISCL)"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "sniffio",
+      "version": "1.3.1",
+      "purl": "pkg:pypi/sniffio@1.3.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache Software License OR MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter",
+      "version": "0.23.2",
+      "purl": "pkg:pypi/tree-sitter@0.23.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-javascript",
+      "version": "0.23.1",
+      "purl": "pkg:pypi/tree-sitter-javascript@0.23.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-python",
+      "version": "0.23.6",
+      "purl": "pkg:pypi/tree-sitter-python@0.23.6",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-typescript",
+      "version": "0.23.2",
+      "purl": "pkg:pypi/tree-sitter-typescript@0.23.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "typer",
+      "version": "0.12.5",
+      "purl": "pkg:pypi/typer@0.12.5",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "typing-extensions",
+      "version": "4.12.2",
+      "purl": "pkg:pypi/typing-extensions@4.12.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "Python Software Foundation License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "host (requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pytest",
+      "version": "8.3.3",
+      "purl": "pkg:pypi/pytest@8.3.3",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "sandbox runtime image (runtime/python/requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pluggy",
+      "version": "1.5.0",
+      "purl": "pkg:pypi/pluggy@1.5.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT License"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "sandbox runtime image (runtime/python/requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "iniconfig",
+      "version": "2.0.0",
+      "purl": "pkg:pypi/iniconfig@2.0.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "sandbox runtime image (runtime/python/requirements.lock)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "packaging",
+      "version": "24.1",
+      "purl": "pkg:pypi/packaging@24.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 OR BSD-2-Clause"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "scope",
+          "value": "sandbox runtime image (runtime/python/requirements.lock)"
+        }
+      ]
+    }
+  ]
+}

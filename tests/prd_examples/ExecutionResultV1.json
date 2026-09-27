@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "action_id": "act_01J...",
+  "run_id": "run_01J...",
+  "task_id": "tsk_01J...",
+  "settlement": "ACCEPTED",
+  "container": {
+    "runtime_profile_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "image_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "container_id_hash": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "process": {
+    "exit_code": 0,
+    "signal": null,
+    "timed_out": false,
+    "oom_killed": false,
+    "output_limit_exceeded": false,
+    "elapsed_ms": 8420
+  },
+  "worker_result": {
+    "status": "ACTION_NEEDS_FOLLOWUP",
+    "summary": "The focused change was applied; the local command still reports one related failure.",
+    "trusted_as": "advisory"
+  },
+  "workspace": {
+    "before_version": "wsv_01J...",
+    "after_version": "wsv_01K...",
+    "change_set_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+    "created": [
+      "tests/test_example.py"
+    ],
+    "modified": [
+      "src/example.py"
+    ],
+    "deleted": [],
+    "unexpected": []
+  },
+  "artifacts": {
+    "stdout": "art_01J...",
+    "stderr": "art_01K...",
+    "tool_events": "art_01L...",
+    "diff": "art_01M...",
+    "result": "art_01N..."
+  },
+  "budget": {
+    "action_units_charged": 1,
+    "wall_seconds_charged": 9,
+    "output_bytes_charged": 18240
+  },
+  "observed_at": "2026-09-27T00:20:10Z"
+}

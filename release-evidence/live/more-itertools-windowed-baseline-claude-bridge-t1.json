@@ -1,0 +1,30 @@
+{
+  "case": "more-itertools-windowed",
+  "configuration": "baseline_single_role",
+  "model_profile": "claude-bridge",
+  "trial": 1,
+  "budget": {
+    "model_calls": 20,
+    "wall_seconds": 1200
+  },
+  "status": "WALL_BUDGET_EXHAUSTED",
+  "usage": {
+    "model_calls": 6,
+    "input_tokens": 14325,
+    "output_tokens": 60883
+  },
+  "wall_seconds": 1372.4,
+  "commands": 6,
+  "repeated_identical_failed_commands": 0,
+  "changed_paths": [],
+  "patch_empty": true,
+  "patch_applies": false,
+  "hidden_before": {
+    "exit_code": 1,
+    "summary": "8 failed, 763 passed, 21197 subtests passed in 18.96s",
+    "failing_count": 3
+  },
+  "hidden_after": null,
+  "hidden_pass": false,
+  "new_regressions": []
+}

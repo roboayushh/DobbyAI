@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "action_id": "act_01J...",
+  "run_id": "run_01J...",
+  "task_id": "tsk_01J...",
+  "action_proposal_id": "ap_01J...",
+  "workspace_version": "wsv_01J...",
+  "checkpoint_id": "chk_01J...",
+  "code": {
+    "container_path": "/context/action.py",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "context_manifest": {
+    "container_path": "/context/manifest.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "capabilities": [
+    "source.read",
+    "workspace.patch"
+  ],
+  "declared_paths": [
+    "src/example.py",
+    "tests/test_example.py"
+  ],
+  "network_mode": "none",
+  "runtime_profile_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "policy_decision_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "limits": {
+    "wall_seconds": 30,
+    "cpus": 2,
+    "memory_bytes": 4294967296,
+    "pids": 256,
+    "scratch_bytes": 1073741824,
+    "stdout_bytes": 2097152,
+    "stderr_bytes": 2097152,
+    "tool_calls": 64,
+    "run_calls": 8,
+    "workspace_growth_bytes": 536870912,
+    "new_files": 5000
+  }
+}

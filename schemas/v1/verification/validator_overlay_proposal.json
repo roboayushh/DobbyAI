@@ -1,0 +1,192 @@
+{
+  "$defs": {
+    "OverlayCheckProposalV1": {
+      "additionalProperties": false,
+      "properties": {
+        "argv": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "title": "Argv",
+          "type": "array"
+        },
+        "files": {
+          "items": {
+            "$ref": "#/$defs/OverlayFileRefV1"
+          },
+          "maxItems": 50,
+          "title": "Files",
+          "type": "array"
+        },
+        "parser": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Parser",
+          "type": "string"
+        },
+        "proposal_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "timeout_seconds": {
+          "exclusiveMinimum": 0,
+          "maximum": 600,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "purpose",
+        "files",
+        "argv",
+        "timeout_seconds",
+        "parser"
+      ],
+      "title": "OverlayCheckProposalV1",
+      "type": "object"
+    },
+    "OverlayFileRefV1": {
+      "additionalProperties": false,
+      "properties": {
+        "content_artifact_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Content Artifact Id",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "path": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "content_sha256",
+        "content_artifact_id"
+      ],
+      "title": "OverlayFileRefV1",
+      "type": "object"
+    },
+    "ValidatorFindingRecordV1": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Category",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "severity": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "statement": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "severity",
+        "category",
+        "statement"
+      ],
+      "title": "ValidatorFindingRecordV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "candidate_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Candidate Sha256",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "NO_OBJECTION",
+        "CHANGES_NEEDED",
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/ValidatorFindingRecordV1"
+      },
+      "maxItems": 50,
+      "title": "Findings",
+      "type": "array"
+    },
+    "proposed_checks": {
+      "items": {
+        "$ref": "#/$defs/OverlayCheckProposalV1"
+      },
+      "maxItems": 10,
+      "title": "Proposed Checks",
+      "type": "array"
+    },
+    "review_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Review Id",
+      "type": "string"
+    },
+    "review_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Review Sha256",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "review_id",
+    "candidate_sha256",
+    "decision",
+    "review_sha256"
+  ],
+  "title": "ValidatorOverlayProposalV1",
+  "type": "object"
+}

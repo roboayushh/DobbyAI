@@ -1,0 +1,136 @@
+{
+  "$defs": {
+    "EffectDispatchV1": {
+      "additionalProperties": false,
+      "properties": {
+        "provider_receipt_redacted": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Provider Receipt Redacted"
+        },
+        "response_received": {
+          "title": "Response Received",
+          "type": "boolean"
+        },
+        "started_at": {
+          "title": "Started At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "started_at",
+        "response_received"
+      ],
+      "title": "EffectDispatchV1",
+      "type": "object"
+    },
+    "EffectObservationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "matches_desired": {
+          "title": "Matches Desired",
+          "type": "boolean"
+        },
+        "observed_at": {
+          "title": "Observed At",
+          "type": "string"
+        },
+        "observed_oid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed Oid"
+        },
+        "target_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Ref"
+        }
+      },
+      "required": [
+        "observed_at",
+        "matches_desired"
+      ],
+      "title": "EffectObservationV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "dispatch": {
+      "$ref": "#/$defs/EffectDispatchV1"
+    },
+    "effect_intent_id": {
+      "title": "Effect Intent Id",
+      "type": "string"
+    },
+    "effect_receipt_id": {
+      "title": "Effect Receipt Id",
+      "type": "string"
+    },
+    "observation": {
+      "$ref": "#/$defs/EffectObservationV1"
+    },
+    "receipt_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Receipt Sha256",
+      "type": "string"
+    },
+    "reconciliation": {
+      "title": "Reconciliation",
+      "type": "string"
+    },
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "APPLIED",
+        "PUBLISHED",
+        "CLEANED",
+        "NOT_APPLIED",
+        "PARTIAL_CLEANUP",
+        "FAILED",
+        "APPLICATION_UNCERTAIN",
+        "PUBLICATION_UNCERTAIN",
+        "CLEANUP_UNCERTAIN",
+        "REMOTE_CONFLICT"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "effect_receipt_id",
+    "effect_intent_id",
+    "status",
+    "dispatch",
+    "observation",
+    "reconciliation",
+    "receipt_sha256"
+  ],
+  "title": "ExternalEffectReceiptV1",
+  "type": "object"
+}

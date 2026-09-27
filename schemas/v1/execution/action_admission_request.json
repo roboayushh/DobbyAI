@@ -1,0 +1,129 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "action_proposal_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Action Proposal Id",
+      "type": "string"
+    },
+    "code_artifact_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Code Artifact Id",
+      "type": "string"
+    },
+    "code_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Code Sha256",
+      "type": "string"
+    },
+    "declared_paths": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 256,
+      "title": "Declared Paths",
+      "type": "array"
+    },
+    "lifecycle_version": {
+      "minimum": 1,
+      "title": "Lifecycle Version",
+      "type": "integer"
+    },
+    "plan_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "plan_revision": {
+      "minimum": 1,
+      "title": "Plan Revision",
+      "type": "integer"
+    },
+    "policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Policy Sha256",
+      "type": "string"
+    },
+    "request_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Request Id",
+      "type": "string"
+    },
+    "requested_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Requested Capabilities",
+      "type": "array"
+    },
+    "requested_timeout_seconds": {
+      "exclusiveMinimum": 0,
+      "maximum": 3600,
+      "title": "Requested Timeout Seconds",
+      "type": "integer"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime_profile_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Runtime Profile Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "task_revision": {
+      "minimum": 1,
+      "title": "Task Revision",
+      "type": "integer"
+    },
+    "workspace_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Workspace Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "request_id",
+    "action_proposal_id",
+    "run_id",
+    "task_id",
+    "task_revision",
+    "lifecycle_version",
+    "plan_id",
+    "plan_revision",
+    "workspace_version",
+    "code_artifact_id",
+    "code_sha256",
+    "requested_capabilities",
+    "declared_paths",
+    "requested_timeout_seconds",
+    "policy_sha256",
+    "runtime_profile_id"
+  ],
+  "title": "ActionAdmissionRequestV1",
+  "type": "object"
+}

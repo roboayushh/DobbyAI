@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "attempt_id": "vatt_01J...",
+  "attempt_number": 1,
+  "run_id": "run_01J...",
+  "task_id": "tsk_01J...",
+  "candidate_id": "cand_01J...",
+  "candidate_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+  "contract_id": "vcon_01J...",
+  "contract_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "test_set_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "runtime_profile_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "dependency_environment_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+  "network_mode": "none",
+  "required_check_ids": [
+    "check_focused_1"
+  ]
+}

@@ -27,6 +27,8 @@ class ExecutionMode(str, Enum):
 class RepositoryKind(str, Enum):
     LOCAL_GIT = "local_git"
     PUBLIC_HTTPS = "public_https"
+    LOCAL_FOLDER = "local_folder"
+    LOCAL_ZIP = "local_zip"
 
 
 class RepositoryRefV1(BaseModel):
@@ -124,9 +126,11 @@ class RunRequestV1(BaseModel):
             raise ValueError("metadata exceeds 16 KiB limit when serialized")
 
         # 2. Repository validation
-        if self.repository.kind == RepositoryKind.LOCAL_GIT:
+        if self.repository.kind in (RepositoryKind.LOCAL_GIT, RepositoryKind.LOCAL_FOLDER, RepositoryKind.LOCAL_ZIP):
             if not os.path.isabs(self.repository.locator):
-                raise ValueError(f"local_git locator must be an absolute path, got: {self.repository.locator}")
+                raise ValueError(f"{self.repository.kind.value} locator must be an absolute path, got: {self.repository.locator}")
+            if self.repository.kind != RepositoryKind.LOCAL_GIT and self.repository.revision:
+                raise ValueError(f"{self.repository.kind.value} sources have no revision; use expected_tree_sha256")
         elif self.repository.kind == RepositoryKind.PUBLIC_HTTPS:
             parsed = urlparse(self.repository.locator)
             if parsed.scheme.lower() != "https":

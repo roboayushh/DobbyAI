@@ -1,0 +1,138 @@
+{
+  "$defs": {
+    "FinalPatchInputV1": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "base": {
+          "maxLength": 128,
+          "minLength": 4,
+          "title": "Base",
+          "type": "string"
+        },
+        "head": {
+          "maxLength": 128,
+          "minLength": 4,
+          "title": "Head",
+          "type": "string"
+        }
+      },
+      "required": [
+        "base",
+        "head",
+        "artifact_id"
+      ],
+      "title": "FinalPatchInputV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "aggregate_status": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Aggregate Status",
+      "type": "string"
+    },
+    "allowed_next_actions": {
+      "items": {
+        "enum": [
+          "EXPORT_PATCH",
+          "EXPORT_RESULT_BUNDLE"
+        ],
+        "type": "string"
+      },
+      "title": "Allowed Next Actions",
+      "type": "array"
+    },
+    "baseline_commit": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Baseline Commit",
+      "type": "string"
+    },
+    "dirty_or_synthetic_baseline": {
+      "title": "Dirty Or Synthetic Baseline",
+      "type": "boolean"
+    },
+    "final_candidate_commit": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Final Candidate Commit",
+      "type": "string"
+    },
+    "final_candidate_tree": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Final Candidate Tree",
+      "type": "string"
+    },
+    "final_patch_input": {
+      "$ref": "#/$defs/FinalPatchInputV1"
+    },
+    "publication_authorized": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Publication Authorized",
+      "type": "boolean"
+    },
+    "queue_final_result_artifact_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Queue Final Result Artifact Id",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_identity_artifact_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Source Identity Artifact Id",
+      "type": "string"
+    },
+    "task_commit_ids": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Task Commit Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "run_id",
+    "source_identity_artifact_id",
+    "queue_final_result_artifact_id",
+    "baseline_commit",
+    "final_candidate_commit",
+    "final_candidate_tree",
+    "aggregate_status",
+    "task_commit_ids",
+    "final_patch_input",
+    "dirty_or_synthetic_baseline",
+    "allowed_next_actions"
+  ],
+  "title": "ReleaseCandidateHandoffV1",
+  "type": "object"
+}

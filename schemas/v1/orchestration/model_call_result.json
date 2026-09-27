@@ -1,0 +1,146 @@
+{
+  "$defs": {
+    "ModelUsageV1": {
+      "additionalProperties": false,
+      "properties": {
+        "input_tokens": {
+          "minimum": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "minimum": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "usage_source": {
+          "enum": [
+            "provider_reported",
+            "estimated",
+            "unknown"
+          ],
+          "title": "Usage Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "input_tokens",
+        "output_tokens",
+        "usage_source"
+      ],
+      "title": "ModelUsageV1",
+      "type": "object"
+    },
+    "Role": {
+      "enum": [
+        "planner",
+        "coder",
+        "validator",
+        "summarizer"
+      ],
+      "title": "Role",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "call_id": {
+      "title": "Call Id",
+      "type": "string"
+    },
+    "format_retry_count": {
+      "default": 0,
+      "maximum": 2,
+      "minimum": 0,
+      "title": "Format Retry Count",
+      "type": "integer"
+    },
+    "latency_ms": {
+      "minimum": 0,
+      "title": "Latency Ms",
+      "type": "integer"
+    },
+    "packet_id": {
+      "title": "Packet Id",
+      "type": "string"
+    },
+    "parsed_output_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parsed Output Sha256"
+    },
+    "profile_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Profile Fingerprint",
+      "type": "string"
+    },
+    "provider_request_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Provider Request Id"
+    },
+    "response_artifact_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Response Artifact Id"
+    },
+    "role": {
+      "$ref": "#/$defs/Role"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "SUCCEEDED",
+        "FAILED",
+        "CANCELLED",
+        "UNKNOWN"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "usage": {
+      "$ref": "#/$defs/ModelUsageV1"
+    }
+  },
+  "required": [
+    "call_id",
+    "role",
+    "state",
+    "profile_fingerprint",
+    "packet_id",
+    "usage",
+    "latency_ms"
+  ],
+  "title": "ModelCallResultV1",
+  "type": "object"
+}

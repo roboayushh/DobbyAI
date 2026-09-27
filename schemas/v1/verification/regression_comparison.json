@@ -1,0 +1,145 @@
+{
+  "$defs": {
+    "ComparisonSummaryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "changed_failures": {
+          "minimum": 0,
+          "title": "Changed Failures",
+          "type": "integer"
+        },
+        "coverage_lost": {
+          "minimum": 0,
+          "title": "Coverage Lost",
+          "type": "integer"
+        },
+        "inconclusive": {
+          "minimum": 0,
+          "title": "Inconclusive",
+          "type": "integer"
+        },
+        "new_regressions": {
+          "minimum": 0,
+          "title": "New Regressions",
+          "type": "integer"
+        },
+        "pre_existing_unchanged": {
+          "minimum": 0,
+          "title": "Pre Existing Unchanged",
+          "type": "integer"
+        },
+        "resolved_targets": {
+          "minimum": 0,
+          "title": "Resolved Targets",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "resolved_targets",
+        "new_regressions",
+        "pre_existing_unchanged",
+        "changed_failures",
+        "coverage_lost",
+        "inconclusive"
+      ],
+      "title": "ComparisonSummaryV1",
+      "type": "object"
+    },
+    "CriterionResultV1": {
+      "additionalProperties": false,
+      "properties": {
+        "criterion_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Criterion Id",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "SATISFIED",
+            "NOT_SATISFIED",
+            "INCONCLUSIVE",
+            "NOT_RUN"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "criterion_id",
+        "status"
+      ],
+      "title": "CriterionResultV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempt_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "candidate_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Candidate Sha256",
+      "type": "string"
+    },
+    "comparison_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Comparison Id",
+      "type": "string"
+    },
+    "comparison_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Comparison Sha256",
+      "type": "string"
+    },
+    "contract_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Contract Sha256",
+      "type": "string"
+    },
+    "criterion_results": {
+      "items": {
+        "$ref": "#/$defs/CriterionResultV1"
+      },
+      "maxItems": 64,
+      "title": "Criterion Results",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "summary": {
+      "$ref": "#/$defs/ComparisonSummaryV1"
+    }
+  },
+  "required": [
+    "comparison_id",
+    "attempt_id",
+    "candidate_sha256",
+    "contract_sha256",
+    "summary",
+    "criterion_results",
+    "comparison_sha256"
+  ],
+  "title": "RegressionComparisonV1",
+  "type": "object"
+}

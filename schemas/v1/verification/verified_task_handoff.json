@@ -1,0 +1,210 @@
+{
+  "$defs": {
+    "HandoffCandidateRefV1": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "commit": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Commit",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "tree": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Tree",
+          "type": "string"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "commit",
+        "tree",
+        "sha256"
+      ],
+      "title": "HandoffCandidateRefV1",
+      "type": "object"
+    },
+    "HandoffVerificationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "completion_decision_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Completion Decision Id",
+          "type": "string"
+        },
+        "contract_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Contract Sha256",
+          "type": "string"
+        },
+        "environment_set_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Environment Set Sha256",
+          "type": "string"
+        },
+        "new_regressions": {
+          "minimum": 0,
+          "title": "New Regressions",
+          "type": "integer"
+        },
+        "report_artifact_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Report Artifact Id",
+          "type": "string"
+        },
+        "test_set_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Test Set Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "completion_decision_id",
+        "contract_sha256",
+        "test_set_sha256",
+        "environment_set_sha256",
+        "new_regressions",
+        "report_artifact_id"
+      ],
+      "title": "HandoffVerificationV1",
+      "type": "object"
+    },
+    "QueueBudgetRemainingV1": {
+      "additionalProperties": false,
+      "properties": {
+        "input_tokens": {
+          "minimum": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "model_calls": {
+          "minimum": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "minimum": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "minimum": 0,
+          "title": "Wall Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "model_calls",
+        "input_tokens",
+        "output_tokens",
+        "wall_seconds"
+      ],
+      "title": "QueueBudgetRemainingV1",
+      "type": "object"
+    },
+    "TaskOutcome": {
+      "enum": [
+        "PASS",
+        "FAILED",
+        "UNVERIFIED",
+        "BLOCKED_ENVIRONMENT",
+        "BUDGET_EXHAUSTED",
+        "NEEDS_INPUT",
+        "CANCELLED"
+      ],
+      "title": "TaskOutcome",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "candidate": {
+      "$ref": "#/$defs/HandoffCandidateRefV1"
+    },
+    "changed_paths": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 25000,
+      "title": "Changed Paths",
+      "type": "array"
+    },
+    "outcome": {
+      "$ref": "#/$defs/TaskOutcome"
+    },
+    "publication_authorized": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Publication Authorized",
+      "type": "boolean"
+    },
+    "queue_budget_remaining": {
+      "$ref": "#/$defs/QueueBudgetRemainingV1"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "task_ordinal": {
+      "minimum": 0,
+      "title": "Task Ordinal",
+      "type": "integer"
+    },
+    "task_start_commit": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Start Commit",
+      "type": "string"
+    },
+    "verification": {
+      "$ref": "#/$defs/HandoffVerificationV1"
+    }
+  },
+  "required": [
+    "run_id",
+    "task_id",
+    "task_ordinal",
+    "task_start_commit",
+    "outcome",
+    "candidate",
+    "verification",
+    "changed_paths",
+    "queue_budget_remaining"
+  ],
+  "title": "VerifiedTaskHandoffV1",
+  "type": "object"
+}

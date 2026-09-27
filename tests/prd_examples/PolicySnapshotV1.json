@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "policy_id": "pol_01J...",
+  "run_id": "run_01J...",
+  "version": 1,
+  "profile": "sandbox",
+  "allowed_capabilities": [
+    "source.search",
+    "source.read",
+    "source.symbols",
+    "workspace.patch",
+    "sandbox.command.argv",
+    "context.artifact.read",
+    "action.result.emit"
+  ],
+  "path_scopes": [
+    "src/",
+    "tests/"
+  ],
+  "network": {
+    "mode": "none",
+    "destinations": []
+  },
+  "runtime_profile_id": "python-default",
+  "limits_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "revoked": false,
+  "expires_at": null,
+  "policy_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+}

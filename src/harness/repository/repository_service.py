@@ -26,6 +26,8 @@ class RepositoryService:
         if ref.kind == RepositoryKind.LOCAL_GIT:
             out, _ = self.git.run(["rev-parse", target_revision], cwd=ref.locator)
             return out.strip()
+        elif ref.kind in (RepositoryKind.LOCAL_FOLDER, RepositoryKind.LOCAL_ZIP):
+            return ""  # identity is the content digest, recorded at import
         elif ref.kind == RepositoryKind.PUBLIC_HTTPS:
             # Remote ls-remote
             out, _ = self.git.run(["ls-remote", ref.locator, target_revision])
@@ -57,6 +59,21 @@ class RepositoryService:
                 run_id=run_id,
                 limits=limits,
                 revision=ref.revision,
+            )
+        elif ref.kind == RepositoryKind.LOCAL_FOLDER:
+            return self.importer.import_folder(
+                source_path=ref.locator,
+                private_bare_repo=private_bare_repo,
+                run_id=run_id,
+                limits=limits,
+            )
+        elif ref.kind == RepositoryKind.LOCAL_ZIP:
+            return self.importer.import_zip(
+                zip_path=ref.locator,
+                private_bare_repo=private_bare_repo,
+                staging_dir=staging_dir,
+                run_id=run_id,
+                limits=limits,
             )
         elif ref.kind == RepositoryKind.PUBLIC_HTTPS:
             return self.importer.import_remote(

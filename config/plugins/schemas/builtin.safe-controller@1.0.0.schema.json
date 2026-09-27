@@ -1,0 +1,14 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "max_coder_turns_per_task": {
+      "maximum": 200,
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "max_coder_turns_per_task"
+  ],
+  "type": "object"
+}

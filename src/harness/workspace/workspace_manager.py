@@ -57,16 +57,13 @@ class WorkspaceManager:
 
         worktree_dir.mkdir(parents=True, exist_ok=True)
 
-        # Checkout baseline_commit into workspace
-        self.git.run(
-            [
-                f"--git-dir={str(bare_repo_dir)}",
-                f"--work-tree={str(worktree_dir)}",
-                "checkout",
-                "-f",
-                baseline_commit,
-            ]
-        )
+        # Materialize baseline_commit byte-exactly. `git checkout` would apply the target
+        # repository's own .gitattributes (eol conversion, filters), so the read-only
+        # workspace could differ from the recorded baseline bytes.
+        from harness.gitflow.private_git import PrivateGit
+
+        git = PrivateGit(bare_repo_dir)
+        git.materialize(git.commit_tree_of(baseline_commit), worktree_dir)
 
         # Make worktree read-only for PRD 1 (section 10.5 & 14.3)
         self.make_tree_readonly(worktree_dir)

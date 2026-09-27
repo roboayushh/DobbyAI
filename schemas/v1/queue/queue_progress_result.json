@@ -1,0 +1,249 @@
+{
+  "$defs": {
+    "BlockedItemV1": {
+      "additionalProperties": false,
+      "properties": {
+        "blocking_item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Blocking Item Ids",
+          "type": "array"
+        },
+        "queue_item_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Queue Item Id",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "queue_item_id",
+        "reason"
+      ],
+      "title": "BlockedItemV1",
+      "type": "object"
+    },
+    "IntegrationStateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregate_verification": {
+          "enum": [
+            "NOT_RUN",
+            "PASS",
+            "FAILED",
+            "UNVERIFIED",
+            "BLOCKED_ENVIRONMENT",
+            "BUDGET_EXHAUSTED"
+          ],
+          "title": "Aggregate Verification",
+          "type": "string"
+        },
+        "commit": {
+          "maxLength": 128,
+          "minLength": 4,
+          "title": "Commit",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "tree": {
+          "maxLength": 128,
+          "minLength": 4,
+          "title": "Tree",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sequence",
+        "commit",
+        "tree",
+        "aggregate_verification"
+      ],
+      "title": "IntegrationStateV1",
+      "type": "object"
+    },
+    "QueueBudgetViewV1": {
+      "additionalProperties": false,
+      "properties": {
+        "final_reserve_intact": {
+          "title": "Final Reserve Intact",
+          "type": "boolean"
+        },
+        "model_calls_remaining": {
+          "title": "Model Calls Remaining",
+          "type": "integer"
+        },
+        "wall_seconds_remaining": {
+          "title": "Wall Seconds Remaining",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "model_calls_remaining",
+        "wall_seconds_remaining",
+        "final_reserve_intact"
+      ],
+      "title": "QueueBudgetViewV1",
+      "type": "object"
+    },
+    "QueueCountsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "actionable": {
+          "minimum": 0,
+          "title": "Actionable",
+          "type": "integer"
+        },
+        "blocked": {
+          "minimum": 0,
+          "title": "Blocked",
+          "type": "integer"
+        },
+        "failed": {
+          "minimum": 0,
+          "title": "Failed",
+          "type": "integer"
+        },
+        "integrated": {
+          "minimum": 0,
+          "title": "Integrated",
+          "type": "integer"
+        },
+        "remaining": {
+          "minimum": 0,
+          "title": "Remaining",
+          "type": "integer"
+        },
+        "running": {
+          "minimum": 0,
+          "title": "Running",
+          "type": "integer"
+        },
+        "selected": {
+          "minimum": 0,
+          "title": "Selected",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "selected",
+        "actionable",
+        "integrated",
+        "running",
+        "failed",
+        "blocked",
+        "remaining"
+      ],
+      "title": "QueueCountsV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "active_item_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Active Item Id"
+    },
+    "blocked": {
+      "items": {
+        "$ref": "#/$defs/BlockedItemV1"
+      },
+      "maxItems": 20,
+      "title": "Blocked",
+      "type": "array"
+    },
+    "budget": {
+      "$ref": "#/$defs/QueueBudgetViewV1"
+    },
+    "counts": {
+      "$ref": "#/$defs/QueueCountsV1"
+    },
+    "integration": {
+      "$ref": "#/$defs/IntegrationStateV1"
+    },
+    "last_event_sequence": {
+      "minimum": 0,
+      "title": "Last Event Sequence",
+      "type": "integer"
+    },
+    "queue_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Queue Id",
+      "type": "string"
+    },
+    "queue_state": {
+      "enum": [
+        "DRAFT",
+        "FROZEN",
+        "RUNNING",
+        "PAUSED",
+        "FINALIZING",
+        "CANCELLING",
+        "RECOVERING",
+        "UNCERTAIN",
+        "SETTLED",
+        "INVALID"
+      ],
+      "title": "Queue State",
+      "type": "string"
+    },
+    "queue_version_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Queue Version Id",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "updated_at": {
+      "title": "Updated At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "queue_id",
+    "queue_version_id",
+    "queue_state",
+    "integration",
+    "counts",
+    "budget",
+    "last_event_sequence",
+    "updated_at"
+  ],
+  "title": "QueueProgressResultV1",
+  "type": "object"
+}

@@ -672,6 +672,7 @@ def test_at020_machine_output_valid_json(git_repo, temp_dir):
 
     env = dict(os.environ)
     env["PYTHONPATH"] = "src"
+    env["DATA_DIR"] = str(temp_dir / "harness_data")  # never write into the developer's real data/
 
     proc = subprocess.run(
         [".venv/bin/harness", "prepare", "--request", str(req_file), "--json"],
@@ -718,3 +719,40 @@ def test_at021_no_forbidden_actions(git_repo, harness_env):
             args = call_args[0][0]
             assert "push" not in args, f"Forbidden git push detected: {args}"
             assert "commit" not in args or "commit-tree" in args, f"Forbidden commit in source: {args}"
+
+
+def test_real_intake_adapter_reads_provider_issue_pages(tmp_path):
+    """Repository mode through the real adapter (not a fake port): IssuePage.issues, paging, label filters."""
+    from harness.config import HarnessConfig
+    from harness.contracts import LimitsV1, RepositoryQueryV1
+    from harness.intake.existing_intake_adapter import ExistingIssueIntakeAdapter
+    from harness.models import IssuePage
+
+    repository = Repository(repository_id=1, owner="owner", name="repo", full_name="owner/repo",
+                            html_url="https://github.com/owner/repo", visibility="public", default_branch="main")
+    pages = {
+        None: IssuePage(issues=[make_issue_record(issue_id=1, number=1, title="Crash on empty input"),
+                                make_issue_record(issue_id=2, number=2, title="Docs typo", labels=["wontfix"])],
+                        filters={}, next_cursor="page-2", has_more=True),
+        "page-2": IssuePage(issues=[make_issue_record(issue_id=3, number=3, title="Wrong rounding", body="Other body")],
+                            filters={}),
+    }
+    seen = []
+
+    class Service:
+        def fetch_repository(self, owner, repo):
+            return repository
+
+        def browse(self, owner, repo, repository, filters, cursor=None, use_cache=True):
+            seen.append((cursor, filters.per_page))
+            return pages[cursor]
+
+    adapter = ExistingIssueIntakeAdapter(service=Service(), store=MagicMock(),
+                                         config=HarnessConfig(data_dir=tmp_path / "data"))
+    batch, cursor = adapter.list_candidates("owner", "repo", exclude_labels=["wontfix"], limit=20)
+    assert [issue.number for issue in batch] == [1] and cursor == "page-2"
+
+    tasks, summary, _ = TaskPreparationService(adapter).prepare_queue(
+        "owner", "repo", RepositoryQueryV1(exclude_labels=["wontfix"]), LimitsV1(max_tasks=5))
+    assert [t.source_key for t in tasks] == ["github:owner/repo:issue:1", "github:owner/repo:issue:3"]
+    assert summary.selected == 2 and seen[-1] == ("page-2", 50)

@@ -1,0 +1,473 @@
+{
+  "$defs": {
+    "AcceptanceCriterionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "criterion_id": {
+          "title": "Criterion Id",
+          "type": "string"
+        },
+        "evidence_needed": {
+          "title": "Evidence Needed",
+          "type": "string"
+        },
+        "statement": {
+          "title": "Statement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "criterion_id",
+        "statement",
+        "evidence_needed"
+      ],
+      "title": "AcceptanceCriterionV1",
+      "type": "object"
+    },
+    "EditLocationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "symbol": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Symbol"
+        }
+      },
+      "required": [
+        "path",
+        "reason"
+      ],
+      "title": "EditLocationV1",
+      "type": "object"
+    },
+    "EvidenceQueryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "max_bytes": {
+          "default": 32768,
+          "maximum": 262144,
+          "minimum": 256,
+          "title": "Max Bytes",
+          "type": "integer"
+        },
+        "max_results": {
+          "default": 10,
+          "maximum": 50,
+          "minimum": 1,
+          "title": "Max Results",
+          "type": "integer"
+        },
+        "query": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Query",
+          "type": "string"
+        },
+        "query_type": {
+          "enum": [
+            "PATH_GLOB",
+            "EXACT_TEXT",
+            "IDENTIFIER",
+            "SYMBOL_DEFINITION",
+            "SYMBOL_REFERENCES",
+            "STACK_TRACE_LOCATION",
+            "ADJACENT_TESTS",
+            "IMPORT_NEIGHBORS",
+            "MANIFEST_OR_CONFIG",
+            "INSTRUCTION_FILE"
+          ],
+          "title": "Query Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query_type",
+        "query"
+      ],
+      "title": "EvidenceQueryV1",
+      "type": "object"
+    },
+    "HypothesisV1": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "hypothesis_id": {
+          "title": "Hypothesis Id",
+          "type": "string"
+        },
+        "statement": {
+          "title": "Statement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hypothesis_id",
+        "statement",
+        "confidence"
+      ],
+      "title": "HypothesisV1",
+      "type": "object"
+    },
+    "MaterialQuestionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "impact": {
+          "title": "Impact",
+          "type": "string"
+        },
+        "question": {
+          "title": "Question",
+          "type": "string"
+        }
+      },
+      "required": [
+        "question",
+        "impact"
+      ],
+      "title": "MaterialQuestionV1",
+      "type": "object"
+    },
+    "NeedCapabilityV1": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_acceptance_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Affected Acceptance Criteria",
+          "type": "array"
+        },
+        "capability": {
+          "title": "Capability",
+          "type": "string"
+        },
+        "decision": {
+          "const": "NEED_CAPABILITY",
+          "enum": [
+            "NEED_CAPABILITY"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "task_id",
+        "capability",
+        "reason"
+      ],
+      "title": "NeedCapabilityV1",
+      "type": "object"
+    },
+    "PlanStepV1": {
+      "additionalProperties": false,
+      "properties": {
+        "depends_on": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Depends On",
+          "type": "array"
+        },
+        "purpose": {
+          "title": "Purpose",
+          "type": "string"
+        },
+        "step_id": {
+          "title": "Step Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "step_id",
+        "purpose"
+      ],
+      "title": "PlanStepV1",
+      "type": "object"
+    },
+    "PlanV1": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptance_criteria": {
+          "items": {
+            "$ref": "#/$defs/AcceptanceCriterionV1"
+          },
+          "minItems": 1,
+          "title": "Acceptance Criteria",
+          "type": "array"
+        },
+        "decision": {
+          "const": "PLAN_READY",
+          "enum": [
+            "PLAN_READY"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "hypotheses": {
+          "items": {
+            "$ref": "#/$defs/HypothesisV1"
+          },
+          "title": "Hypotheses",
+          "type": "array"
+        },
+        "likely_edit_locations": {
+          "items": {
+            "$ref": "#/$defs/EditLocationV1"
+          },
+          "title": "Likely Edit Locations",
+          "type": "array"
+        },
+        "objective": {
+          "title": "Objective",
+          "type": "string"
+        },
+        "observed_evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Observed Evidence Ids",
+          "type": "array"
+        },
+        "plan_revision": {
+          "minimum": 1,
+          "title": "Plan Revision",
+          "type": "integer"
+        },
+        "preserved_constraints": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Preserved Constraints",
+          "type": "array"
+        },
+        "required_capabilities": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Capabilities",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "step_budget": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Step Budget",
+          "type": "integer"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/PlanStepV1"
+          },
+          "minItems": 1,
+          "title": "Steps",
+          "type": "array"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "task_revision": {
+          "minimum": 1,
+          "title": "Task Revision",
+          "type": "integer"
+        },
+        "unresolved_questions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unresolved Questions",
+          "type": "array"
+        },
+        "verification_strategy": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Verification Strategy",
+          "type": "array"
+        }
+      },
+      "required": [
+        "decision",
+        "task_id",
+        "task_revision",
+        "plan_revision",
+        "objective",
+        "acceptance_criteria",
+        "steps",
+        "verification_strategy",
+        "step_budget"
+      ],
+      "title": "PlanV1",
+      "type": "object"
+    },
+    "PlannerNeedsEvidenceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "decision": {
+          "const": "NEEDS_EVIDENCE",
+          "enum": [
+            "NEEDS_EVIDENCE"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "queries": {
+          "items": {
+            "$ref": "#/$defs/EvidenceQueryV1"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Queries",
+          "type": "array"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "task_id",
+        "queries",
+        "reason"
+      ],
+      "title": "PlannerNeedsEvidenceV1",
+      "type": "object"
+    },
+    "PlannerNeedsInputV1": {
+      "additionalProperties": false,
+      "properties": {
+        "decision": {
+          "const": "NEEDS_INPUT",
+          "enum": [
+            "NEEDS_INPUT"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "questions": {
+          "items": {
+            "$ref": "#/$defs/MaterialQuestionV1"
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "title": "Questions",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "task_id",
+        "questions"
+      ],
+      "title": "PlannerNeedsInputV1",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "NEEDS_EVIDENCE": "#/$defs/PlannerNeedsEvidenceV1",
+      "NEEDS_INPUT": "#/$defs/PlannerNeedsInputV1",
+      "NEED_CAPABILITY": "#/$defs/NeedCapabilityV1",
+      "PLAN_READY": "#/$defs/PlanV1"
+    },
+    "propertyName": "decision"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/PlanV1"
+    },
+    {
+      "$ref": "#/$defs/PlannerNeedsEvidenceV1"
+    },
+    {
+      "$ref": "#/$defs/PlannerNeedsInputV1"
+    },
+    {
+      "$ref": "#/$defs/NeedCapabilityV1"
+    }
+  ]
+}

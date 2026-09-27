@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "diff_review_id": "drev_01J...",
+  "candidate_id": "cand_01J...",
+  "candidate_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+  "status": "CLEAN",
+  "changed_paths": [
+    "src/example.py",
+    "tests/test_example.py"
+  ],
+  "test_changes": {
+    "existing_tests_deleted": 0,
+    "skip_markers_added": 0,
+    "assertions_weakened_suspected": 0,
+    "discovery_config_changed": false
+  },
+  "scope_findings": [],
+  "review_artifact_id": "art_01Q...",
+  "review_sha256": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
+}

@@ -1,0 +1,126 @@
+{
+  "$defs": {
+    "PostAdvanceVerificationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "contract_set_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Contract Set Sha256",
+          "type": "string"
+        },
+        "report_artifact_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Report Artifact Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "PASS",
+            "FAILED",
+            "UNVERIFIED",
+            "BLOCKED_ENVIRONMENT",
+            "BUDGET_EXHAUSTED",
+            "NEEDS_INPUT",
+            "CANCELLED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "verification_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Verification Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "verification_id",
+        "contract_set_sha256",
+        "report_artifact_id"
+      ],
+      "title": "PostAdvanceVerificationV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "integration_intent_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Integration Intent Id",
+      "type": "string"
+    },
+    "integration_result_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Integration Result Id",
+      "type": "string"
+    },
+    "integration_sequence": {
+      "minimum": 0,
+      "title": "Integration Sequence",
+      "type": "integer"
+    },
+    "observed_after_commit": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Observed After Commit",
+      "type": "string"
+    },
+    "observed_before_commit": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Observed Before Commit",
+      "type": "string"
+    },
+    "post_advance_verification": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PostAdvanceVerificationV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "settled_at": {
+      "title": "Settled At",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "APPLIED_PENDING_VERIFICATION",
+        "APPLIED_AND_VERIFIED",
+        "NOT_APPLIED",
+        "COMPENSATED",
+        "FAILED",
+        "UNCERTAIN"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "integration_result_id",
+    "integration_intent_id",
+    "status",
+    "observed_before_commit",
+    "observed_after_commit",
+    "integration_sequence",
+    "settled_at"
+  ],
+  "title": "IntegrationResultV1",
+  "type": "object"
+}

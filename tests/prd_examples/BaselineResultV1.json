@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "baseline_result_id": "base_01J...",
+  "contract_id": "vcon_01J...",
+  "check_id": "check_focused_1",
+  "baseline_commit": "baseline-commit-B",
+  "environment_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "status": "EXPECTED_REPRODUCTION_FAILURE",
+  "process": {
+    "exit_code": 1,
+    "timed_out": false,
+    "oom_killed": false,
+    "elapsed_ms": 2300
+  },
+  "tests": {
+    "discovered": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "errors": 0
+  },
+  "failure_signatures": [
+    "2222222222222222222222222222222222222222222222222222222222222222"
+  ],
+  "stdout_artifact_id": "art_01J...",
+  "stderr_artifact_id": "art_01K...",
+  "report_artifact_id": "art_01L...",
+  "captured_at": "2026-09-27T01:00:00Z"
+}

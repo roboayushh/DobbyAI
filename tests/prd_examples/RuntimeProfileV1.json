@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "runtime_profile_id": "python-default",
+  "runtime": "python",
+  "runtime_version": "3.12",
+  "image_reference": "registry.example/harness-python@sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "image_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "worker_version": "1.0.0",
+  "tool_library_version": "1.0.0",
+  "non_root_uid": 65532,
+  "non_root_gid": 65532,
+  "default_network_mode": "none",
+  "shell_path": "/bin/bash",
+  "limits_profile": "ordinary-v1",
+  "profile_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+}

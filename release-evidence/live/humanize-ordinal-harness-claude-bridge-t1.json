@@ -1,0 +1,39 @@
+{
+  "case": "humanize-ordinal",
+  "configuration": "harness_full",
+  "trial": 1,
+  "budget": {
+    "model_calls": 20,
+    "wall_seconds": 1200
+  },
+  "model_profile": "claude-bridge",
+  "status": "INTERNAL_ERROR",
+  "exit_code": 7,
+  "stdout_json_objects": 1,
+  "wall_seconds": 66.8,
+  "usage": {
+    "estimated_fields": [],
+    "input_tokens": 40869,
+    "model_calls": 2,
+    "output_tokens": 1441,
+    "wall_seconds": 65
+  },
+  "verification": "NOT_RUN",
+  "export": "VALID",
+  "changed_paths": [],
+  "limitations": [
+    "PASS describes declared observed checks and does not guarantee hidden-test success.",
+    "INTERNAL_ERROR: MODEL_BUDGET_SETTLEMENT_FAILED: Provider usage exceeded the conservative reservation"
+  ],
+  "run_id": "run_39e902cc0eb942db",
+  "patch_empty": true,
+  "patch_applies": false,
+  "hidden_before": {
+    "exit_code": 1,
+    "summary": "4 failed, 740 passed, 112 skipped in 2.52s",
+    "failing_count": 4
+  },
+  "hidden_after": null,
+  "hidden_pass": false,
+  "new_regressions": []
+}

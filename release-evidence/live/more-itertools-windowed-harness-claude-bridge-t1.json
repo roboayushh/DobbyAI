@@ -1,0 +1,22 @@
+{
+  "case": "more-itertools-windowed",
+  "configuration": "harness_full",
+  "trial": 1,
+  "budget": {
+    "model_calls": 20,
+    "wall_seconds": 1200
+  },
+  "model_profile": "claude-bridge",
+  "status": "INVALID",
+  "exit_code": 2,
+  "stdout_json_objects": 1,
+  "wall_seconds": 0.5,
+  "usage": null,
+  "verification": null,
+  "export": null,
+  "changed_paths": [],
+  "limitations": [
+    "PASS describes declared observed checks and does not guarantee hidden-test success."
+  ],
+  "run_id": null
+}

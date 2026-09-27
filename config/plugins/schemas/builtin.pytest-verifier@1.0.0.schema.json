@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "validator_required": {
+      "enum": [
+        true
+      ],
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "validator_required"
+  ],
+  "type": "object"
+}

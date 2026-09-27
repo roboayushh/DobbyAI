@@ -1,0 +1,136 @@
+{
+  "$defs": {
+    "TruthStatus": {
+      "enum": [
+        "observed",
+        "reported",
+        "hypothesis"
+      ],
+      "title": "TruthStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "content_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Sha256",
+      "type": "string"
+    },
+    "end_line": {
+      "anyOf": [
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "End Line"
+    },
+    "evidence_id": {
+      "title": "Evidence Id",
+      "type": "string"
+    },
+    "evidence_type": {
+      "title": "Evidence Type",
+      "type": "string"
+    },
+    "parser_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parser Version"
+    },
+    "path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Path"
+    },
+    "retrieval_reason": {
+      "title": "Retrieval Reason",
+      "type": "string"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_revision": {
+      "title": "Source Revision",
+      "type": "string"
+    },
+    "start_line": {
+      "anyOf": [
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Start Line"
+    },
+    "symbol": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Symbol"
+    },
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    },
+    "truth_status": {
+      "$ref": "#/$defs/TruthStatus"
+    },
+    "valid": {
+      "default": true,
+      "title": "Valid",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "evidence_id",
+    "run_id",
+    "task_id",
+    "source_revision",
+    "evidence_type",
+    "retrieval_reason",
+    "truth_status",
+    "content_sha256"
+  ],
+  "title": "EvidenceRefV1",
+  "type": "object"
+}

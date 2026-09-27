@@ -1,0 +1,119 @@
+{
+  "$defs": {
+    "WorkspaceVersionState": {
+      "enum": [
+        "ACTIVE",
+        "SUPERSEDED",
+        "ROLLED_BACK",
+        "FROZEN",
+        "QUARANTINED"
+      ],
+      "title": "WorkspaceVersionState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "baseline_commit": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Baseline Commit",
+      "type": "string"
+    },
+    "content_tree_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Content Tree Sha256",
+      "type": "string"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "created_by_action_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Created By Action Id"
+    },
+    "git_tree": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Git Tree",
+      "type": "string"
+    },
+    "manifest_artifact_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Manifest Artifact Id",
+      "type": "string"
+    },
+    "parent_version_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parent Version Id"
+    },
+    "private_checkpoint_commit": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Private Checkpoint Commit",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/WorkspaceVersionState"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "workspace_version_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Workspace Version Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "workspace_version_id",
+    "run_id",
+    "task_id",
+    "baseline_commit",
+    "private_checkpoint_commit",
+    "git_tree",
+    "content_tree_sha256",
+    "manifest_artifact_id",
+    "state",
+    "created_at"
+  ],
+  "title": "WorkspaceVersionV1",
+  "type": "object"
+}

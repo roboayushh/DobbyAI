@@ -1,7 +1,12 @@
 """harness/persistence
 Expose persistence utilities.
 """
-from .artifact_store import ArtifactStore, IntegrityError, PathTraversalError
+from .artifact_store import (
+    ALLOWED_ARTIFACT_KINDS,
+    ArtifactStore,
+    IntegrityError,
+    PathTraversalError,
+)
 from .migrator import apply_migrations
 from .run_store import (
     DependencyCycleError,
@@ -14,6 +19,7 @@ from .run_store import (
 
 __all__ = [
     "ArtifactStore",
+    "ALLOWED_ARTIFACT_KINDS",
     "DependencyCycleError",
     "IdempotencyConflictError",
     "IntegrityError",

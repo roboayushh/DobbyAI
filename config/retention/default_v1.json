@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "name": "retain_default_v1",
+  "version": "1.0.0",
+  "description": "Keep evidence; allow removal of transient working copies after settlement.",
+  "classes": {
+    "TEMP_CONTAINER": "ELIGIBLE",
+    "VERIFICATION_WORKTREE": "ELIGIBLE",
+    "TASK_WORKTREE": "ELIGIBLE",
+    "CACHE": "ELIGIBLE",
+    "PRIVATE_REF": "RETAIN",
+    "RAW_LOG": "RETAIN",
+    "RUN_ARTIFACT": "RETAIN",
+    "RUN_DATABASE": "RETAIN",
+    "RUN_ROOT": "RETAIN"
+  },
+  "never": ["ORIGINAL_SOURCE", "EXPORT_BUNDLE", "SHARED_DEPENDENCY_CACHE", "OTHER_RUN"]
+}
