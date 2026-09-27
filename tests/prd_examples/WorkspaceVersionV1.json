@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "workspace_version_id": "wsv_01K...",
+  "run_id": "run_01J...",
+  "task_id": "tsk_01J...",
+  "parent_version_id": "wsv_01J...",
+  "baseline_commit": "baseline-commit-B",
+  "private_checkpoint_commit": "40-hex-private-commit",
+  "git_tree": "git-tree-object-id",
+  "content_tree_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+  "manifest_artifact_id": "art_01P...",
+  "created_by_action_id": "act_01J...",
+  "state": "ACTIVE",
+  "created_at": "2026-09-27T00:20:10Z"
+}

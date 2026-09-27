@@ -1,0 +1,366 @@
+{
+  "$defs": {
+    "AdapterRefV1": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z0-9_.-]+$",
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 32,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "title": "AdapterRefV1",
+      "type": "object"
+    },
+    "EvaluatorBudgetsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "input_tokens": {
+          "anyOf": [
+            {
+              "minimum": 1000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Tokens"
+        },
+        "model_calls": {
+          "anyOf": [
+            {
+              "maximum": 2000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Calls"
+        },
+        "output_tokens": {
+          "anyOf": [
+            {
+              "minimum": 100,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Tokens"
+        },
+        "wall_seconds": {
+          "anyOf": [
+            {
+              "maximum": 86400,
+              "minimum": 30,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wall Seconds"
+        }
+      },
+      "title": "EvaluatorBudgetsV1",
+      "type": "object"
+    },
+    "EvaluatorRepositoryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "local_git",
+            "public_https",
+            "local_folder",
+            "local_zip"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "locator": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Revision"
+        }
+      },
+      "required": [
+        "kind",
+        "locator"
+      ],
+      "title": "EvaluatorRepositoryV1",
+      "type": "object"
+    },
+    "EvaluatorTaskV1": {
+      "additionalProperties": false,
+      "properties": {
+        "issue_number": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Number"
+        },
+        "issue_url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Url"
+        },
+        "labels": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Labels",
+          "type": "array"
+        },
+        "max_tasks": {
+          "anyOf": [
+            {
+              "maximum": 20,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Tasks"
+        },
+        "repository_owner": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Repository Owner"
+        },
+        "source_type": {
+          "enum": [
+            "direct_text",
+            "issue_url",
+            "issue_number",
+            "repository_query"
+          ],
+          "title": "Source Type",
+          "type": "string"
+        },
+        "state": {
+          "anyOf": [
+            {
+              "enum": [
+                "open",
+                "closed",
+                "all"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "State"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "maxLength": 200000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        }
+      },
+      "required": [
+        "source_type"
+      ],
+      "title": "EvaluatorTaskV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "adapter": {
+      "$ref": "#/$defs/AdapterRefV1"
+    },
+    "budgets": {
+      "$ref": "#/$defs/EvaluatorBudgetsV1"
+    },
+    "execution_mode": {
+      "enum": [
+        "development",
+        "evaluation"
+      ],
+      "title": "Execution Mode",
+      "type": "string"
+    },
+    "export_path": {
+      "anyOf": [
+        {
+          "maxLength": 4096,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Export Path"
+    },
+    "idempotency_key": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "model_config_ref": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model Config Ref"
+    },
+    "profile": {
+      "default": "evaluation_strict_v1",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Profile",
+      "type": "string"
+    },
+    "repository": {
+      "$ref": "#/$defs/EvaluatorRepositoryV1"
+    },
+    "request_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Request Id",
+      "type": "string"
+    },
+    "requested_effects": {
+      "items": {
+        "enum": [
+          "EXPORT",
+          "APPLY_LOCAL",
+          "PUSH_NEW_BRANCH",
+          "CLEANUP_RUN"
+        ],
+        "type": "string"
+      },
+      "maxItems": 4,
+      "title": "Requested Effects",
+      "type": "array"
+    },
+    "result_path": {
+      "anyOf": [
+        {
+          "maxLength": 4096,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Result Path"
+    },
+    "runtime_profile": {
+      "default": "python312_docker_v1",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Runtime Profile",
+      "type": "string"
+    },
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task": {
+      "$ref": "#/$defs/EvaluatorTaskV1"
+    },
+    "task_mode": {
+      "enum": [
+        "single_issue",
+        "repository"
+      ],
+      "title": "Task Mode",
+      "type": "string"
+    }
+  },
+  "required": [
+    "request_id",
+    "adapter",
+    "repository",
+    "task_mode",
+    "execution_mode",
+    "task",
+    "idempotency_key"
+  ],
+  "title": "EvaluatorRequestV1",
+  "type": "object"
+}

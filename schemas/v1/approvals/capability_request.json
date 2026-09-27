@@ -1,0 +1,250 @@
+{
+  "$defs": {
+    "CapabilityPolicyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "permission_profile": {
+          "enum": [
+            "guided",
+            "sandbox",
+            "delegated"
+          ],
+          "title": "Permission Profile",
+          "type": "string"
+        },
+        "policy_id": {
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "policy_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Policy Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "policy_id",
+        "policy_sha256",
+        "permission_profile"
+      ],
+      "title": "CapabilityPolicyV1",
+      "type": "object"
+    },
+    "CapabilityTargetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_oid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Oid"
+        },
+        "local_root_identity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Local Root Identity"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ref"
+        },
+        "remote_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Remote Name"
+        },
+        "remote_url_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Remote Url Sha256"
+        },
+        "repository_identity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Repository Identity"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        }
+      },
+      "title": "CapabilityTargetV1",
+      "type": "object"
+    },
+    "ExportCandidateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "pattern": "^[0-9a-f]{4,64}$",
+          "title": "Commit",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "tree": {
+          "pattern": "^[0-9a-f]{4,64}$",
+          "title": "Tree",
+          "type": "string"
+        }
+      },
+      "required": [
+        "commit",
+        "tree",
+        "content_sha256"
+      ],
+      "title": "ExportCandidateV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "artifact_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Artifact Sha256"
+    },
+    "candidate": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExportCandidateV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "capability_request_id": {
+      "title": "Capability Request Id",
+      "type": "string"
+    },
+    "expires_at": {
+      "title": "Expires At",
+      "type": "string"
+    },
+    "operation": {
+      "enum": [
+        "APPLY_LOCAL",
+        "PUSH_NEW_BRANCH",
+        "CREATE_PULL_REQUEST",
+        "MERGE_TARGET",
+        "CLEANUP_RUN",
+        "DELETE_REMOTE_BRANCH"
+      ],
+      "title": "Operation",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "#/$defs/CapabilityPolicyV1"
+    },
+    "request_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Request Sha256",
+      "type": "string"
+    },
+    "requested_uses": {
+      "default": 1,
+      "maximum": 10,
+      "minimum": 1,
+      "title": "Requested Uses",
+      "type": "integer"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "summary_artifact_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Summary Artifact Id"
+    },
+    "target": {
+      "$ref": "#/$defs/CapabilityTargetV1"
+    }
+  },
+  "required": [
+    "capability_request_id",
+    "run_id",
+    "operation",
+    "target",
+    "policy",
+    "expires_at",
+    "request_sha256"
+  ],
+  "title": "CapabilityRequestV1",
+  "type": "object"
+}

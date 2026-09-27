@@ -1,0 +1,114 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "attempt_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "attempt_number": {
+      "minimum": 1,
+      "title": "Attempt Number",
+      "type": "integer"
+    },
+    "candidate_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Candidate Id",
+      "type": "string"
+    },
+    "candidate_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Candidate Sha256",
+      "type": "string"
+    },
+    "contract_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Contract Id",
+      "type": "string"
+    },
+    "contract_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Contract Sha256",
+      "type": "string"
+    },
+    "dependency_environment_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Dependency Environment Sha256"
+    },
+    "network_mode": {
+      "const": "none",
+      "default": "none",
+      "enum": [
+        "none"
+      ],
+      "title": "Network Mode",
+      "type": "string"
+    },
+    "required_check_ids": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Required Check Ids",
+      "type": "array"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime_profile_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Runtime Profile Fingerprint",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "test_set_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Test Set Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "attempt_id",
+    "attempt_number",
+    "run_id",
+    "task_id",
+    "candidate_id",
+    "candidate_sha256",
+    "contract_id",
+    "contract_sha256",
+    "test_set_sha256",
+    "runtime_profile_fingerprint",
+    "required_check_ids"
+  ],
+  "title": "VerificationAttemptRequestV1",
+  "type": "object"
+}

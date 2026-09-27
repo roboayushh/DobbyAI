@@ -1,0 +1,136 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "action_proposal_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Action Proposal Id",
+      "type": "string"
+    },
+    "approval_request_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Approval Request Id",
+      "type": "string"
+    },
+    "capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "code_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Code Sha256",
+      "type": "string"
+    },
+    "consequences": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Consequences",
+      "type": "string"
+    },
+    "expires_at": {
+      "title": "Expires At",
+      "type": "string"
+    },
+    "limits_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Limits Fingerprint",
+      "type": "string"
+    },
+    "max_uses": {
+      "default": 1,
+      "maximum": 10,
+      "minimum": 1,
+      "title": "Max Uses",
+      "type": "integer"
+    },
+    "network_policy_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Network Policy Fingerprint",
+      "type": "string"
+    },
+    "operation": {
+      "const": "execute_workspace_action",
+      "default": "execute_workspace_action",
+      "enum": [
+        "execute_workspace_action"
+      ],
+      "title": "Operation",
+      "type": "string"
+    },
+    "paths": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 256,
+      "title": "Paths",
+      "type": "array"
+    },
+    "policy_version": {
+      "minimum": 1,
+      "title": "Policy Version",
+      "type": "integer"
+    },
+    "purpose": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Purpose",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime_profile_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Runtime Profile Fingerprint",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "workspace_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Workspace Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "approval_request_id",
+    "run_id",
+    "task_id",
+    "purpose",
+    "action_proposal_id",
+    "code_sha256",
+    "workspace_version",
+    "capabilities",
+    "paths",
+    "runtime_profile_fingerprint",
+    "network_policy_fingerprint",
+    "limits_fingerprint",
+    "policy_version",
+    "expires_at",
+    "consequences"
+  ],
+  "title": "ApprovalRequestV1",
+  "type": "object"
+}

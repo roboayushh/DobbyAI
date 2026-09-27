@@ -1,0 +1,139 @@
+{
+  "$defs": {
+    "NetworkMode": {
+      "enum": [
+        "none",
+        "setup_scoped",
+        "action_scoped"
+      ],
+      "title": "NetworkMode",
+      "type": "string"
+    },
+    "NetworkPolicyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "destinations": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Destinations",
+          "type": "array"
+        },
+        "mode": {
+          "$ref": "#/$defs/NetworkMode",
+          "default": "none"
+        }
+      },
+      "title": "NetworkPolicyV1",
+      "type": "object"
+    },
+    "PermissionProfile": {
+      "enum": [
+        "guided",
+        "sandbox",
+        "delegated"
+      ],
+      "title": "PermissionProfile",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "allowed_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Allowed Capabilities",
+      "type": "array"
+    },
+    "expires_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expires At"
+    },
+    "limits_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Limits Fingerprint",
+      "type": "string"
+    },
+    "network": {
+      "$ref": "#/$defs/NetworkPolicyV1"
+    },
+    "path_scopes": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Path Scopes",
+      "type": "array"
+    },
+    "policy_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Policy Id",
+      "type": "string"
+    },
+    "policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Policy Sha256",
+      "type": "string"
+    },
+    "profile": {
+      "$ref": "#/$defs/PermissionProfile"
+    },
+    "revoked": {
+      "default": false,
+      "title": "Revoked",
+      "type": "boolean"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime_profile_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Runtime Profile Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "policy_id",
+    "run_id",
+    "version",
+    "profile",
+    "allowed_capabilities",
+    "path_scopes",
+    "network",
+    "runtime_profile_id",
+    "limits_fingerprint",
+    "policy_sha256"
+  ],
+  "title": "PolicySnapshotV1",
+  "type": "object"
+}

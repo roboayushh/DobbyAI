@@ -1,0 +1,225 @@
+{
+  "$defs": {
+    "HashedPathV1": {
+      "additionalProperties": false,
+      "properties": {
+        "container_path": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Container Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "container_path",
+        "sha256"
+      ],
+      "title": "HashedPathV1",
+      "type": "object"
+    },
+    "NetworkMode": {
+      "enum": [
+        "none",
+        "setup_scoped",
+        "action_scoped"
+      ],
+      "title": "NetworkMode",
+      "type": "string"
+    },
+    "SandboxLimitsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "cpus": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 4.0,
+          "title": "Cpus",
+          "type": "number"
+        },
+        "memory_bytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 8589934592,
+          "title": "Memory Bytes",
+          "type": "integer"
+        },
+        "new_files": {
+          "maximum": 25000,
+          "minimum": 0,
+          "title": "New Files",
+          "type": "integer"
+        },
+        "pids": {
+          "exclusiveMinimum": 0,
+          "maximum": 512,
+          "title": "Pids",
+          "type": "integer"
+        },
+        "run_calls": {
+          "maximum": 32,
+          "minimum": 0,
+          "title": "Run Calls",
+          "type": "integer"
+        },
+        "scratch_bytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 4294967296,
+          "title": "Scratch Bytes",
+          "type": "integer"
+        },
+        "stderr_bytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 10485760,
+          "title": "Stderr Bytes",
+          "type": "integer"
+        },
+        "stdout_bytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 10485760,
+          "title": "Stdout Bytes",
+          "type": "integer"
+        },
+        "tool_calls": {
+          "exclusiveMinimum": 0,
+          "maximum": 256,
+          "title": "Tool Calls",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "exclusiveMinimum": 0,
+          "maximum": 1200,
+          "title": "Wall Seconds",
+          "type": "integer"
+        },
+        "workspace_growth_bytes": {
+          "maximum": 2147483648,
+          "minimum": 0,
+          "title": "Workspace Growth Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "wall_seconds",
+        "cpus",
+        "memory_bytes",
+        "pids",
+        "scratch_bytes",
+        "stdout_bytes",
+        "stderr_bytes",
+        "tool_calls",
+        "run_calls",
+        "workspace_growth_bytes",
+        "new_files"
+      ],
+      "title": "SandboxLimitsV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "action_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Action Id",
+      "type": "string"
+    },
+    "action_proposal_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Action Proposal Id",
+      "type": "string"
+    },
+    "capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "checkpoint_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Checkpoint Id",
+      "type": "string"
+    },
+    "code": {
+      "$ref": "#/$defs/HashedPathV1"
+    },
+    "context_manifest": {
+      "$ref": "#/$defs/HashedPathV1"
+    },
+    "declared_paths": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 256,
+      "title": "Declared Paths",
+      "type": "array"
+    },
+    "limits": {
+      "$ref": "#/$defs/SandboxLimitsV1"
+    },
+    "network_mode": {
+      "$ref": "#/$defs/NetworkMode",
+      "default": "none"
+    },
+    "policy_decision_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Policy Decision Sha256",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime_profile_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Runtime Profile Fingerprint",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "workspace_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Workspace Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "action_id",
+    "run_id",
+    "task_id",
+    "action_proposal_id",
+    "workspace_version",
+    "checkpoint_id",
+    "code",
+    "context_manifest",
+    "capabilities",
+    "declared_paths",
+    "runtime_profile_fingerprint",
+    "policy_decision_sha256",
+    "limits"
+  ],
+  "title": "SandboxExecutionRequestV1",
+  "type": "object"
+}

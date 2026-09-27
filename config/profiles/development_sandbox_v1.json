@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "name": "development_sandbox_v1",
+  "version": "1.0.0",
+  "release_level": "P0",
+  "description": "Interactive/developer profile: same kernel guardrails; cumulative development queue; keep-and-export only (P1 apply/publish disabled).",
+  "permission_profile": "sandbox",
+  "default_execution_mode": "development",
+  "evaluator_adapter": {"name": "native_json_v1", "version": "1.0.0"},
+  "official_adapter_required_for_submission": false,
+  "plugin_set_lock": "config/plugins/builtin_release_v1.lock.json",
+  "allowed_plugin_capabilities": ["READ_STATE_VIEW", "READ_RELEASE_HANDOFF", "WRITE_BOUNDED_RESULT", "WRITE_BOUNDED_ARTIFACT", "CONTEXT_PACKET", "EVIDENCE_QUERY", "MODEL_CALL_SERVICE", "REPOSITORY_SNAPSHOT", "ADMITTED_ACTION_EXECUTION", "VERIFICATION_OBSERVATION", "EXPORT_BUNDLE_WRITE"],
+  "effects": {"EXPORT": true, "CLEANUP_RUN": "approval", "APPLY_LOCAL": false, "PUSH_NEW_BRANCH": false},
+  "retention_policy": "retain_default_v1",
+  "runtime_profiles": {"python312_docker_v1": "python-default"}
+}

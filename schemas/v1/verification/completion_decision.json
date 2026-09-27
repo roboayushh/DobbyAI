@@ -1,0 +1,206 @@
+{
+  "$defs": {
+    "CriterionResultV1": {
+      "additionalProperties": false,
+      "properties": {
+        "criterion_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Criterion Id",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "SATISFIED",
+            "NOT_SATISFIED",
+            "INCONCLUSIVE",
+            "NOT_RUN"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "criterion_id",
+        "status"
+      ],
+      "title": "CriterionResultV1",
+      "type": "object"
+    },
+    "RequiredCheckCountsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "failed": {
+          "minimum": 0,
+          "title": "Failed",
+          "type": "integer"
+        },
+        "inconclusive": {
+          "minimum": 0,
+          "title": "Inconclusive",
+          "type": "integer"
+        },
+        "passed": {
+          "minimum": 0,
+          "title": "Passed",
+          "type": "integer"
+        },
+        "total": {
+          "minimum": 0,
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "total",
+        "passed",
+        "failed",
+        "inconclusive"
+      ],
+      "title": "RequiredCheckCountsV1",
+      "type": "object"
+    },
+    "TaskOutcome": {
+      "enum": [
+        "PASS",
+        "FAILED",
+        "UNVERIFIED",
+        "BLOCKED_ENVIRONMENT",
+        "BUDGET_EXHAUSTED",
+        "NEEDS_INPUT",
+        "CANCELLED"
+      ],
+      "title": "TaskOutcome",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempt_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "candidate_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Candidate Id",
+      "type": "string"
+    },
+    "candidate_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Candidate Sha256",
+      "type": "string"
+    },
+    "criteria": {
+      "items": {
+        "$ref": "#/$defs/CriterionResultV1"
+      },
+      "maxItems": 64,
+      "title": "Criteria",
+      "type": "array"
+    },
+    "decided_at": {
+      "title": "Decided At",
+      "type": "string"
+    },
+    "decision_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "diff_review_status": {
+      "enum": [
+        "CLEAN",
+        "WARN",
+        "BLOCKING"
+      ],
+      "title": "Diff Review Status",
+      "type": "string"
+    },
+    "environment_set_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Environment Set Sha256",
+      "type": "string"
+    },
+    "reason_codes": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "report_artifact_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Report Artifact Id",
+      "type": "string"
+    },
+    "required_checks": {
+      "$ref": "#/$defs/RequiredCheckCountsV1"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/TaskOutcome"
+    },
+    "test_set_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Test Set Sha256",
+      "type": "string"
+    },
+    "validator_decision": {
+      "anyOf": [
+        {
+          "enum": [
+            "NO_OBJECTION",
+            "CHANGES_NEEDED",
+            "INSUFFICIENT_EVIDENCE",
+            "NOT_RUN"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Validator Decision"
+    }
+  },
+  "required": [
+    "decision_id",
+    "attempt_id",
+    "candidate_id",
+    "status",
+    "reason_codes",
+    "criteria",
+    "required_checks",
+    "diff_review_status",
+    "candidate_sha256",
+    "test_set_sha256",
+    "environment_set_sha256",
+    "report_artifact_id",
+    "decided_at"
+  ],
+  "title": "CompletionDecisionV1",
+  "type": "object"
+}

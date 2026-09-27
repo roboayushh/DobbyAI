@@ -1,0 +1,128 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "desired_new_commit": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Desired New Commit",
+      "type": "string"
+    },
+    "desired_tree": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Desired Tree",
+      "type": "string"
+    },
+    "expected_old_commit": {
+      "maxLength": 128,
+      "minLength": 4,
+      "title": "Expected Old Commit",
+      "type": "string"
+    },
+    "integration_intent_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Integration Intent Id",
+      "type": "string"
+    },
+    "integration_ref": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Integration Ref",
+      "type": "string"
+    },
+    "intent_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Intent Sha256",
+      "type": "string"
+    },
+    "lease_fencing_token": {
+      "minimum": 1,
+      "title": "Lease Fencing Token",
+      "type": "integer"
+    },
+    "queue_item_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Queue Item Id",
+      "type": "string"
+    },
+    "ref_operation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Ref Operation Id",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "PREPARED",
+        "APPLYING",
+        "APPLIED",
+        "VERIFYING",
+        "SETTLED",
+        "REJECTED",
+        "FAILED",
+        "UNCERTAIN"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "strategy": {
+      "enum": [
+        "FAST_FORWARD_EXACT",
+        "REVERIFIED_REPLAY",
+        "COMPENSATE"
+      ],
+      "title": "Strategy",
+      "type": "string"
+    },
+    "task_commit_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Task Commit Id"
+    }
+  },
+  "required": [
+    "integration_intent_id",
+    "ref_operation_id",
+    "run_id",
+    "queue_item_id",
+    "strategy",
+    "integration_ref",
+    "expected_old_commit",
+    "desired_new_commit",
+    "desired_tree",
+    "lease_fencing_token",
+    "state",
+    "intent_sha256",
+    "created_at"
+  ],
+  "title": "IntegrationIntentV1",
+  "type": "object"
+}

@@ -1,0 +1,330 @@
+{
+  "$defs": {
+    "CheckOrigin": {
+      "enum": [
+        "USER_EXPLICIT",
+        "RUNTIME_ADAPTER",
+        "REPOSITORY_DECLARED",
+        "PLANNER_PROPOSED",
+        "VALIDATOR_PROPOSED",
+        "HARNESS_INVARIANT"
+      ],
+      "title": "CheckOrigin",
+      "type": "string"
+    },
+    "ContractBaselineV1": {
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Commit",
+          "type": "string"
+        },
+        "content_tree_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Tree Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "commit",
+        "content_tree_sha256"
+      ],
+      "title": "ContractBaselineV1",
+      "type": "object"
+    },
+    "ContractCheckV1": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_workspace_outputs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Allowed Workspace Outputs",
+          "type": "array"
+        },
+        "argv": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "title": "Argv",
+          "type": "array"
+        },
+        "baseline_policy": {
+          "enum": [
+            "required",
+            "optional",
+            "not_applicable"
+          ],
+          "title": "Baseline Policy",
+          "type": "string"
+        },
+        "check_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Check Id",
+          "type": "string"
+        },
+        "cwd": {
+          "default": ".",
+          "title": "Cwd",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "test",
+            "lint",
+            "typecheck",
+            "build",
+            "smoke",
+            "command",
+            "invariant"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "minimum_tests": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Minimum Tests",
+          "type": "integer"
+        },
+        "origin": {
+          "$ref": "#/$defs/CheckOrigin"
+        },
+        "parser": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Parser",
+          "type": "string"
+        },
+        "required": {
+          "title": "Required",
+          "type": "boolean"
+        },
+        "tier": {
+          "enum": [
+            "focused",
+            "relevant",
+            "broad",
+            "invariant",
+            "validator"
+          ],
+          "title": "Tier",
+          "type": "string"
+        },
+        "timeout_seconds": {
+          "exclusiveMinimum": 0,
+          "maximum": 1200,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "check_id",
+        "origin",
+        "kind",
+        "tier",
+        "required",
+        "baseline_policy",
+        "argv",
+        "timeout_seconds",
+        "parser"
+      ],
+      "title": "ContractCheckV1",
+      "type": "object"
+    },
+    "ContractCriterionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "check_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Check Ids",
+          "type": "array"
+        },
+        "criterion_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Criterion Id",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "statement": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "criterion_id",
+        "statement",
+        "check_ids"
+      ],
+      "title": "ContractCriterionV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "baseline": {
+      "$ref": "#/$defs/ContractBaselineV1"
+    },
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/ContractCheckV1"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Checks",
+      "type": "array"
+    },
+    "contract_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Contract Id",
+      "type": "string"
+    },
+    "contract_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Contract Sha256",
+      "type": "string"
+    },
+    "criteria": {
+      "items": {
+        "$ref": "#/$defs/ContractCriterionV1"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "title": "Criteria",
+      "type": "array"
+    },
+    "flake_retries": {
+      "default": 1,
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Flake Retries",
+      "type": "integer"
+    },
+    "max_repair_attempts": {
+      "default": 2,
+      "maximum": 10,
+      "minimum": 0,
+      "title": "Max Repair Attempts",
+      "type": "integer"
+    },
+    "max_validator_overlay_bytes": {
+      "default": 200000,
+      "maximum": 2000000,
+      "minimum": 0,
+      "title": "Max Validator Overlay Bytes",
+      "type": "integer"
+    },
+    "max_validator_overlay_files": {
+      "default": 10,
+      "maximum": 50,
+      "minimum": 0,
+      "title": "Max Validator Overlay Files",
+      "type": "integer"
+    },
+    "plan_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "plan_revision": {
+      "minimum": 1,
+      "title": "Plan Revision",
+      "type": "integer"
+    },
+    "policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Policy Sha256",
+      "type": "string"
+    },
+    "prohibited_shortcuts": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Prohibited Shortcuts",
+      "type": "array"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime_profile_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Runtime Profile Fingerprint",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "DRAFT",
+        "FROZEN",
+        "SUPERSEDED",
+        "INVALIDATED"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "task_revision": {
+      "minimum": 1,
+      "title": "Task Revision",
+      "type": "integer"
+    },
+    "validator_required": {
+      "default": true,
+      "title": "Validator Required",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "contract_id",
+    "run_id",
+    "task_id",
+    "task_revision",
+    "plan_id",
+    "plan_revision",
+    "baseline",
+    "criteria",
+    "checks",
+    "prohibited_shortcuts",
+    "runtime_profile_fingerprint",
+    "policy_sha256",
+    "contract_sha256",
+    "state"
+  ],
+  "title": "VerificationContractV1",
+  "type": "object"
+}

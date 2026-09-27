@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "application_plan_id": "aplan_01J...",
+  "run_id": "run_01J...",
+  "target_root_identity": "target_01J...",
+  "base_commit": "0123456789012345678901234567890123456789",
+  "candidate_commit": "2222222222222222222222222222222222222222",
+  "patch_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "paths": [
+    {
+      "path": "src/example.py",
+      "operation": "MODIFY",
+      "expected_before_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "desired_after_sha256": "2323232323232323232323232323232323232323232323232323232323232323",
+      "expected_before_mode": "100644",
+      "desired_after_mode": "100644"
+    }
+  ],
+  "concurrent_change_policy": "STOP_AND_REVERIFY",
+  "backup_bytes": 8192,
+  "preflight_status": "PASS",
+  "plan_sha256": "2424242424242424242424242424242424242424242424242424242424242424"
+}

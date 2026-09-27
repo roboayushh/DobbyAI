@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "request_id": "ereq_01J...",
+  "run_id": "run_01J...",
+  "status": "PASS",
+  "exit_code": 0,
+  "input": {
+    "baseline_commit": "0123456789012345678901234567890123456789",
+    "baseline_tree": "1111111111111111111111111111111111111111",
+    "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "candidate": {
+    "commit": "2222222222222222222222222222222222222222",
+    "tree": "3333333333333333333333333333333333333333",
+    "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "tasks": [
+    {
+      "task_id": "tsk_01J...",
+      "status": "PASS",
+      "changed_paths": [
+        "src/example.py",
+        "tests/test_example.py"
+      ],
+      "verification_report_artifact_id": "art_verify_01J..."
+    }
+  ],
+  "verification": {
+    "status": "PASS",
+    "required_checks": 4,
+    "passed_checks": 4,
+    "failed_checks": 0,
+    "skipped_checks": 0,
+    "unavailable_checks": 0,
+    "aggregate_report_artifact_id": "art_aggregate_01J..."
+  },
+  "usage": {
+    "model_calls": 9,
+    "input_tokens": 42000,
+    "output_tokens": 5100,
+    "wall_seconds": 286,
+    "estimated_fields": []
+  },
+  "export": {
+    "status": "VALID",
+    "bundle_path": "/evaluator/output/bundle",
+    "manifest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "patch_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "pending_approvals": [],
+  "limitations": [
+    "PASS describes declared observed checks and does not guarantee hidden-test success."
+  ],
+  "reproducibility_manifest_artifact_id": "art_repro_01J...",
+  "settled_at": "2026-09-27T00:00:00Z"
+}

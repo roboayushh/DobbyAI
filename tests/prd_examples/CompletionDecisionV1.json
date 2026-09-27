@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "decision_id": "vdec_01J...",
+  "attempt_id": "vatt_01J...",
+  "candidate_id": "cand_01J...",
+  "status": "PASS",
+  "reason_codes": [
+    "ALL_REQUIRED_CHECKS_PASSED",
+    "NO_NEW_REGRESSIONS",
+    "VALIDATOR_NO_BLOCKING_FINDINGS"
+  ],
+  "criteria": [
+    {
+      "criterion_id": "ac_1",
+      "status": "SATISFIED",
+      "evidence_refs": [
+        "crun_01J..."
+      ]
+    }
+  ],
+  "required_checks": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "inconclusive": 0
+  },
+  "validator_decision": "NO_OBJECTION",
+  "diff_review_status": "CLEAN",
+  "candidate_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+  "test_set_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "environment_set_sha256": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+  "report_artifact_id": "art_01R...",
+  "decided_at": "2026-09-27T01:20:00Z"
+}

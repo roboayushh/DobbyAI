@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "request_id": "adm_01J...",
+  "action_proposal_id": "ap_01J...",
+  "run_id": "run_01J...",
+  "task_id": "tsk_01J...",
+  "task_revision": 1,
+  "lifecycle_version": 8,
+  "plan_id": "plan_01J...",
+  "plan_revision": 1,
+  "workspace_version": "wsv_01J...",
+  "code_artifact_id": "art_01J...",
+  "code_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "requested_capabilities": [
+    "source.read",
+    "workspace.patch"
+  ],
+  "declared_paths": [
+    "src/example.py",
+    "tests/test_example.py"
+  ],
+  "requested_timeout_seconds": 30,
+  "policy_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "runtime_profile_id": "python-default"
+}

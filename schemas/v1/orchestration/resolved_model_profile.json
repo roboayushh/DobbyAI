@@ -1,0 +1,136 @@
+{
+  "$defs": {
+    "SamplingV1": {
+      "additionalProperties": false,
+      "properties": {
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "temperature": {
+          "default": 0.0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "Temperature",
+          "type": "number"
+        },
+        "top_p": {
+          "default": 1.0,
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Top P",
+          "type": "number"
+        }
+      },
+      "title": "SamplingV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "context_window_tokens": {
+      "exclusiveMinimum": 0,
+      "title": "Context Window Tokens",
+      "type": "integer"
+    },
+    "credential_env": {
+      "const": "AI_API_KEY",
+      "default": "AI_API_KEY",
+      "enum": [
+        "AI_API_KEY"
+      ],
+      "title": "Credential Env",
+      "type": "string"
+    },
+    "endpoint_origin": {
+      "title": "Endpoint Origin",
+      "type": "string"
+    },
+    "max_output_tokens": {
+      "exclusiveMinimum": 0,
+      "title": "Max Output Tokens",
+      "type": "integer"
+    },
+    "model": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Model",
+      "type": "string"
+    },
+    "profile_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Profile Fingerprint",
+      "type": "string"
+    },
+    "profile_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Profile Id",
+      "type": "string"
+    },
+    "protocol": {
+      "const": "openai-compatible-chat",
+      "default": "openai-compatible-chat",
+      "enum": [
+        "openai-compatible-chat"
+      ],
+      "title": "Protocol",
+      "type": "string"
+    },
+    "request_timeout_seconds": {
+      "exclusiveMinimum": 0,
+      "maximum": 600,
+      "title": "Request Timeout Seconds",
+      "type": "integer"
+    },
+    "safety_margin_tokens": {
+      "minimum": 0,
+      "title": "Safety Margin Tokens",
+      "type": "integer"
+    },
+    "sampling": {
+      "$ref": "#/$defs/SamplingV1"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "supports_json_schema": {
+      "default": true,
+      "title": "Supports Json Schema",
+      "type": "boolean"
+    },
+    "tokenizer": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Tokenizer",
+      "type": "string"
+    }
+  },
+  "required": [
+    "profile_id",
+    "endpoint_origin",
+    "model",
+    "context_window_tokens",
+    "max_output_tokens",
+    "safety_margin_tokens",
+    "tokenizer",
+    "request_timeout_seconds",
+    "profile_fingerprint"
+  ],
+  "title": "ResolvedModelProfileV1",
+  "type": "object"
+}

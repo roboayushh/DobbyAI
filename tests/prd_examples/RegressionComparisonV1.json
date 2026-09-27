@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "comparison_id": "cmp_01J...",
+  "attempt_id": "vatt_01J...",
+  "candidate_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+  "contract_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "summary": {
+    "resolved_targets": 1,
+    "new_regressions": 0,
+    "pre_existing_unchanged": 2,
+    "changed_failures": 0,
+    "coverage_lost": 0,
+    "inconclusive": 0
+  },
+  "criterion_results": [
+    {
+      "criterion_id": "ac_1",
+      "status": "SATISFIED",
+      "evidence_refs": [
+        "crun_01J...",
+        "base_01J..."
+      ]
+    }
+  ],
+  "comparison_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+}

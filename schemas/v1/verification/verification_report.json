@@ -1,0 +1,333 @@
+{
+  "$defs": {
+    "ReportArtifactsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_diff": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Candidate Diff",
+          "type": "string"
+        },
+        "comparison": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Comparison"
+        },
+        "report": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Report",
+          "type": "string"
+        }
+      },
+      "required": [
+        "report",
+        "candidate_diff"
+      ],
+      "title": "ReportArtifactsV1",
+      "type": "object"
+    },
+    "ReportBaselineV1": {
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Commit",
+          "type": "string"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Limitations",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "CAPTURED",
+            "PARTIAL",
+            "BLOCKED",
+            "NOT_APPLICABLE",
+            "NOT_CAPTURED"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "commit"
+      ],
+      "title": "ReportBaselineV1",
+      "type": "object"
+    },
+    "ReportChecksV1": {
+      "additionalProperties": false,
+      "properties": {
+        "not_run": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Not Run",
+          "type": "array"
+        },
+        "optional_passed": {
+          "minimum": 0,
+          "title": "Optional Passed",
+          "type": "integer"
+        },
+        "optional_total": {
+          "minimum": 0,
+          "title": "Optional Total",
+          "type": "integer"
+        },
+        "required_passed": {
+          "minimum": 0,
+          "title": "Required Passed",
+          "type": "integer"
+        },
+        "required_total": {
+          "minimum": 0,
+          "title": "Required Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "required_total",
+        "required_passed",
+        "optional_total",
+        "optional_passed"
+      ],
+      "title": "ReportChecksV1",
+      "type": "object"
+    },
+    "ReportDiffReviewV1": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "CLEAN",
+            "WARN",
+            "BLOCKING"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 200,
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "ReportDiffReviewV1",
+      "type": "object"
+    },
+    "ReportRegressionsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "new": {
+          "minimum": 0,
+          "title": "New",
+          "type": "integer"
+        },
+        "pre_existing": {
+          "minimum": 0,
+          "title": "Pre Existing",
+          "type": "integer"
+        },
+        "resolved_targets": {
+          "minimum": 0,
+          "title": "Resolved Targets",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "new",
+        "pre_existing",
+        "resolved_targets"
+      ],
+      "title": "ReportRegressionsV1",
+      "type": "object"
+    },
+    "ReportUsageV1": {
+      "additionalProperties": false,
+      "properties": {
+        "check_runs": {
+          "minimum": 0,
+          "title": "Check Runs",
+          "type": "integer"
+        },
+        "repair_attempts": {
+          "minimum": 0,
+          "title": "Repair Attempts",
+          "type": "integer"
+        },
+        "validator_calls": {
+          "minimum": 0,
+          "title": "Validator Calls",
+          "type": "integer"
+        },
+        "verification_attempts": {
+          "minimum": 0,
+          "title": "Verification Attempts",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "minimum": 0,
+          "title": "Wall Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "verification_attempts",
+        "check_runs",
+        "validator_calls",
+        "repair_attempts",
+        "wall_seconds"
+      ],
+      "title": "ReportUsageV1",
+      "type": "object"
+    },
+    "ReportValidatorV1": {
+      "additionalProperties": false,
+      "properties": {
+        "decision": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Decision",
+          "type": "string"
+        },
+        "overlay_checks_run": {
+          "minimum": 0,
+          "title": "Overlay Checks Run",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "decision",
+        "overlay_checks_run"
+      ],
+      "title": "ReportValidatorV1",
+      "type": "object"
+    },
+    "TaskOutcome": {
+      "enum": [
+        "PASS",
+        "FAILED",
+        "UNVERIFIED",
+        "BLOCKED_ENVIRONMENT",
+        "BUDGET_EXHAUSTED",
+        "NEEDS_INPUT",
+        "CANCELLED"
+      ],
+      "title": "TaskOutcome",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "artifacts": {
+      "$ref": "#/$defs/ReportArtifactsV1"
+    },
+    "baseline": {
+      "$ref": "#/$defs/ReportBaselineV1"
+    },
+    "candidate_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Candidate Id",
+      "type": "string"
+    },
+    "candidate_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Candidate Sha256",
+      "type": "string"
+    },
+    "checks": {
+      "$ref": "#/$defs/ReportChecksV1"
+    },
+    "contract_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Contract Sha256",
+      "type": "string"
+    },
+    "diff_review": {
+      "$ref": "#/$defs/ReportDiffReviewV1"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "regressions": {
+      "$ref": "#/$defs/ReportRegressionsV1"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/TaskOutcome"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "usage": {
+      "$ref": "#/$defs/ReportUsageV1"
+    },
+    "validator": {
+      "$ref": "#/$defs/ReportValidatorV1"
+    }
+  },
+  "required": [
+    "run_id",
+    "task_id",
+    "candidate_id",
+    "status",
+    "baseline",
+    "candidate_sha256",
+    "contract_sha256",
+    "checks",
+    "regressions",
+    "validator",
+    "diff_review",
+    "usage",
+    "artifacts"
+  ],
+  "title": "VerificationReportV1",
+  "type": "object"
+}

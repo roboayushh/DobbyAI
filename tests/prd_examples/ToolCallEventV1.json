@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "action_id": "act_01J...",
+  "tool_call_id": "tcall_01J...",
+  "sequence": 3,
+  "tool": "apply_patch",
+  "tool_version": "1.0",
+  "capability": "workspace.patch",
+  "state": "SUCCEEDED",
+  "arguments_summary": {
+    "paths": [
+      "src/example.py"
+    ],
+    "request_bytes": 820
+  },
+  "result_summary": {
+    "changed_paths": [
+      "src/example.py"
+    ],
+    "response_bytes": 240,
+    "truncated": false
+  },
+  "started_at": "2026-09-27T00:20:00Z",
+  "finished_at": "2026-09-27T00:20:01Z"
+}

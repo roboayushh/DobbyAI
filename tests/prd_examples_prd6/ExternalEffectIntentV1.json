@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "effect_intent_id": "eff_01J...",
+  "run_id": "run_01J...",
+  "operation": "PUSH_NEW_BRANCH",
+  "approval_grant_id": "grant_01J...",
+  "approval_consumption_id": "guse_01J...",
+  "plugin": {
+    "name": "builtin.git-publisher",
+    "version": "1.0.0",
+    "content_sha256": "2525252525252525252525252525252525252525252525252525252525252525"
+  },
+  "source_commit": "2222222222222222222222222222222222222222",
+  "target": {
+    "repository_identity": "repoid_01J...",
+    "ref": "refs/heads/harness/task-123",
+    "expected_oid": null,
+    "desired_oid": "2222222222222222222222222222222222222222"
+  },
+  "credential_scope_id": "credscope_repo_push_branch",
+  "idempotency_key": "push-run_01J-harness-task-123",
+  "state": "PREPARED",
+  "intent_sha256": "2626262626262626262626262626262626262626262626262626262626262626",
+  "created_at": "2026-09-27T00:06:00Z"
+}

@@ -1,0 +1,160 @@
+{
+  "$defs": {
+    "ScopeFindingV1": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Category",
+          "type": "string"
+        },
+        "detail": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Detail",
+          "type": "string"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "severity": {
+          "enum": [
+            "WARN",
+            "BLOCKING"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "severity",
+        "category",
+        "detail"
+      ],
+      "title": "ScopeFindingV1",
+      "type": "object"
+    },
+    "TestChangeSummaryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "assertions_weakened_suspected": {
+          "minimum": 0,
+          "title": "Assertions Weakened Suspected",
+          "type": "integer"
+        },
+        "discovery_config_changed": {
+          "title": "Discovery Config Changed",
+          "type": "boolean"
+        },
+        "existing_tests_deleted": {
+          "minimum": 0,
+          "title": "Existing Tests Deleted",
+          "type": "integer"
+        },
+        "skip_markers_added": {
+          "minimum": 0,
+          "title": "Skip Markers Added",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "existing_tests_deleted",
+        "skip_markers_added",
+        "assertions_weakened_suspected",
+        "discovery_config_changed"
+      ],
+      "title": "TestChangeSummaryV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "candidate_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Candidate Id",
+      "type": "string"
+    },
+    "candidate_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Candidate Sha256",
+      "type": "string"
+    },
+    "changed_paths": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 25000,
+      "title": "Changed Paths",
+      "type": "array"
+    },
+    "diff_review_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Diff Review Id",
+      "type": "string"
+    },
+    "review_artifact_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Review Artifact Id",
+      "type": "string"
+    },
+    "review_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Review Sha256",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scope_findings": {
+      "items": {
+        "$ref": "#/$defs/ScopeFindingV1"
+      },
+      "maxItems": 500,
+      "title": "Scope Findings",
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "CLEAN",
+        "WARN",
+        "BLOCKING"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "test_changes": {
+      "$ref": "#/$defs/TestChangeSummaryV1"
+    }
+  },
+  "required": [
+    "diff_review_id",
+    "candidate_id",
+    "candidate_sha256",
+    "status",
+    "changed_paths",
+    "test_changes",
+    "review_artifact_id",
+    "review_sha256"
+  ],
+  "title": "DiffScopeReviewV1",
+  "type": "object"
+}

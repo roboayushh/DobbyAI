@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run_01J...",
+  "task_id": "tsk_01J...",
+  "task_ordinal": 0,
+  "task_start_commit": "40-hex-start",
+  "outcome": "PASS",
+  "candidate": {
+    "candidate_id": "cand_01J...",
+    "commit": "40-hex-private-commit",
+    "tree": "git-tree-object-id",
+    "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "verification": {
+    "completion_decision_id": "vdec_01J...",
+    "contract_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "test_set_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "environment_set_sha256": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+    "new_regressions": 0,
+    "report_artifact_id": "art_01R..."
+  },
+  "changed_paths": [
+    "src/example.py",
+    "tests/test_example.py"
+  ],
+  "queue_budget_remaining": {
+    "model_calls": 14,
+    "input_tokens": 60000,
+    "output_tokens": 8000,
+    "wall_seconds": 900
+  },
+  "publication_authorized": false
+}

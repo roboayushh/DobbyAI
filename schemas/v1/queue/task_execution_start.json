@@ -1,0 +1,175 @@
+{
+  "$defs": {
+    "GitIdentityV1": {
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "maxLength": 128,
+          "minLength": 4,
+          "title": "Commit",
+          "type": "string"
+        },
+        "object_format": {
+          "default": "sha1",
+          "enum": [
+            "sha1",
+            "sha256"
+          ],
+          "title": "Object Format",
+          "type": "string"
+        },
+        "tree": {
+          "maxLength": 128,
+          "minLength": 4,
+          "title": "Tree",
+          "type": "string"
+        }
+      },
+      "required": [
+        "commit",
+        "tree"
+      ],
+      "title": "GitIdentityV1",
+      "type": "object"
+    },
+    "TaskRefsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Candidate",
+          "type": "string"
+        },
+        "start": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Start",
+          "type": "string"
+        },
+        "verified": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Verified",
+          "type": "string"
+        },
+        "working": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Working",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "working",
+        "candidate",
+        "verified"
+      ],
+      "title": "TaskRefsV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempt_number": {
+      "minimum": 1,
+      "title": "Attempt Number",
+      "type": "integer"
+    },
+    "budget_allocation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Budget Allocation Id",
+      "type": "string"
+    },
+    "index_version_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Index Version Id"
+    },
+    "integration_sequence": {
+      "minimum": 0,
+      "title": "Integration Sequence",
+      "type": "integer"
+    },
+    "queue_item_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Queue Item Id",
+      "type": "string"
+    },
+    "queue_version_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Queue Version Id",
+      "type": "string"
+    },
+    "refs": {
+      "$ref": "#/$defs/TaskRefsV1"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "start": {
+      "$ref": "#/$defs/GitIdentityV1"
+    },
+    "started_at": {
+      "title": "Started At",
+      "type": "string"
+    },
+    "task_execution_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Execution Id",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "worktree_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Worktree Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_execution_id",
+    "run_id",
+    "queue_version_id",
+    "queue_item_id",
+    "task_id",
+    "attempt_number",
+    "integration_sequence",
+    "start",
+    "refs",
+    "worktree_id",
+    "budget_allocation_id",
+    "started_at"
+  ],
+  "title": "TaskExecutionStartV1",
+  "type": "object"
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "cleanup_plan_id": "clnplan_01J...",
+  "run_id": "run_01J...",
+  "retention_policy_id": "retain_default_v1",
+  "targets": [
+    {
+      "resource_id": "wt_verify_01J...",
+      "kind": "VERIFICATION_WORKTREE",
+      "registered_path_hash": "2828282828282828282828282828282828282828282828282828282828282828",
+      "estimated_bytes": 50000000,
+      "eligibility": "ELIGIBLE"
+    }
+  ],
+  "excluded": [
+    {
+      "resource_id": "source_original",
+      "reason": "PROTECTED_ORIGINAL"
+    },
+    {
+      "resource_id": "export_bundle_01J",
+      "reason": "OUTSIDE_RUN_RETENTION"
+    }
+  ],
+  "estimated_reclaimed_bytes": 50000000,
+  "requires_approval": true,
+  "plan_sha256": "2929292929292929292929292929292929292929292929292929292929292929"
+}

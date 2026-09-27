@@ -1,0 +1,115 @@
+{
+  "$defs": {
+    "NetworkMode": {
+      "enum": [
+        "none",
+        "setup_scoped",
+        "action_scoped"
+      ],
+      "title": "NetworkMode",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "default_network_mode": {
+      "$ref": "#/$defs/NetworkMode",
+      "default": "none"
+    },
+    "image_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Image Digest",
+      "type": "string"
+    },
+    "image_reference": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Image Reference",
+      "type": "string"
+    },
+    "limits_profile": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Limits Profile",
+      "type": "string"
+    },
+    "non_root_gid": {
+      "maximum": 2147483647,
+      "minimum": 1,
+      "title": "Non Root Gid",
+      "type": "integer"
+    },
+    "non_root_uid": {
+      "maximum": 2147483647,
+      "minimum": 1,
+      "title": "Non Root Uid",
+      "type": "integer"
+    },
+    "profile_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Profile Fingerprint",
+      "type": "string"
+    },
+    "runtime": {
+      "const": "python",
+      "default": "python",
+      "enum": [
+        "python"
+      ],
+      "title": "Runtime",
+      "type": "string"
+    },
+    "runtime_profile_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Runtime Profile Id",
+      "type": "string"
+    },
+    "runtime_version": {
+      "maxLength": 32,
+      "minLength": 1,
+      "title": "Runtime Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "shell_path": {
+      "default": "/bin/bash",
+      "title": "Shell Path",
+      "type": "string"
+    },
+    "tool_library_version": {
+      "maxLength": 32,
+      "minLength": 1,
+      "title": "Tool Library Version",
+      "type": "string"
+    },
+    "worker_version": {
+      "maxLength": 32,
+      "minLength": 1,
+      "title": "Worker Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "runtime_profile_id",
+    "runtime_version",
+    "image_reference",
+    "image_digest",
+    "worker_version",
+    "tool_library_version",
+    "non_root_uid",
+    "non_root_gid",
+    "limits_profile",
+    "profile_fingerprint"
+  ],
+  "title": "RuntimeProfileV1",
+  "type": "object"
+}

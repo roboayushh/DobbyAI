@@ -1,0 +1,39 @@
+{
+  "configuration_schema_sha256": "042b35e50dd5dd505f0228e829f17a8aeaae50e49d865c4754cf9ba1edba9bd0",
+  "dependencies": [],
+  "in_process": true,
+  "interfaces": [
+    {
+      "api_version": "1.0",
+      "name": "ContextBuilderPlugin"
+    }
+  ],
+  "optional_capabilities": [],
+  "plugin": {
+    "content_sha256": "fdba968ebe1edf36910dab51eee561a29131b8b4befd21e0bd188fd49d1fc895",
+    "distribution": "ai-coding-harness",
+    "entry_point": "ContextBuilder",
+    "module": "harness.context.builder",
+    "name": "builtin.context-builder",
+    "version": "1.0.0"
+  },
+  "provenance": {
+    "license": "project-license",
+    "review_artifact_id": null,
+    "review_status": "REVIEWED",
+    "source": "project-built-in"
+  },
+  "required_capabilities": [
+    "CONTEXT_PACKET",
+    "EVIDENCE_QUERY"
+  ],
+  "runtime": {
+    "platforms": [
+      "linux",
+      "darwin"
+    ],
+    "python": ">=3.12,<3.14"
+  },
+  "schema_version": "1.0",
+  "self_check": "import_only_v1"
+}

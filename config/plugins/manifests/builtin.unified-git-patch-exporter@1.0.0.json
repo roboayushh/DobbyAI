@@ -1,0 +1,38 @@
+{
+  "configuration_schema_sha256": "381b760a1ec26dfea1e2bf529d68f43191507fec55607508edf3cbd8f16345c5",
+  "dependencies": [],
+  "in_process": true,
+  "interfaces": [
+    {
+      "api_version": "1.0",
+      "name": "ExporterPlugin"
+    }
+  ],
+  "optional_capabilities": [],
+  "plugin": {
+    "content_sha256": "2ab636bcbb278279a19cdf06cfb026a5bb3884f59cb291a5df73085f66a19881",
+    "distribution": "ai-coding-harness",
+    "entry_point": "PatchAdapter",
+    "module": "harness.export.patch_adapter",
+    "name": "builtin.unified-git-patch-exporter",
+    "version": "1.0.0"
+  },
+  "provenance": {
+    "license": "project-license",
+    "review_artifact_id": null,
+    "review_status": "REVIEWED",
+    "source": "project-built-in"
+  },
+  "required_capabilities": [
+    "EXPORT_BUNDLE_WRITE"
+  ],
+  "runtime": {
+    "platforms": [
+      "linux",
+      "darwin"
+    ],
+    "python": ">=3.12,<3.14"
+  },
+  "schema_version": "1.0",
+  "self_check": "patch_round_trip_v1"
+}

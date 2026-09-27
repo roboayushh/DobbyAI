@@ -1,0 +1,136 @@
+{
+  "$defs": {
+    "FinalReserveV1": {
+      "additionalProperties": false,
+      "properties": {
+        "check_runs": {
+          "minimum": 0,
+          "title": "Check Runs",
+          "type": "integer"
+        },
+        "model_calls": {
+          "minimum": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "output_bytes": {
+          "minimum": 0,
+          "title": "Output Bytes",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "minimum": 0,
+          "title": "Wall Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "model_calls",
+        "wall_seconds",
+        "check_runs",
+        "output_bytes"
+      ],
+      "title": "FinalReserveV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "checkpoint_limit_per_task": {
+      "maximum": 1000,
+      "minimum": 1,
+      "title": "Checkpoint Limit Per Task",
+      "type": "integer"
+    },
+    "continue_independent_after_failure": {
+      "default": true,
+      "title": "Continue Independent After Failure",
+      "type": "boolean"
+    },
+    "fail_fast": {
+      "default": false,
+      "title": "Fail Fast",
+      "type": "boolean"
+    },
+    "final_reserve": {
+      "$ref": "#/$defs/FinalReserveV1"
+    },
+    "max_edges": {
+      "maximum": 400,
+      "minimum": 0,
+      "title": "Max Edges",
+      "type": "integer"
+    },
+    "max_tasks_default": {
+      "maximum": 20,
+      "minimum": 1,
+      "title": "Max Tasks Default",
+      "type": "integer"
+    },
+    "max_tasks_hard": {
+      "maximum": 20,
+      "minimum": 1,
+      "title": "Max Tasks Hard",
+      "type": "integer"
+    },
+    "one_commit_per_task": {
+      "const": true,
+      "default": true,
+      "enum": [
+        true
+      ],
+      "title": "One Commit Per Task",
+      "type": "boolean"
+    },
+    "policy_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Policy Id",
+      "type": "string"
+    },
+    "policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Policy Sha256",
+      "type": "string"
+    },
+    "require_final_aggregate_verification": {
+      "default": true,
+      "title": "Require Final Aggregate Verification",
+      "type": "boolean"
+    },
+    "require_post_advance_verification": {
+      "default": true,
+      "title": "Require Post Advance Verification",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "single_writer": {
+      "const": true,
+      "default": true,
+      "enum": [
+        true
+      ],
+      "title": "Single Writer",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "policy_id",
+    "max_tasks_default",
+    "max_tasks_hard",
+    "max_edges",
+    "checkpoint_limit_per_task",
+    "final_reserve",
+    "policy_sha256"
+  ],
+  "title": "QueuePolicyV1",
+  "type": "object"
+}

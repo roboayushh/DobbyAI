@@ -1,0 +1,36 @@
+{
+  "case": "humanize-ordinal",
+  "configuration": "baseline_single_role",
+  "model_profile": "claude-bridge",
+  "trial": 2,
+  "budget": {
+    "model_calls": 20,
+    "wall_seconds": 1200
+  },
+  "status": "DONE",
+  "usage": {
+    "model_calls": 10,
+    "input_tokens": 35729,
+    "output_tokens": 16354
+  },
+  "wall_seconds": 232.1,
+  "commands": 9,
+  "repeated_identical_failed_commands": 0,
+  "changed_paths": [
+    "src/humanize/number.py"
+  ],
+  "patch_empty": false,
+  "patch_applies": true,
+  "hidden_before": {
+    "exit_code": 1,
+    "summary": "4 failed, 740 passed, 112 skipped in 3.36s",
+    "failing_count": 4
+  },
+  "hidden_after": {
+    "exit_code": 0,
+    "summary": "744 passed, 112 skipped in 3.78s",
+    "failing_count": 0
+  },
+  "hidden_pass": true,
+  "new_regressions": []
+}

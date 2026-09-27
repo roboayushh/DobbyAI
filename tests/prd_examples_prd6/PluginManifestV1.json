@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "plugin": {
+    "name": "builtin.native-json-evaluator",
+    "version": "1.0.0",
+    "distribution": "ai-harness",
+    "module": "harness.evaluator.native_json",
+    "entry_point": "NativeJsonEvaluatorAdapter",
+    "content_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "interfaces": [
+    {
+      "name": "EvaluatorAdapterPlugin",
+      "api_version": "1.0"
+    }
+  ],
+  "configuration_schema_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "required_capabilities": [
+    "READ_RELEASE_HANDOFF",
+    "WRITE_BOUNDED_RESULT"
+  ],
+  "optional_capabilities": [],
+  "dependencies": [],
+  "runtime": {
+    "python": ">=3.12,<3.13",
+    "platforms": [
+      "linux"
+    ]
+  },
+  "provenance": {
+    "source": "project-built-in",
+    "license": "project-license",
+    "review_status": "REVIEWED",
+    "review_artifact_id": "art_plugin_review_01J..."
+  },
+  "in_process": true,
+  "self_check": "native_json_contract_v1"
+}

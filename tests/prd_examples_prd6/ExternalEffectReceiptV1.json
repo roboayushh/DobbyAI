@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "effect_receipt_id": "ercpt_01J...",
+  "effect_intent_id": "eff_01J...",
+  "status": "PUBLISHED",
+  "dispatch": {
+    "started_at": "2026-09-27T00:06:05Z",
+    "response_received": false,
+    "provider_receipt_redacted": null
+  },
+  "observation": {
+    "observed_at": "2026-09-27T00:06:20Z",
+    "target_ref": "refs/heads/harness/task-123",
+    "observed_oid": "2222222222222222222222222222222222222222",
+    "matches_desired": true
+  },
+  "reconciliation": "DESIRED_STATE_OBSERVED",
+  "receipt_sha256": "2727272727272727272727272727272727272727272727272727272727272727"
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "request_id": "ereq_01J...",
+  "adapter": {
+    "name": "native_json_v1",
+    "version": "1.0.0"
+  },
+  "repository": {
+    "kind": "local_git",
+    "locator": "/evaluator/input/repository",
+    "revision": "0123456789012345678901234567890123456789"
+  },
+  "task_mode": "single_issue",
+  "execution_mode": "evaluation",
+  "task": {
+    "source_type": "direct_text",
+    "text": "Fix the described behavior while preserving existing tests."
+  },
+  "profile": "evaluation_strict_v1",
+  "runtime_profile": "python312_docker_v1",
+  "model_config_ref": "official_text_model_v1",
+  "budgets": {
+    "model_calls": 30,
+    "input_tokens": 150000,
+    "output_tokens": 20000,
+    "wall_seconds": 1800
+  },
+  "result_path": "/evaluator/output/result.json",
+  "export_path": "/evaluator/output/bundle",
+  "requested_effects": [
+    "EXPORT"
+  ],
+  "idempotency_key": "eval-case-0001"
+}

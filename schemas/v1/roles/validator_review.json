@@ -1,0 +1,189 @@
+{
+  "$defs": {
+    "OverlayTestFileV1": {
+      "additionalProperties": false,
+      "description": "A validator-proposed test that runs only in a separate overlay (PRD 4).",
+      "properties": {
+        "content": {
+          "maxLength": 100000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "path": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "content",
+        "purpose"
+      ],
+      "title": "OverlayTestFileV1",
+      "type": "object"
+    },
+    "ProposedCheckV1": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "title": "Check Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "test_proposal",
+            "lint_proposal",
+            "inspection_proposal"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "purpose": {
+          "title": "Purpose",
+          "type": "string"
+        },
+        "requested_scope": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Requested Scope",
+          "type": "array"
+        }
+      },
+      "required": [
+        "check_id",
+        "purpose",
+        "kind"
+      ],
+      "title": "ProposedCheckV1",
+      "type": "object"
+    },
+    "ValidatorFindingV1": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "title": "Category",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "severity": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "statement": {
+          "title": "Statement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "severity",
+        "category",
+        "statement"
+      ],
+      "title": "ValidatorFindingV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "acceptance_contract_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Acceptance Contract Sha256",
+      "type": "string"
+    },
+    "candidate_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Candidate Hash",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "NO_OBJECTION",
+        "CHANGES_NEEDED",
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/ValidatorFindingV1"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "narrative_trust": {
+      "const": "model_opinion_not_host_verification",
+      "default": "model_opinion_not_host_verification",
+      "enum": [
+        "model_opinion_not_host_verification"
+      ],
+      "title": "Narrative Trust",
+      "type": "string"
+    },
+    "overlay_tests": {
+      "items": {
+        "$ref": "#/$defs/OverlayTestFileV1"
+      },
+      "maxItems": 10,
+      "title": "Overlay Tests",
+      "type": "array"
+    },
+    "proposed_checks": {
+      "items": {
+        "$ref": "#/$defs/ProposedCheckV1"
+      },
+      "title": "Proposed Checks",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    },
+    "unresolved_risks": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unresolved Risks",
+      "type": "array"
+    }
+  },
+  "required": [
+    "decision",
+    "task_id",
+    "candidate_hash",
+    "acceptance_contract_sha256"
+  ],
+  "title": "ValidatorReviewV1",
+  "type": "object"
+}

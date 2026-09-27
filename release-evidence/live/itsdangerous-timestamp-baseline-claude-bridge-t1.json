@@ -1,0 +1,30 @@
+{
+  "case": "itsdangerous-timestamp",
+  "configuration": "baseline_single_role",
+  "model_profile": "claude-bridge",
+  "trial": 1,
+  "budget": {
+    "model_calls": 20,
+    "wall_seconds": 1200
+  },
+  "status": "WALL_BUDGET_EXHAUSTED",
+  "usage": {
+    "model_calls": 4,
+    "input_tokens": 44101,
+    "output_tokens": 69878
+  },
+  "wall_seconds": 1507.4,
+  "commands": 3,
+  "repeated_identical_failed_commands": 0,
+  "changed_paths": [],
+  "patch_empty": true,
+  "patch_applies": false,
+  "hidden_before": {
+    "exit_code": 1,
+    "summary": "78 failed, 219 passed in 1.39s",
+    "failing_count": 78
+  },
+  "hidden_after": null,
+  "hidden_pass": false,
+  "new_regressions": []
+}

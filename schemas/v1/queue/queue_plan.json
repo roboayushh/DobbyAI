@@ -1,0 +1,223 @@
+{
+  "$defs": {
+    "QueuePlanEdgeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "dependent_item_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Dependent Item Id",
+          "type": "string"
+        },
+        "edge_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Edge Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "REQUIRES",
+          "default": "REQUIRES",
+          "enum": [
+            "REQUIRES"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "predecessor_item_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Predecessor Item Id",
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "USER_DECLARED",
+            "SOURCE_METADATA",
+            "PLANNER_PROPOSED_HOST_VALIDATED"
+          ],
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "edge_id",
+        "predecessor_item_id",
+        "dependent_item_id",
+        "source"
+      ],
+      "title": "QueuePlanEdgeV1",
+      "type": "object"
+    },
+    "QueuePlanItemV1": {
+      "additionalProperties": false,
+      "properties": {
+        "canonical_item_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Canonical Item Id"
+        },
+        "classification": {
+          "enum": [
+            "ACTIONABLE",
+            "DUPLICATE",
+            "DEPENDENT",
+            "AMBIGUOUS",
+            "UNSUPPORTED",
+            "INVALID"
+          ],
+          "title": "Classification",
+          "type": "string"
+        },
+        "ordinal": {
+          "minimum": 0,
+          "title": "Ordinal",
+          "type": "integer"
+        },
+        "priority": {
+          "title": "Priority",
+          "type": "integer"
+        },
+        "queue_item_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Queue Item Id",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "task_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Task Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "queue_item_id",
+        "task_id",
+        "ordinal",
+        "classification",
+        "priority"
+      ],
+      "title": "QueuePlanItemV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/QueuePlanEdgeV1"
+      },
+      "maxItems": 400,
+      "title": "Edges",
+      "type": "array"
+    },
+    "frozen_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Frozen At"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/QueuePlanItemV1"
+      },
+      "maxItems": 20,
+      "title": "Items",
+      "type": "array"
+    },
+    "plan_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Plan Sha256",
+      "type": "string"
+    },
+    "policy_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Policy Id",
+      "type": "string"
+    },
+    "queue_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Queue Id",
+      "type": "string"
+    },
+    "queue_version_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Queue Version Id",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "DRAFT",
+        "FROZEN",
+        "SUPERSEDED",
+        "INVALID"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "task_snapshot_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Task Snapshot Sha256",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "queue_id",
+    "queue_version_id",
+    "run_id",
+    "version",
+    "task_snapshot_sha256",
+    "policy_id",
+    "state",
+    "items",
+    "edges",
+    "plan_sha256"
+  ],
+  "title": "QueuePlanV1",
+  "type": "object"
+}

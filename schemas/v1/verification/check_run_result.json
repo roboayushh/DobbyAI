@@ -1,0 +1,241 @@
+{
+  "$defs": {
+    "CheckStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "TIMEOUT",
+        "OOM",
+        "OUTPUT_LIMIT",
+        "ZERO_TESTS",
+        "ALL_SKIPPED",
+        "BLOCKED_ENVIRONMENT",
+        "UNPARSABLE",
+        "UNEXPECTED_MUTATION",
+        "CANCELLED",
+        "INTERNAL_ERROR"
+      ],
+      "title": "CheckStatus",
+      "type": "string"
+    },
+    "ProcessSummaryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "elapsed_ms": {
+          "minimum": 0,
+          "title": "Elapsed Ms",
+          "type": "integer"
+        },
+        "exit_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exit Code"
+        },
+        "oom_killed": {
+          "default": false,
+          "title": "Oom Killed",
+          "type": "boolean"
+        },
+        "output_limit_exceeded": {
+          "default": false,
+          "title": "Output Limit Exceeded",
+          "type": "boolean"
+        },
+        "signal": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Signal"
+        },
+        "timed_out": {
+          "default": false,
+          "title": "Timed Out",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "elapsed_ms"
+      ],
+      "title": "ProcessSummaryV1",
+      "type": "object"
+    },
+    "TestCountsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "discovered": {
+          "minimum": 0,
+          "title": "Discovered",
+          "type": "integer"
+        },
+        "errors": {
+          "minimum": 0,
+          "title": "Errors",
+          "type": "integer"
+        },
+        "failed": {
+          "minimum": 0,
+          "title": "Failed",
+          "type": "integer"
+        },
+        "passed": {
+          "minimum": 0,
+          "title": "Passed",
+          "type": "integer"
+        },
+        "skipped": {
+          "minimum": 0,
+          "title": "Skipped",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "discovered",
+        "passed",
+        "failed",
+        "skipped",
+        "errors"
+      ],
+      "title": "TestCountsV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempt_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "candidate_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Candidate Sha256",
+      "type": "string"
+    },
+    "check_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Check Id",
+      "type": "string"
+    },
+    "check_run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Check Run Id",
+      "type": "string"
+    },
+    "command_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Command Sha256",
+      "type": "string"
+    },
+    "environment_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Environment Sha256",
+      "type": "string"
+    },
+    "overlay_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Overlay Sha256"
+    },
+    "process": {
+      "$ref": "#/$defs/ProcessSummaryV1"
+    },
+    "report_artifact_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Report Artifact Id"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "settled_at": {
+      "title": "Settled At",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/CheckStatus"
+    },
+    "stderr_artifact_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stderr Artifact Id"
+    },
+    "stdout_artifact_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stdout Artifact Id"
+    },
+    "tests": {
+      "$ref": "#/$defs/TestCountsV1"
+    },
+    "unexpected_source_mutation": {
+      "title": "Unexpected Source Mutation",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "check_run_id",
+    "attempt_id",
+    "check_id",
+    "candidate_sha256",
+    "environment_sha256",
+    "command_sha256",
+    "status",
+    "process",
+    "tests",
+    "unexpected_source_mutation",
+    "settled_at"
+  ],
+  "title": "CheckRunResultV1",
+  "type": "object"
+}

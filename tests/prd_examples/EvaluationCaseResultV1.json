@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "batch_id": "ebat_01J...",
+  "case_id": "ecase_01J...",
+  "task_id": "tsk_eval_01J...",
+  "baseline_commit": "1212121212121212121212121212121212121212",
+  "candidate_commit": "3434343434343434343434343434343434343434",
+  "outcome": "PASS",
+  "context_isolation_id": "iso_01J...",
+  "workspace_id": "wt_eval_01J...",
+  "completion_decision_id": "vdec_eval_01J...",
+  "carried_state_from_case_id": null,
+  "result_artifact_id": "art_eval_01J..."
+}

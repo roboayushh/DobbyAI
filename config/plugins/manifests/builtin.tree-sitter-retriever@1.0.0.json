@@ -1,0 +1,38 @@
+{
+  "configuration_schema_sha256": "042b35e50dd5dd505f0228e829f17a8aeaae50e49d865c4754cf9ba1edba9bd0",
+  "dependencies": [],
+  "in_process": true,
+  "interfaces": [
+    {
+      "api_version": "1.0",
+      "name": "RetrieverPlugin"
+    }
+  ],
+  "optional_capabilities": [],
+  "plugin": {
+    "content_sha256": "b0ee7630db04944b82e073a8eb1a9f3626f7e38d097b76eba05d664d5af9040a",
+    "distribution": "ai-coding-harness",
+    "entry_point": "Retriever",
+    "module": "harness.retrieval.retriever",
+    "name": "builtin.tree-sitter-retriever",
+    "version": "1.0.0"
+  },
+  "provenance": {
+    "license": "project-license",
+    "review_artifact_id": null,
+    "review_status": "REVIEWED",
+    "source": "project-built-in"
+  },
+  "required_capabilities": [
+    "EVIDENCE_QUERY"
+  ],
+  "runtime": {
+    "platforms": [
+      "linux",
+      "darwin"
+    ],
+    "python": ">=3.12,<3.14"
+  },
+  "schema_version": "1.0",
+  "self_check": "import_only_v1"
+}

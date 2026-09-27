@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run_01J...",
+  "task_id": "tsk_01J...",
+  "task_revision": 1,
+  "plan_id": "plan_01J...",
+  "plan_revision": 1,
+  "baseline": {
+    "commit": "baseline-commit-B",
+    "content_tree_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+  },
+  "candidate": {
+    "candidate_id": "cand_01J...",
+    "commit": "40-hex-private-commit",
+    "tree": "git-tree-object-id",
+    "candidate_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+    "manifest_artifact_id": "art_01P...",
+    "diff_artifact_id": "art_01M...",
+    "verification_status": "NOT_RUN"
+  },
+  "changed_paths": [
+    "src/example.py",
+    "tests/test_example.py"
+  ],
+  "action_result_ids": [
+    "xres_01J..."
+  ],
+  "acceptance_contract": {
+    "plan_artifact_id": "art_01Q...",
+    "plan_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+  },
+  "environment": {
+    "runtime_profile_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "image_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "dependency_environment_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+    "worker_version": "1.0.0",
+    "tool_library_version": "1.0.0"
+  },
+  "remaining_budget": {
+    "model_calls": 20,
+    "input_tokens": 90000,
+    "output_tokens": 12000,
+    "wall_seconds": 1200,
+    "verification_calls_reserved": 2
+  },
+  "policy_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+}

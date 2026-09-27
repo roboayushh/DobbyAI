@@ -1,0 +1,376 @@
+{
+  "$defs": {
+    "ContainerIdentityV1": {
+      "additionalProperties": false,
+      "properties": {
+        "container_id_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Container Id Hash"
+        },
+        "image_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Image Digest",
+          "type": "string"
+        },
+        "runtime_profile_fingerprint": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Runtime Profile Fingerprint",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runtime_profile_fingerprint",
+        "image_digest"
+      ],
+      "title": "ContainerIdentityV1",
+      "type": "object"
+    },
+    "ExecutionArtifactsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "diff": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Diff"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result"
+        },
+        "stderr": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stderr"
+        },
+        "stdout": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stdout"
+        },
+        "tool_events": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Events"
+        }
+      },
+      "title": "ExecutionArtifactsV1",
+      "type": "object"
+    },
+    "ExecutionBudgetChargeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "action_units_charged": {
+          "minimum": 0,
+          "title": "Action Units Charged",
+          "type": "integer"
+        },
+        "output_bytes_charged": {
+          "minimum": 0,
+          "title": "Output Bytes Charged",
+          "type": "integer"
+        },
+        "wall_seconds_charged": {
+          "minimum": 0,
+          "title": "Wall Seconds Charged",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "action_units_charged",
+        "wall_seconds_charged",
+        "output_bytes_charged"
+      ],
+      "title": "ExecutionBudgetChargeV1",
+      "type": "object"
+    },
+    "ProcessOutcomeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "elapsed_ms": {
+          "minimum": 0,
+          "title": "Elapsed Ms",
+          "type": "integer"
+        },
+        "exit_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exit Code"
+        },
+        "oom_killed": {
+          "default": false,
+          "title": "Oom Killed",
+          "type": "boolean"
+        },
+        "output_limit_exceeded": {
+          "default": false,
+          "title": "Output Limit Exceeded",
+          "type": "boolean"
+        },
+        "signal": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Signal"
+        },
+        "timed_out": {
+          "default": false,
+          "title": "Timed Out",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "elapsed_ms"
+      ],
+      "title": "ProcessOutcomeV1",
+      "type": "object"
+    },
+    "Settlement": {
+      "enum": [
+        "ACCEPTED",
+        "NO_CHANGE",
+        "FAILED_ROLLED_BACK",
+        "POLICY_VIOLATION_ROLLED_BACK",
+        "CANCELLED_ROLLED_BACK",
+        "UNKNOWN"
+      ],
+      "title": "Settlement",
+      "type": "string"
+    },
+    "WorkerResultSummaryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "anyOf": [
+            {
+              "enum": [
+                "ACTION_COMPLETED",
+                "ACTION_NEEDS_FOLLOWUP",
+                "ACTION_BLOCKED"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status"
+        },
+        "summary": {
+          "default": "",
+          "maxLength": 4000,
+          "title": "Summary",
+          "type": "string"
+        },
+        "trusted_as": {
+          "const": "advisory",
+          "default": "advisory",
+          "enum": [
+            "advisory"
+          ],
+          "title": "Trusted As",
+          "type": "string"
+        }
+      },
+      "title": "WorkerResultSummaryV1",
+      "type": "object"
+    },
+    "WorkspaceChangeSummaryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "after_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "After Version"
+        },
+        "before_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Before Version",
+          "type": "string"
+        },
+        "change_set_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Change Set Sha256"
+        },
+        "created": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Created",
+          "type": "array"
+        },
+        "deleted": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Deleted",
+          "type": "array"
+        },
+        "modified": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Modified",
+          "type": "array"
+        },
+        "unexpected": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unexpected",
+          "type": "array"
+        }
+      },
+      "required": [
+        "before_version"
+      ],
+      "title": "WorkspaceChangeSummaryV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "action_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Action Id",
+      "type": "string"
+    },
+    "artifacts": {
+      "$ref": "#/$defs/ExecutionArtifactsV1"
+    },
+    "budget": {
+      "$ref": "#/$defs/ExecutionBudgetChargeV1"
+    },
+    "container": {
+      "$ref": "#/$defs/ContainerIdentityV1"
+    },
+    "observed_at": {
+      "title": "Observed At",
+      "type": "string"
+    },
+    "process": {
+      "$ref": "#/$defs/ProcessOutcomeV1"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "settlement": {
+      "$ref": "#/$defs/Settlement"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "worker_result": {
+      "$ref": "#/$defs/WorkerResultSummaryV1"
+    },
+    "workspace": {
+      "$ref": "#/$defs/WorkspaceChangeSummaryV1"
+    }
+  },
+  "required": [
+    "action_id",
+    "run_id",
+    "task_id",
+    "settlement",
+    "container",
+    "process",
+    "worker_result",
+    "workspace",
+    "artifacts",
+    "budget",
+    "observed_at"
+  ],
+  "title": "ExecutionResultV1",
+  "type": "object"
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "run_id": "run_01J...",
+  "queue_id": "que_01J...",
+  "queue_version_id": "qver_01J...",
+  "status": "PARTIAL_SUCCESS",
+  "baseline": {
+    "commit": "0000000000000000000000000000000000000000",
+    "tree": "1111111111111111111111111111111111111111"
+  },
+  "final_integration": {
+    "commit": "4444444444444444444444444444444444444444",
+    "tree": "5555555555555555555555555555555555555555",
+    "sequence": 3
+  },
+  "aggregate_verification": {
+    "status": "PASS",
+    "verification_id": "iver_final_01J...",
+    "contract_set_sha256": "dededededededededededededededededededededededededededededededede",
+    "report_artifact_id": "art_final_verify"
+  },
+  "counts": {
+    "selected": 6,
+    "integrated": 3,
+    "failed": 1,
+    "blocked": 1,
+    "remaining": 1
+  },
+  "task_results": [
+    {
+      "task_id": "tsk_01J_A",
+      "status": "INTEGRATED",
+      "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "task_id": "tsk_01J_B",
+      "status": "FAILED",
+      "commit": null
+    }
+  ],
+  "final_patch_artifact_id": "art_patch_input_01J...",
+  "queue_report_artifact_id": "art_queue_report_01J...",
+  "publication_authorized": false,
+  "settled_at": "2026-09-26T00:40:00Z"
+}

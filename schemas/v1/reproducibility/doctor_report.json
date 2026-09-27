@@ -1,0 +1,102 @@
+{
+  "$defs": {
+    "DoctorCheckV1": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "observed": {
+          "maxLength": 500,
+          "title": "Observed",
+          "type": "string"
+        },
+        "required": {
+          "maxLength": 500,
+          "title": "Required",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "WARN",
+            "SKIP"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "observed",
+        "required"
+      ],
+      "title": "DoctorCheckV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "blocking_check_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Blocking Check Ids",
+      "type": "array"
+    },
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/DoctorCheckV1"
+      },
+      "title": "Checks",
+      "type": "array"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "profile": {
+      "title": "Profile",
+      "type": "string"
+    },
+    "report_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Report Sha256",
+      "type": "string"
+    },
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "READY",
+        "BLOCKED",
+        "WARNING"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "profile",
+    "status",
+    "checks",
+    "report_sha256",
+    "created_at"
+  ],
+  "title": "DoctorReportV1",
+  "type": "object"
+}

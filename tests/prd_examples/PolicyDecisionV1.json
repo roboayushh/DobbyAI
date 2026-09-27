@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "decision_id": "pdec_01J...",
+  "request_id": "adm_01J...",
+  "decision": "ADMITTED",
+  "reason_codes": [],
+  "normalized_capabilities": [
+    "source.read",
+    "workspace.patch"
+  ],
+  "normalized_paths": [
+    "src/example.py",
+    "tests/test_example.py"
+  ],
+  "effective_limits": {
+    "wall_seconds": 30,
+    "cpus": 2,
+    "memory_bytes": 4294967296,
+    "pids": 256,
+    "stdout_bytes": 2097152,
+    "stderr_bytes": 2097152,
+    "workspace_growth_bytes": 536870912,
+    "new_files": 5000
+  },
+  "network_mode": "none",
+  "approval_request_id": null,
+  "decision_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+}

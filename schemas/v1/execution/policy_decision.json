@@ -1,0 +1,174 @@
+{
+  "$defs": {
+    "EffectiveLimitsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "cpus": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 4.0,
+          "title": "Cpus",
+          "type": "number"
+        },
+        "memory_bytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 8589934592,
+          "title": "Memory Bytes",
+          "type": "integer"
+        },
+        "new_files": {
+          "maximum": 25000,
+          "minimum": 0,
+          "title": "New Files",
+          "type": "integer"
+        },
+        "pids": {
+          "exclusiveMinimum": 0,
+          "maximum": 512,
+          "title": "Pids",
+          "type": "integer"
+        },
+        "stderr_bytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 10485760,
+          "title": "Stderr Bytes",
+          "type": "integer"
+        },
+        "stdout_bytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 10485760,
+          "title": "Stdout Bytes",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "exclusiveMinimum": 0,
+          "maximum": 1200,
+          "title": "Wall Seconds",
+          "type": "integer"
+        },
+        "workspace_growth_bytes": {
+          "maximum": 2147483648,
+          "minimum": 0,
+          "title": "Workspace Growth Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "wall_seconds",
+        "cpus",
+        "memory_bytes",
+        "pids",
+        "stdout_bytes",
+        "stderr_bytes",
+        "workspace_growth_bytes",
+        "new_files"
+      ],
+      "title": "EffectiveLimitsV1",
+      "type": "object"
+    },
+    "NetworkMode": {
+      "enum": [
+        "none",
+        "setup_scoped",
+        "action_scoped"
+      ],
+      "title": "NetworkMode",
+      "type": "string"
+    },
+    "PolicyDecisionKind": {
+      "enum": [
+        "ADMITTED",
+        "NEEDS_APPROVAL",
+        "DENIED",
+        "STALE"
+      ],
+      "title": "PolicyDecisionKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "approval_request_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Approval Request Id"
+    },
+    "decision": {
+      "$ref": "#/$defs/PolicyDecisionKind"
+    },
+    "decision_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "decision_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Decision Sha256",
+      "type": "string"
+    },
+    "effective_limits": {
+      "$ref": "#/$defs/EffectiveLimitsV1"
+    },
+    "network_mode": {
+      "$ref": "#/$defs/NetworkMode",
+      "default": "none"
+    },
+    "normalized_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Normalized Capabilities",
+      "type": "array"
+    },
+    "normalized_paths": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 256,
+      "title": "Normalized Paths",
+      "type": "array"
+    },
+    "reason_codes": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "request_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Request Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "decision_id",
+    "request_id",
+    "decision",
+    "normalized_capabilities",
+    "normalized_paths",
+    "effective_limits",
+    "decision_sha256"
+  ],
+  "title": "PolicyDecisionV1",
+  "type": "object"
+}

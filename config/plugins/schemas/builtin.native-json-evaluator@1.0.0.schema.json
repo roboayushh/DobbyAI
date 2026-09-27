@@ -1,0 +1,14 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "max_request_bytes": {
+      "maximum": 4194304,
+      "minimum": 1024,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "max_request_bytes"
+  ],
+  "type": "object"
+}

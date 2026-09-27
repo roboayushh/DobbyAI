@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "export_id": "exp_01J...",
+  "run_id": "run_01J...",
+  "status": "VALID",
+  "format": "unified_git_patch_v1",
+  "base": {
+    "commit": "0123456789012345678901234567890123456789",
+    "tree": "1111111111111111111111111111111111111111"
+  },
+  "candidate": {
+    "commit": "2222222222222222222222222222222222222222",
+    "tree": "3333333333333333333333333333333333333333",
+    "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "files": [
+    {
+      "path": "patch.diff",
+      "media_type": "text/x-diff",
+      "bytes": 2048,
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    {
+      "path": "result.json",
+      "media_type": "application/json",
+      "bytes": 4096,
+      "sha256": "1717171717171717171717171717171717171717171717171717171717171717"
+    }
+  ],
+  "round_trip": {
+    "status": "PASS",
+    "result_tree": "3333333333333333333333333333333333333333",
+    "report_artifact_id": "art_roundtrip_01J..."
+  },
+  "manifest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "created_at": "2026-09-27T00:00:00Z"
+}

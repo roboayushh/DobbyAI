@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "contract_id": "vcon_01J...",
+  "run_id": "run_01J...",
+  "task_id": "tsk_01J...",
+  "task_revision": 1,
+  "plan_id": "plan_01J...",
+  "plan_revision": 1,
+  "baseline": {
+    "commit": "baseline-commit-B",
+    "content_tree_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+  },
+  "criteria": [
+    {
+      "criterion_id": "ac_1",
+      "statement": "The boundary input returns the expected normalized result.",
+      "required": true,
+      "check_ids": [
+        "check_focused_1"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "check_id": "check_focused_1",
+      "origin": "USER_EXPLICIT",
+      "kind": "test",
+      "tier": "focused",
+      "required": true,
+      "baseline_policy": "required",
+      "argv": [
+        "python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_example.py::test_boundary",
+        "--junitxml=/output/junit.xml"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 120,
+      "parser": "pytest-junit@1",
+      "minimum_tests": 1,
+      "allowed_workspace_outputs": []
+    }
+  ],
+  "prohibited_shortcuts": [
+    "disable_required_test",
+    "hide_test_discovery",
+    "unconditional_task_specific_hardcoding"
+  ],
+  "validator_required": true,
+  "max_validator_overlay_files": 10,
+  "max_validator_overlay_bytes": 200000,
+  "flake_retries": 1,
+  "max_repair_attempts": 2,
+  "runtime_profile_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "policy_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "contract_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "state": "FROZEN"
+}

@@ -1,0 +1,112 @@
+{
+  "$defs": {
+    "PrincipalV1": {
+      "additionalProperties": false,
+      "properties": {
+        "channel": {
+          "enum": [
+            "interactive_terminal",
+            "headless_pregrant",
+            "admin_policy"
+          ],
+          "title": "Channel",
+          "type": "string"
+        },
+        "principal_id": {
+          "title": "Principal Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "principal_id",
+        "channel"
+      ],
+      "title": "PrincipalV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "approval_grant_id": {
+      "title": "Approval Grant Id",
+      "type": "string"
+    },
+    "bound_request_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Bound Request Sha256",
+      "type": "string"
+    },
+    "capability_request_id": {
+      "title": "Capability Request Id",
+      "type": "string"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "credential_scope_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Credential Scope Id"
+    },
+    "expires_at": {
+      "title": "Expires At",
+      "type": "string"
+    },
+    "grant_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Grant Sha256",
+      "type": "string"
+    },
+    "max_uses": {
+      "minimum": 1,
+      "title": "Max Uses",
+      "type": "integer"
+    },
+    "principal": {
+      "$ref": "#/$defs/PrincipalV1"
+    },
+    "remaining_uses": {
+      "minimum": 0,
+      "title": "Remaining Uses",
+      "type": "integer"
+    },
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "ACTIVE",
+        "CONSUMED",
+        "REVOKED",
+        "EXPIRED",
+        "INVALIDATED"
+      ],
+      "title": "State",
+      "type": "string"
+    }
+  },
+  "required": [
+    "approval_grant_id",
+    "capability_request_id",
+    "principal",
+    "bound_request_sha256",
+    "max_uses",
+    "remaining_uses",
+    "state",
+    "created_at",
+    "expires_at",
+    "grant_sha256"
+  ],
+  "title": "ApprovalGrantV1",
+  "type": "object"
+}

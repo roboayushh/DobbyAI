@@ -1,0 +1,38 @@
+{
+  "configuration_schema_sha256": "f9d544bca4e2e9c4f74735ea905757b8219e16dc6ff269d094466c3908250640",
+  "dependencies": [],
+  "in_process": true,
+  "interfaces": [
+    {
+      "api_version": "1.0",
+      "name": "ModelAdapterPlugin"
+    }
+  ],
+  "optional_capabilities": [],
+  "plugin": {
+    "content_sha256": "209e009da36ae11111390acf35881baf6387407aeb08acbfd925e20f9002cf38",
+    "distribution": "ai-coding-harness",
+    "entry_point": "OpenAICompatibleModelAdapter",
+    "module": "harness.model.adapter",
+    "name": "builtin.openai-compatible-model",
+    "version": "1.0.0"
+  },
+  "provenance": {
+    "license": "project-license",
+    "review_artifact_id": null,
+    "review_status": "REVIEWED",
+    "source": "project-built-in"
+  },
+  "required_capabilities": [
+    "MODEL_CALL_SERVICE"
+  ],
+  "runtime": {
+    "platforms": [
+      "linux",
+      "darwin"
+    ],
+    "python": ">=3.12,<3.14"
+  },
+  "schema_version": "1.0",
+  "self_check": "one_model_one_key_v1"
+}

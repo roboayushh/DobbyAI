@@ -1,0 +1,288 @@
+{
+  "$defs": {
+    "CoderCompleteV1": {
+      "additionalProperties": false,
+      "properties": {
+        "claimed_outcome": {
+          "title": "Claimed Outcome",
+          "type": "string"
+        },
+        "decision": {
+          "const": "COMPLETE",
+          "enum": [
+            "COMPLETE"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "plan_revision": {
+          "minimum": 1,
+          "title": "Plan Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "task_revision": {
+          "minimum": 1,
+          "title": "Task Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "decision",
+        "task_id",
+        "task_revision",
+        "plan_revision",
+        "claimed_outcome"
+      ],
+      "title": "CoderCompleteV1",
+      "type": "object"
+    },
+    "CoderDecisionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "decision": {
+          "const": "CODE",
+          "enum": [
+            "CODE"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "declared_paths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Declared Paths",
+          "type": "array"
+        },
+        "max_action_seconds": {
+          "exclusiveMinimum": 0,
+          "maximum": 300,
+          "title": "Max Action Seconds",
+          "type": "integer"
+        },
+        "plan_revision": {
+          "minimum": 1,
+          "title": "Plan Revision",
+          "type": "integer"
+        },
+        "purpose": {
+          "title": "Purpose",
+          "type": "string"
+        },
+        "python_action": {
+          "maxLength": 65536,
+          "minLength": 1,
+          "title": "Python Action",
+          "type": "string"
+        },
+        "requested_capabilities": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Requested Capabilities",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "success_observations": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Success Observations",
+          "type": "array"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "task_revision": {
+          "minimum": 1,
+          "title": "Task Revision",
+          "type": "integer"
+        },
+        "workspace_version": {
+          "title": "Workspace Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "task_id",
+        "task_revision",
+        "plan_revision",
+        "workspace_version",
+        "purpose",
+        "requested_capabilities",
+        "declared_paths",
+        "python_action",
+        "success_observations",
+        "max_action_seconds"
+      ],
+      "title": "CoderDecisionV1",
+      "type": "object"
+    },
+    "CoderReplanV1": {
+      "additionalProperties": false,
+      "properties": {
+        "contradicted_assumption": {
+          "title": "Contradicted Assumption",
+          "type": "string"
+        },
+        "decision": {
+          "const": "REPLAN",
+          "enum": [
+            "REPLAN"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "plan_revision": {
+          "minimum": 1,
+          "title": "Plan Revision",
+          "type": "integer"
+        },
+        "requested_change": {
+          "title": "Requested Change",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "task_revision": {
+          "minimum": 1,
+          "title": "Task Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "decision",
+        "task_id",
+        "task_revision",
+        "plan_revision",
+        "contradicted_assumption",
+        "evidence_ids",
+        "requested_change"
+      ],
+      "title": "CoderReplanV1",
+      "type": "object"
+    },
+    "NeedCapabilityV1": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_acceptance_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Affected Acceptance Criteria",
+          "type": "array"
+        },
+        "capability": {
+          "title": "Capability",
+          "type": "string"
+        },
+        "decision": {
+          "const": "NEED_CAPABILITY",
+          "enum": [
+            "NEED_CAPABILITY"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "task_id",
+        "capability",
+        "reason"
+      ],
+      "title": "NeedCapabilityV1",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "CODE": "#/$defs/CoderDecisionV1",
+      "COMPLETE": "#/$defs/CoderCompleteV1",
+      "NEED_CAPABILITY": "#/$defs/NeedCapabilityV1",
+      "REPLAN": "#/$defs/CoderReplanV1"
+    },
+    "propertyName": "decision"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/CoderDecisionV1"
+    },
+    {
+      "$ref": "#/$defs/CoderCompleteV1"
+    },
+    {
+      "$ref": "#/$defs/CoderReplanV1"
+    },
+    {
+      "$ref": "#/$defs/NeedCapabilityV1"
+    }
+  ]
+}

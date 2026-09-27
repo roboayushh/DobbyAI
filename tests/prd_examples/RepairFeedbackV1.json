@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "repair_attempt_id": "rpa_01J...",
+  "task_id": "tsk_01J...",
+  "from_candidate_id": "cand_01J...",
+  "repair_number": 1,
+  "trigger": "FAILED_REQUIRED_CHECK",
+  "failed_criteria": [
+    "ac_1"
+  ],
+  "new_regressions": [],
+  "check_failures": [
+    {
+      "check_run_id": "crun_01J...",
+      "status": "FAIL",
+      "failure_signature": "2222222222222222222222222222222222222222222222222222222222222222",
+      "log_artifact_ids": [
+        "art_01N..."
+      ]
+    }
+  ],
+  "diff_findings": [],
+  "validator_findings": [],
+  "workspace_start_candidate_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+  "remaining_repairs": 1,
+  "feedback_sha256": "1212121212121212121212121212121212121212121212121212121212121212"
+}

@@ -1,0 +1,175 @@
+# Trusted, non-secret model profiles. The only credential is AI_API_KEY in the host
+# environment; it never appears here. Select a profile with HARNESS_MODEL_PROFILE
+# (or the evaluator request's model_config_ref). Every role (planner, coder,
+# validator) uses the one selected profile; there is no silent model fallback.
+#
+# User-owned environment overrides (applied to the selected profile and recorded in
+# its fingerprint): HARNESS_MODEL_ENDPOINT, HARNESS_MODEL_NAME,
+# HARNESS_MODEL_CONTEXT_WINDOW, HARNESS_MODEL_MAX_OUTPUT_TOKENS,
+# HARNESS_MODEL_RESPONSE_FORMAT, HARNESS_MODEL_TIMEOUT_SECONDS, HARNESS_MODEL_TEMPERATURE.
+#
+# response_format: "json_schema" (strict schema mode), "json_object" (JSON mode; the
+# schema travels in the prompt — DeepSeek, Qwen, most vLLM/Ollama servers), or "none".
+
+[profiles.designated]
+description = "Placeholder: set endpoint/model (or choose a profile below) before a live run"
+protocol = "openai-compatible-chat"
+adapter = "openai-compatible"
+endpoint = "https://provider.example/v1"
+model = "official-model-id"
+context_window_tokens = 32000
+max_output_tokens = 4000
+safety_margin_tokens = 2000
+tokenizer = "conservative-v1"
+request_timeout_seconds = 120
+temperature = 0.0
+top_p = 1.0
+supports_json_schema = true
+allow_streaming = false
+
+[profiles.deepseek]
+description = "DeepSeek API (deepseek-chat / DeepSeek-V3.x) via the OpenAI-compatible endpoint"
+protocol = "openai-compatible-chat"
+adapter = "openai-compatible"
+endpoint = "https://api.deepseek.com/v1"
+model = "deepseek-chat"
+context_window_tokens = 64000
+max_output_tokens = 8000
+safety_margin_tokens = 3000
+tokenizer = "conservative-v1"
+request_timeout_seconds = 240
+temperature = 0.0
+top_p = 1.0
+response_format = "json_object"
+allow_streaming = false
+
+[profiles.deepseek-reasoner]
+description = "DeepSeek reasoning model; hidden reasoning is discarded, only the final JSON is used"
+protocol = "openai-compatible-chat"
+adapter = "openai-compatible"
+endpoint = "https://api.deepseek.com/v1"
+model = "deepseek-reasoner"
+context_window_tokens = 64000
+max_output_tokens = 16000
+safety_margin_tokens = 3000
+tokenizer = "conservative-v1"
+request_timeout_seconds = 480
+temperature = 0.0
+top_p = 1.0
+response_format = "json_object"
+allow_streaming = false
+
+[profiles.qwen]
+description = "Qwen on Alibaba Cloud Model Studio (DashScope international, OpenAI-compatible mode)"
+protocol = "openai-compatible-chat"
+adapter = "openai-compatible"
+endpoint = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+model = "qwen-plus"
+context_window_tokens = 64000
+max_output_tokens = 8000
+safety_margin_tokens = 3000
+tokenizer = "conservative-v1"
+request_timeout_seconds = 240
+temperature = 0.0
+top_p = 1.0
+response_format = "json_object"
+allow_streaming = false
+extra_body = { enable_thinking = false }
+
+[profiles.qwen-coder]
+description = "Qwen3-Coder on DashScope international (OpenAI-compatible mode)"
+protocol = "openai-compatible-chat"
+adapter = "openai-compatible"
+endpoint = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+model = "qwen3-coder-plus"
+context_window_tokens = 64000
+max_output_tokens = 8000
+safety_margin_tokens = 3000
+tokenizer = "conservative-v1"
+request_timeout_seconds = 240
+temperature = 0.0
+top_p = 1.0
+response_format = "json_object"
+allow_streaming = false
+
+[profiles.qwen-cn]
+description = "Qwen on DashScope mainland China endpoint (OpenAI-compatible mode)"
+protocol = "openai-compatible-chat"
+adapter = "openai-compatible"
+endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+model = "qwen-plus"
+context_window_tokens = 64000
+max_output_tokens = 8000
+safety_margin_tokens = 3000
+tokenizer = "conservative-v1"
+request_timeout_seconds = 240
+temperature = 0.0
+top_p = 1.0
+response_format = "json_object"
+allow_streaming = false
+extra_body = { enable_thinking = false }
+
+[profiles.groq-qwen]
+description = "Qwen on GroqCloud (qwen/qwen3.8-27b, preview) with a Groq key (gsk_...). Needs a paid Developer tier: the free tier's 8K tokens/minute is smaller than one harness request"
+protocol = "openai-compatible-chat"
+adapter = "openai-compatible"
+endpoint = "https://api.groq.com/openai/v1"
+model = "qwen/qwen3.8-27b"
+context_window_tokens = 64000
+max_output_tokens = 8000
+safety_margin_tokens = 3000
+tokenizer = "conservative-v1"
+request_timeout_seconds = 240
+temperature = 0.0
+top_p = 1.0
+response_format = "json_object"
+allow_streaming = false
+extra_body = { reasoning_effort = "none" }
+
+[profiles.qwen-local]
+description = "Self-hosted Qwen through vLLM / Ollama / LM Studio OpenAI-compatible server on loopback"
+protocol = "openai-compatible-chat"
+adapter = "openai-compatible"
+endpoint = "http://127.0.0.1:8000/v1"
+model = "Qwen/Qwen2.5-Coder-32B-Instruct"
+context_window_tokens = 32000
+max_output_tokens = 6000
+safety_margin_tokens = 2000
+tokenizer = "conservative-v1"
+request_timeout_seconds = 600
+temperature = 0.0
+top_p = 1.0
+response_format = "json_object"
+allow_streaming = false
+
+[profiles.openrouter-deepseek]
+description = "DeepSeek through OpenRouter"
+protocol = "openai-compatible-chat"
+adapter = "openai-compatible"
+endpoint = "https://openrouter.ai/api/v1"
+model = "deepseek/deepseek-chat"
+context_window_tokens = 64000
+max_output_tokens = 8000
+safety_margin_tokens = 3000
+tokenizer = "conservative-v1"
+request_timeout_seconds = 240
+temperature = 0.0
+top_p = 1.0
+response_format = "json_object"
+allow_streaming = false
+
+[profiles.claude-bridge]
+description = "LOCAL DEVELOPMENT ONLY: scripts/claude_openai_bridge.py serving Claude through the claude CLI"
+protocol = "openai-compatible-chat"
+adapter = "openai-compatible"
+endpoint = "http://127.0.0.1:8765/v1"
+model = "claude-sonnet-4-6"
+context_window_tokens = 64000
+max_output_tokens = 8000
+safety_margin_tokens = 3000
+tokenizer = "conservative-v1"
+request_timeout_seconds = 600
+temperature = 0.0
+top_p = 1.0
+response_format = "json_object"
+allow_streaming = false

@@ -1,0 +1,84 @@
+{
+  "$defs": {
+    "PluginLockEntryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "configuration_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Configuration Sha256",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "slot": {
+          "pattern": "^[a-z_]+$",
+          "title": "Slot",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slot",
+        "name",
+        "version",
+        "content_sha256",
+        "configuration_sha256"
+      ],
+      "title": "PluginLockEntryV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "kernel_api_version": {
+      "pattern": "^\\d+\\.\\d+$",
+      "title": "Kernel Api Version",
+      "type": "string"
+    },
+    "lock_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Lock Sha256",
+      "type": "string"
+    },
+    "plugin_set_id": {
+      "title": "Plugin Set Id",
+      "type": "string"
+    },
+    "plugins": {
+      "items": {
+        "$ref": "#/$defs/PluginLockEntryV1"
+      },
+      "minItems": 1,
+      "title": "Plugins",
+      "type": "array"
+    },
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "plugin_set_id",
+    "kernel_api_version",
+    "plugins",
+    "lock_sha256",
+    "created_at"
+  ],
+  "title": "PluginSetLockV1",
+  "type": "object"
+}
