@@ -8,14 +8,20 @@ authoritative.
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import os
+import re
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated, Any, Callable, Dict, List, Optional
+from urllib.parse import urlparse
 
 import typer
 from rich import box
+from rich.prompt import Confirm
 from rich.table import Table
 
 from .application.composition import (
@@ -172,8 +178,12 @@ def _artifact_path(stack: Stack, artifact_id: Optional[str]) -> Optional[str]:
 
 
 # ------------------------------------------------------------- pipeline
-def run_pipeline(run_id: str, json_mode: bool, stack: Optional[Stack] = None) -> None:
-    """PREPARED run -> queue (one or more tasks) -> truthful final result."""
+def run_pipeline(run_id: str, json_mode: bool, stack: Optional[Stack] = None, *, interactive: bool = False) -> None:
+    """PREPARED run -> queue (one or more tasks) -> truthful final result.
+
+    ``interactive`` (terminal `harness run` only) lets a verified result offer to
+    bring its final patch back to the original source; machine modes never ask.
+    """
     stack = stack or build_stack(run_id)
     log = None if json_mode else (lambda message: _console().print(f"[dim]{_safe(message, 400)}[/dim]"))
     blocked = ensure_runtime(stack.services, auto_build=stack.config.auto_build_runtime, log=log)
@@ -199,14 +209,14 @@ def run_pipeline(run_id: str, json_mode: bool, stack: Optional[Stack] = None) ->
         _fail(exc, json_mode, run_id)
     except Exception as exc:
         _fail(exc, json_mode, run_id)
-    _render_queue_outcome(stack, run_id, result, json_mode)
+    _render_queue_outcome(stack, run_id, result, json_mode, interactive=interactive and not json_mode)
 
 
-def _render_queue_outcome(stack: Stack, run_id: str, result: Any, json_mode: bool) -> None:
+def _render_queue_outcome(stack: Stack, run_id: str, result: Any, json_mode: bool, *, interactive: bool = False) -> None:
     from .contracts.queue import QueueFinalResultV1
 
     if isinstance(result, QueueFinalResultV1):
-        _emit(result, json_mode, lambda: _render_final(stack, result))
+        _emit(result, json_mode, lambda: _render_final(stack, result, interactive=interactive))
         raise typer.Exit(release_exit_code(result.status))
     # Paused (approval or explicit pause): report progress truthfully.
     pending = stack.services.actions.approvals.pending(run_id)
@@ -223,7 +233,7 @@ def _render_queue_outcome(stack: Stack, run_id: str, result: Any, json_mode: boo
     raise typer.Exit(release_exit_code(status) if status == "NEEDS_APPROVAL" else 0)
 
 
-def _render_final(stack: Stack, final: Any) -> None:
+def _render_final(stack: Stack, final: Any, *, interactive: bool = False) -> None:
     console = _console()
     colour = {"COMPLETED_ALL": "green", "PARTIAL_SUCCESS": "yellow"}.get(final.status, "red")
     console.print(f"\nRun: [bold]{final.run_id}[/bold]   Result: [bold {colour}]{final.status}[/bold {colour}]")
@@ -250,7 +260,153 @@ def _render_final(stack: Stack, final: Any) -> None:
             f"[yellow]Best unverified attempt[/yellow] for {partial['task_id']} ({partial['status']}, not integrated): "
             f"[cyan]{_artifact_path(stack, partial['patch_artifact_id'])}[/cyan]"
         )
-    console.print("[dim]Private result only: nothing was pushed, merged, or applied to the original repository.[/dim]\n")
+    applied = False
+    if interactive and patch and final.status in APPLY_OFFER_STATUSES:
+        # The prepared RunRequestV1 names the original source the workspace was copied from.
+        run = stack.run_store.get_run(final.run_id) or {}
+        repository = json.loads(run.get("request_json") or "{}").get("repository") or {}
+        applied = offer_apply_to_original(console, repository.get("kind"), repository.get("locator"), patch, final.run_id)
+    if not applied:
+        console.print("[dim]Private result only: nothing was pushed, merged, or applied to the original repository.[/dim]\n")
+
+
+# ------------------------------------------------ opt-in apply to original
+# Final statuses whose verified patch may be offered back to the original source.
+APPLY_OFFER_STATUSES = frozenset({"PASS", "COMPLETED_ALL", "PARTIAL_SUCCESS"})
+_APPLY_GIT_TIMEOUT_SECONDS = 120
+_APPLY_LISTED_FILES = 50
+
+
+def offer_apply_to_original(
+    console: Any,
+    kind: Optional[str],
+    locator: Optional[str],
+    patch_path: Any,
+    run_id: str,
+    ask: Callable[..., bool] = Confirm.ask,
+) -> bool:
+    """Ask (default No) whether to bring the verified final patch back to the original source.
+
+    Local Git checkouts and folders get ``git apply`` in their working tree only: never a
+    commit, a push, or a write outside that directory. ZIP archives and GitHub sources are
+    never modified; the patch can only be saved as a file. Returns True only when the
+    original directory was changed.
+    """
+    patch = Path(patch_path)
+    if not patch.is_file() or patch.stat().st_size == 0:
+        return False
+    kind = str(getattr(kind, "value", kind) or "")
+    if kind in ("local_git", "local_folder"):
+        return _apply_to_directory(console, Path(locator or ""), patch, run_id, ask)
+    if kind == "local_zip":
+        archive = Path(locator or "")
+        if not archive.is_file():
+            console.print(f"[yellow]Not saved:[/yellow] the original archive {_safe(locator, 400)} no longer exists. Nothing was changed.")
+            return False
+        destination = archive.parent / f"{_file_part(archive.stem)}-{_file_part(run_id)}.patch"
+        console.print("The original is a ZIP archive; it is never modified in place.")
+        _save_patch_copy(console, patch, destination, ask)
+        return False
+    if kind == "public_https":
+        name = _file_part(urlparse(locator or "").path.rstrip("/").rsplit("/", 1)[-1].removesuffix(".git"))
+        destination = Path.cwd() / f"{name}-{_file_part(run_id)}.patch"
+        console.print("The original is a remote repository; the harness never pushes or opens pull requests.")
+        if _save_patch_copy(console, patch, destination, ask):
+            console.print(f"Apply it in your own clone of {_safe(locator, 300)} with: git apply --binary {_safe(destination, 400)}")
+        return False
+    return False
+
+
+def _file_part(value: Any) -> str:
+    return re.sub(r"[^A-Za-z0-9._-]", "_", str(value or "")).strip(".") or "repository"
+
+
+def _confirm(ask: Callable[..., bool], console: Any, prompt: str) -> bool:
+    """No input (closed or non-TTY stdin) or Ctrl-C at the prompt means No."""
+    try:
+        return bool(ask(prompt, console=console, default=False))
+    except (EOFError, KeyboardInterrupt):
+        console.print()
+        return False
+
+
+def _original_git(root: Path, *args: str) -> subprocess.CompletedProcess:
+    """Host ``git`` in the original directory: no hooks, no system/global config, no prompts."""
+    env = {
+        "PATH": os.environ.get("PATH", "/usr/bin:/bin:/usr/local/bin"),
+        "LC_ALL": "C",
+        "GIT_TERMINAL_PROMPT": "0",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": "/dev/null",
+        # Never discover (and so never write through) a repository above the original directory.
+        "GIT_CEILING_DIRECTORIES": str(root.parent),
+    }
+    return subprocess.run(
+        ["git", "-c", "core.hooksPath=/dev/null", "-c", "core.quotePath=false", *args],
+        cwd=str(root), env=env, stdin=subprocess.DEVNULL, capture_output=True,
+        timeout=_APPLY_GIT_TIMEOUT_SECONDS, check=False,
+    )
+
+
+def _apply_to_directory(console: Any, root: Path, patch: Path, run_id: str, ask: Callable[..., bool]) -> bool:
+    shown = _safe(root, 400)
+    if not root.is_dir():
+        console.print(f"[yellow]Not applied:[/yellow] the original repository {shown} no longer exists. Nothing was changed.")
+        return False
+    if not _confirm(ask, console, f"Apply these verified changes to the original repository {shown}?"):
+        return False
+    patch_arg = str(patch.resolve())
+    try:
+        check = _original_git(root, "apply", "--check", "--binary", patch_arg)
+        stats = _original_git(root, "apply", "--numstat", "--binary", patch_arg) if check.returncode == 0 else None
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        console.print(f"[red]Could not check the patch with git apply:[/red] {_safe(exc, 300)}\nNothing was changed.")
+        return False
+    if check.returncode != 0:
+        console.print(f"[red]The verified patch does not apply cleanly to {shown}:[/red]")
+        console.print(_safe(check.stderr.decode("utf-8", "replace").strip(), 2000))
+        console.print("Nothing was changed.")
+        return False
+    try:
+        applied = _original_git(root, "apply", "--binary", patch_arg)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        console.print(f"[red]git apply did not finish:[/red] {_safe(exc, 300)}. Review {shown} before continuing.")
+        return False
+    if applied.returncode != 0:
+        console.print(f"[red]git apply failed after a clean check:[/red] {_safe(applied.stderr.decode('utf-8', 'replace').strip(), 2000)}")
+        console.print(f"Review {shown} before continuing.")
+        return False
+    # --numstat only reads the patch: "<added>\t<deleted>\t<path>", "-" counts for binary files.
+    rows = [line.split("\t", 2) for line in (stats.stdout if stats else b"").decode("utf-8", "replace").splitlines() if line.count("\t") >= 2]
+    console.print(f"Changed files in {shown}:")
+    for added, deleted, path in rows[:_APPLY_LISTED_FILES]:
+        lines = "binary" if added == "-" else f"+{added} -{deleted}"
+        console.print(f"  {lines:<12} {_safe(path, 300)}")
+    if len(rows) > _APPLY_LISTED_FILES:
+        console.print(f"  … and {len(rows) - _APPLY_LISTED_FILES} more file(s)")
+    added_total = sum(int(row[0]) for row in rows if row[0].isdigit())
+    deleted_total = sum(int(row[1]) for row in rows if row[1].isdigit())
+    digest = hashlib.sha256(patch.read_bytes()).hexdigest()
+    console.print(f"Receipt: run {_safe(run_id)} | patch sha256 {digest[:16]} | {len(rows)} file(s), +{added_total} -{deleted_total} | {shown}")
+    console.print(f"[bold green]Applied[/bold green] to the working tree of {shown} only: nothing was committed or pushed.\n")
+    return True
+
+
+def _save_patch_copy(console: Any, patch: Path, destination: Path, ask: Callable[..., bool]) -> bool:
+    shown = _safe(destination, 400)
+    if not _confirm(ask, console, f"Save the verified patch as {shown}?"):
+        return False
+    try:
+        with destination.open("xb") as handle:  # never overwrite an existing file
+            handle.write(patch.read_bytes())
+    except FileExistsError:
+        console.print(f"[yellow]Not saved:[/yellow] {shown} already exists. Nothing was changed.")
+        return False
+    except OSError as exc:
+        console.print(f"[red]Could not save the patch:[/red] {_safe(exc, 300)}")
+        return False
+    console.print(f"[green]Saved[/green] the verified patch: [cyan]{shown}[/cyan]")
+    return True
 
 
 def _render_progress(stack: Stack, run_id: str, progress: Any) -> None:

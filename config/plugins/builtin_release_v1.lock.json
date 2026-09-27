@@ -1,19 +1,19 @@
 {
-  "created_at": "2026-09-27T02:28:35.164346+00:00",
+  "created_at": "2026-09-27T02:51:02.026385+00:00",
   "kernel_api_version": "1.0",
-  "lock_sha256": "61faf8b26f42a4d8b12a3fdefe18c516be16267441a992f516fe2aa4f37a6ebb",
+  "lock_sha256": "9746031f5373da39c5f67b8fd0198144110b4832f98fd1e34501b25fb96e32a0",
   "plugin_set_id": "pset_builtin_release_v1",
   "plugins": [
     {
       "configuration_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-      "content_sha256": "fdba968ebe1edf36910dab51eee561a29131b8b4befd21e0bd188fd49d1fc895",
+      "content_sha256": "f229cd7591dab768ac3be0176d7a9daf1de37212e4960b2292c1a6e92da53414",
       "name": "builtin.context-builder",
       "slot": "context",
       "version": "1.0.0"
     },
     {
       "configuration_sha256": "5479458e5e5d2bcea0517b07190712f4bae35a3692cd5efc6f7da2f0abdb341c",
-      "content_sha256": "0d3e3bd9420e06ebf0fd1d41edc8ed1f82f6c950f2fa2e6f36aa5626c8a03b84",
+      "content_sha256": "62d633cc1431147b78d24d86ad89a579a4a1b5f064b4a59fd5f652603c3681e8",
       "name": "builtin.safe-controller",
       "slot": "controller",
       "version": "1.0.0"
@@ -41,7 +41,7 @@
     },
     {
       "configuration_sha256": "a893ebeb7972087f36986155821b30420c01e2c8657a211ac1f8925343e4cb23",
-      "content_sha256": "209e009da36ae11111390acf35881baf6387407aeb08acbfd925e20f9002cf38",
+      "content_sha256": "b228cec7c39994fe31068813e519d89c43f04e43a3d3833c7bdcbf5fd3270756",
       "name": "builtin.openai-compatible-model",
       "slot": "model",
       "version": "1.0.0"

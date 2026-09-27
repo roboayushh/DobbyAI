@@ -661,6 +661,7 @@ class OrchestrationController(ExecutionLoopMixin):
         if replay is not None:
             return replay
         schema_errors: List[Mapping[str, Any]] = []
+        contract = self._fitted_contract(resolved.contract)
         for format_retry in range(3):
             if self._current_lease is None:
                 raise OrchestrationError(
@@ -674,7 +675,7 @@ class OrchestrationController(ExecutionLoopMixin):
                 task_id=task_id,
                 role=role,
                 purpose=f"{purpose}-format-{format_retry}",
-                profile=resolved.contract,
+                profile=contract,
                 source_revision=source_revision,
                 evidence=evidence,
                 plan=plan,
@@ -695,7 +696,7 @@ class OrchestrationController(ExecutionLoopMixin):
                 "packet_id": built.contract.packet_id,
                 "messages": built.messages,
                 "response_schema": schema,
-                "max_output_tokens": resolved.contract.max_output_tokens,
+                "max_output_tokens": contract.max_output_tokens,
             }
             request_json = canonical_json(request_payload)
             request_path = f"prd2/model/requests/{call_id}.json"
@@ -717,7 +718,7 @@ class OrchestrationController(ExecutionLoopMixin):
                 profile_fingerprint=resolved.contract.profile_fingerprint,
                 request_sha256=hashlib.sha256(request_json.encode("utf-8")).hexdigest(),
                 input_tokens=built.contract.budget.estimated_input_tokens,
-                output_tokens=resolved.contract.max_output_tokens,
+                output_tokens=contract.max_output_tokens,
                 protect_future=protect_future,
             )
             if isinstance(adapter, OpenAICompatibleModelAdapter):
@@ -737,7 +738,7 @@ class OrchestrationController(ExecutionLoopMixin):
                         role=role,
                         messages=built.messages,
                         response_schema=schema,
-                        max_output_tokens=resolved.contract.max_output_tokens,
+                        max_output_tokens=contract.max_output_tokens,
                     )
                 )
             except ModelAdapterError as exc:
@@ -749,6 +750,10 @@ class OrchestrationController(ExecutionLoopMixin):
                     usage_source="unknown" if exc.uncertain_usage else "estimated",
                     error_code=exc.code,
                 )
+                if exc.code == "MODEL_QUOTA_TPM_TOO_LOW" and format_retry < 2:
+                    # The adapter learned the provider's per-minute cap: rebuild a packet that fits.
+                    contract = self._fitted_contract(resolved.contract)
+                    continue
                 raise
             except KeyboardInterrupt:
                 try:
@@ -1185,6 +1190,30 @@ class OrchestrationController(ExecutionLoopMixin):
             raise OrchestrationError("CODER_TASK_REVISION_STALE", "Coder task revision is stale")
         if decision.plan_revision != plan.plan.plan_revision:
             raise OrchestrationError("CODER_PLAN_REVISION_STALE", "Coder plan revision is stale")
+
+    @staticmethod
+    def _fitted_contract(contract: Any) -> Any:
+        """Fit packet and output sizes under a provider's tokens-per-minute cap, when one is known.
+
+        A small per-minute cap (Groq's free tier allows 6-8K tokens) is below one full-size
+        request, so waiting cannot help. The optional context (evidence, history) is compacted
+        to what fits, and the per-call output cap shrinks with it; the model is unchanged.
+        """
+        from harness.model.adapter import provider_tpm_limit
+
+        limits = provider_tpm_limit(contract.endpoint_origin)
+        if not limits or "tpm" not in limits:
+            return contract
+        tpm = int(limits["tpm"])
+        ratio = max(0.5, float(limits.get("ratio", 1.0)))
+        max_output = min(contract.max_output_tokens, max(1024, tpm // 5))
+        safety = min(contract.safety_margin_tokens, 128)
+        max_input = max(1024, int((tpm * 0.9 - max_output) / ratio))
+        window = min(contract.context_window_tokens, max_input + max_output + safety)
+        if window == contract.context_window_tokens and max_output == contract.max_output_tokens:
+            return contract
+        return contract.model_copy(update={"context_window_tokens": window, "max_output_tokens": max_output,
+                                           "safety_margin_tokens": safety})
 
     def _assert_workspace_unchanged(self, handoff: VerifiedHandoff) -> None:
         current = self.handoff_verifier.compute_workspace_manifest(handoff.workspace_root)

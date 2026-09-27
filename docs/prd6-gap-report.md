@@ -46,7 +46,7 @@ Status key:
 | REL-032 | P0 | CycloneDX SBOM, third-party notices, both hash locks, provenance doc | done | `test_provenance_files_ship_with_the_release` |
 | REL-033 | P0 | README plus `docs/{configuration,profiles,evaluator,security,limitations,provenance,release-evidence}.md` | done | `documentation` gate |
 | REL-034 | P0 | `baseline_loop.py` (single-role shell loop, same model, budget, runtime, and oracle), `compare_eval.py` (N trials, development and held-out reported separately) | methodology done; prescribed-model run pending | [release evidence](#release-evidence) |
-| REL-035–044 | P1 | Local apply and publish | disabled | `test_disabled_p1_commands_are_typed_not_simulated`; `publication_authorized` is always false |
+| REL-035–044 | P1 | Local apply: interactive `make run` offers an opt-in `git apply` to the original working tree after a verified run (default No; never commits). Headless apply commands and publish (push/PR) stay disabled. | partial (interactive local apply) | `tests/test_apply_to_original.py`; `test_disabled_p1_commands_are_typed_not_simulated`; `publication_authorized` is always false |
 | REL-045 | P2 | Read-only release viewer | not implemented | — |
 
 ## Additional changes made during PRD 6
@@ -65,4 +65,25 @@ Status key:
 
 ## Release evidence
 
-_Filled in from `harness release evidence` at release time; see below._
+`harness release evidence` on 2026-09-27: **13 gates PASS**, `optional_apply_publish`
+NOT_APPLICABLE, and `model` and `comparative_evaluation` **NOT_RUN**. The overall verdict is
+therefore NOT_QUALIFIED, truthfully: no run with the prescribed DeepSeek or Qwen key was
+possible during development.
+
+- **Clean machine (REL-030):** in a fresh `python:3.12-bookworm` container, `make setup`,
+  `make test` (453 passed) and a headless `make run` (PASS, export VALID). Python 3.13:
+  `make setup` plus the fast suite (443 passed).
+- **Live runs (development bridge, Claude; not prescribed-model evidence):**
+  - itsdangerous timestamp bug: PASS, hidden tests 297/297.
+  - GitHub issue python-humanize/humanize#379 through interactive `make run`: planned and
+    coded, but stopped at the coder turn limit.
+  - QuixBugs `bitcount` through `make run MODEL=groq-qwen`, with Groq's 7K tokens-per-minute
+    cap emulated. The first request (22,552 tokens) received the 413; the harness learned the
+    cap, rebuilt a fitting packet (about 6.4K tokens), and continued with paced calls.
+  - Live runs also exposed three crash bugs, now fixed and covered by regression tests:
+    budget settlement over-estimate, the planner evidence-round limit, and a model-echoed
+    plan revision.
+- **Comparative evaluation (REL-034):** the matrix was stopped. Its harness trials ran on
+  code that predated those fixes, so they are not reported. The methodology and scripts are
+  in place for a prescribed-model run.
+- **Token optimisation:** replayed over the 35 calls of a real run, input tokens fell by 28.6%.

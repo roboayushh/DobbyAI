@@ -229,3 +229,57 @@ def test_an_ordinary_tpm_rate_limit_is_still_retried() -> None:
         return reply('{"ok": true}')
 
     assert adapter_for("groq-qwen", handler).generate(request()).raw_text == '{"ok": true}' and len(calls) == 2
+
+
+def test_learned_tpm_cap_shrinks_requests_to_fit_and_paces_calls() -> None:
+    """Groq free tier: the 413 teaches the cap; the controller refits; later calls wait for the window."""
+    from harness.model import adapter as adapter_module
+    from harness.orchestration.controller import OrchestrationController
+
+    def too_large(req: httpx.Request) -> httpx.Response:
+        return httpx.Response(413, json={"error": {"message": (
+            "Request too large for model `qwen/qwen3.8-27b` on tokens per minute (TPM): Limit 7000, Requested 21373, "
+            "please reduce your message size and try again.")}})
+
+    with pytest.raises(ModelAdapterError) as caught:
+        adapter_for("groq-qwen", too_large).generate(request())
+    assert caught.value.code == "MODEL_QUOTA_TPM_TOO_LOW" and caught.value.tpm_limit == 7000
+    contract = ModelProfileResolver(PROFILES, environ={}).resolve("groq-qwen").contract
+    fitted = OrchestrationController._fitted_contract(contract)
+    assert fitted.max_output_tokens < contract.max_output_tokens
+    assert fitted.context_window_tokens <= 7000 and fitted.profile_fingerprint == contract.profile_fingerprint
+    # Pacing: two full-size calls inside one minute must wait for the window instead of drawing a 429.
+    waits = []
+    ok = adapter_for("groq-qwen", lambda req: reply('{"ok": true}'))
+    ok._sleep = waits.append
+    big = ModelCallRequest(call_id="c2", role=Role.PLANNER, messages=[{"role": "user", "content": "x" * 12000}],
+                           response_schema={"type": "object"}, max_output_tokens=1400)
+    ok.generate(big)
+    ok.generate(big)
+    assert waits and all(0 < w <= adapter_module.RATE_LIMIT_MAX_WAIT_SECONDS for w in waits)
+
+
+def test_rate_limits_are_waited_out_beyond_the_normal_retry_count() -> None:
+    calls, waits = [], []
+
+    def handler(req: httpx.Request) -> httpx.Response:
+        calls.append(1)
+        if len(calls) < 7:
+            return httpx.Response(429, headers={"retry-after": "5"}, json={"error": {"message": "Rate limit reached"}})
+        return reply('{"ok": true}')
+
+    adapter = adapter_for("deepseek", handler)
+    adapter._sleep = waits.append
+    assert adapter.generate(request()).raw_text == '{"ok": true}' and len(calls) == 7 and len(waits) == 6
+
+
+def test_prompt_schema_drops_generated_titles_but_keeps_real_fields() -> None:
+    from harness.context.builder import _prompt_schema
+
+    schema = {"title": "PlanV1", "type": "object", "properties": {"title": {"title": "Title", "type": "string"},
+              "steps": {"title": "Steps", "type": "array", "items": {"$ref": "#/$defs/Step"}}},
+              "$defs": {"Step": {"title": "Step", "type": "object", "properties": {"purpose": {"title": "Purpose"}}}}}
+    compact = _prompt_schema(schema)
+    assert "title" in compact["properties"] and compact["properties"]["title"] == {"type": "string"}
+    assert "title" not in compact and "title" not in compact["$defs"]["Step"]
+    assert json.dumps(compact).count('"title"') == 1

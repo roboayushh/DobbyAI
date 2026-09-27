@@ -112,6 +112,19 @@ DEFAULT_AUTHORIZATION_POLICY = {
 }
 
 
+def _prompt_schema(node: Any, *, in_properties: bool = False) -> Any:
+    """The output schema without generated ``title`` annotations (a token cost on every call)."""
+    if isinstance(node, dict):
+        return {
+            key: _prompt_schema(value, in_properties=key in ("properties", "$defs") and not in_properties)
+            for key, value in node.items()
+            if in_properties or not (key == "title" and isinstance(value, str))
+        }
+    if isinstance(node, list):
+        return [_prompt_schema(value) for value in node]
+    return node
+
+
 @dataclass(frozen=True)
 class BuiltContext:
     contract: ContextPacketV1
@@ -182,7 +195,7 @@ class ContextBuilder:
         items.append(
             self._item(
                 "schema",
-                "OUTPUT_SCHEMA\n" + canonical_json(schema),
+                "OUTPUT_SCHEMA\n" + canonical_json(_prompt_schema(schema)),
                 True,
                 9_800,
                 "role_schema",
@@ -257,10 +270,18 @@ class ContextBuilder:
                 )
             )
 
+        seen_spans: set = set()
         for position, result in enumerate(evidence):
             verified = self.evidence_store.get(result.reference.evidence_id)
             if not verified["valid"] or verified["source_revision"] != source_revision:
                 continue
+            # The same span often comes back from several queries under new evidence IDs;
+            # sending it twice costs tokens on every later call and adds nothing.
+            span = (result.reference.path, result.reference.start_line, result.reference.end_line,
+                    hashlib.sha256(result.content.encode("utf-8")).hexdigest())
+            if span in seen_spans:
+                continue
+            seen_spans.add(span)
             evidence_text = self.firewall.wrap_untrusted(
                 f"evidence_{position}",
                 canonical_json(

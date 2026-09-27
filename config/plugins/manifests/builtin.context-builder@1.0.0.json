@@ -10,7 +10,7 @@
   ],
   "optional_capabilities": [],
   "plugin": {
-    "content_sha256": "fdba968ebe1edf36910dab51eee561a29131b8b4befd21e0bd188fd49d1fc895",
+    "content_sha256": "f229cd7591dab768ac3be0176d7a9daf1de37212e4960b2292c1a6e92da53414",
     "distribution": "ai-coding-harness",
     "entry_point": "ContextBuilder",
     "module": "harness.context.builder",

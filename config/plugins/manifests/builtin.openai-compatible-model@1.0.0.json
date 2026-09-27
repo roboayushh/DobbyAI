@@ -10,7 +10,7 @@
   ],
   "optional_capabilities": [],
   "plugin": {
-    "content_sha256": "209e009da36ae11111390acf35881baf6387407aeb08acbfd925e20f9002cf38",
+    "content_sha256": "b228cec7c39994fe31068813e519d89c43f04e43a3d3833c7bdcbf5fd3270756",
     "distribution": "ai-coding-harness",
     "entry_point": "OpenAICompatibleModelAdapter",
     "module": "harness.model.adapter",

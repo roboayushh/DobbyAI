@@ -46,7 +46,15 @@ make run                                    # interactive; see the prompts below
 3. **Task**: a GitHub issue URL (`https://github.com/owner/repo/issues/123`), `#123`, or
    plain text describing the problem or failing test.
 
-Pasting an issue URL at the repository prompt answers both questions 2 and 3. Other entry points:
+Pasting an issue URL at the repository prompt answers both questions 2 and 3.
+
+After a verified run, `make run` asks whether to **apply the fix to the original
+repository** (default No). For a local folder or checkout it runs `git apply --check`, then
+applies the patch to the working tree only: nothing is committed or pushed. For a GitHub
+source it saves `<repo>-<run>.patch` in the current directory instead; the harness never
+pushes or opens pull requests. Headless and `--non-interactive` runs never apply anything.
+
+Other entry points:
 
 ```bash
 make doctor ARGS=--live                     # prerequisites + one tiny probe request to the model
@@ -98,7 +106,7 @@ model. Bundled profiles in `config/model_profiles.toml`:
 | `deepseek` | api.deepseek.com, `deepseek-chat` | JSON mode (`json_object`) |
 | `deepseek-reasoner` | api.deepseek.com, `deepseek-reasoner` | Reasoning is discarded; only the final JSON is used |
 | `qwen`, `qwen-coder`, `qwen-cn` | DashScope compatible mode, `qwen-plus` / `qwen3-coder-plus` | Sends `enable_thinking=false` |
-| `groq-qwen` | api.groq.com, `qwen/qwen3.8-27b` (Groq key `gsk_…`) | Thinking off (`reasoning_effort=none`). Needs a paid Developer tier: the free tier's 8K tokens/minute is smaller than one request |
+| `groq-qwen` | api.groq.com, `qwen/qwen3.8-27b` (Groq key `gsk_…`) | Thinking off (`reasoning_effort=none`). Free tier works but is slow (requests are shrunk and paced to its tokens-per-minute cap) |
 | `qwen-local` | vLLM or Ollama on `127.0.0.1:8000` | Loopback HTTP is allowed; remote HTTP is not |
 | `openrouter-deepseek` | openrouter.ai | |
 | `claude-bridge` | local `claude` CLI bridge | **Development only.** It never counts as prescribed-model evidence. |
@@ -107,6 +115,19 @@ Override any field without editing files: `HARNESS_MODEL_ENDPOINT`,
 `HARNESS_MODEL_NAME`, `HARNESS_MODEL_RESPONSE_FORMAT`, and others (see
 [docs/configuration.md](docs/configuration.md)). Overrides are recorded in the run's
 fingerprint.
+
+## Rate limits and token use
+
+- **Small accounts do not stop the run.** When a provider reports a tokens-per-minute cap
+  below one request (Groq free tier: HTTP 413), the harness learns the cap, rebuilds a
+  smaller packet, and paces later calls to the one-minute window. HTTP 429s are waited
+  out (up to 8 attempts, honoring `retry-after`). `HARNESS_MODEL_TPM_LIMIT=<n>` pre-sizes
+  requests from the first call.
+- **Token optimisation.** Duplicate evidence spans (the same lines returned by several
+  queries) are sent once; the output JSON schema is sent without generated `title`
+  annotations; the untrusted-data notice is a short per-item marker (the full rule is in
+  the system policy). Replayed over the 35 model calls of a real GitHub-issue run, these
+  cut input tokens by 28.6% (771,619 → 550,667 estimated).
 
 ## Headless evaluator mode
 
@@ -242,7 +263,7 @@ src/harness/
   evaluator/  export/  release/  plugins/          # PRD 6: gateway, patch export, results/evidence, plugin kernel
   approvals/  retention/  doctor/                  # capability grants, registered cleanup, doctor
   persistence/                                     # SQLite migrations 1-7, artifact store, events
-tests/                                             # 453 deterministic tests incl. Docker end-to-end
+tests/                                             # 490 deterministic tests incl. Docker end-to-end
 ```
 
 ## Security and guardrails

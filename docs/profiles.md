@@ -61,10 +61,14 @@ make doctor MODEL=groq-qwen ARGS=--live
 make run MODEL=groq-qwen
 ```
 
-- **Account tier.** Groq's free tier allows 8K tokens per minute and 200K per day for this
-  model. One harness request is typically 15–25K tokens, so the free tier cannot run a task.
-  Groq then answers HTTP 413, which the harness reports as `MODEL_QUOTA_TPM_TOO_LOW` instead
-  of retrying. Use the Developer (paid) tier.
+- **Account tier and rate limits.** Groq's free tier allows 6–8K tokens per minute; a
+  full-size harness request is 15–25K tokens. The harness adapts instead of stopping:
+  the first HTTP 413 tells it the cap, the controller rebuilds a smaller packet (optional
+  evidence and history are compacted; the output cap shrinks) and retries, and later calls
+  are paced to the one-minute window. 429s are waited out (up to 8 attempts, honoring
+  `retry-after`). A free-tier run therefore works but is slow (about one call per minute);
+  the Developer tier runs at full speed. Set `HARNESS_MODEL_TPM_LIMIT=<n>` to pre-size
+  requests from the first call.
 - **Model id.** `qwen/qwen3.8-27b` is a Groq preview model (`qwen/qwen3-32b` was deprecated
   in July 2026). If Groq renames it, override it without editing files:
   `HARNESS_MODEL_NAME=<id from GET /models> make run MODEL=groq-qwen`. Groq no longer

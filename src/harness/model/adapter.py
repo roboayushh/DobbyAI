@@ -2,13 +2,14 @@
 from __future__ import annotations
 
 import json
+import os
 import random
 import re
 import threading
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Mapping, Optional, Protocol, Sequence
+from typing import Any, Callable, Dict, List, Mapping, Optional, Protocol, Sequence, Tuple
 
 import httpx
 
@@ -136,11 +137,14 @@ class OpenAICompatibleModelAdapter:
 
         last_error: Optional[ModelAdapterError] = None
         retry_after: Optional[float] = None
-        for attempt in range(1, self.max_attempts + 1):
+        origin = self.profile.endpoint_origin
+        estimated_input = TokenCounter().count_messages(request.messages).tokens
+        for attempt in range(1, max(self.max_attempts, RATE_LIMIT_ATTEMPTS) + 1):
             retry_after = None
             with self._lock:
                 if request.call_id in self._cancelled:
                     raise ModelAdapterError("MODEL_CANCELLED", "Model call was cancelled")
+            self._pace(origin, estimated_input, payload["max_tokens"])
             started = time.monotonic()
             try:
                 headers = {
@@ -176,14 +180,19 @@ class OpenAICompatibleModelAdapter:
                                 "Configured model or endpoint was not found",
                             )
                         if response.status_code in (413, 429):
-                            tpm = _tpm_limit_below_request(response.read()[:8192].decode("utf-8", "replace"))
+                            tpm = _tpm_numbers(response.read()[:8192].decode("utf-8", "replace"))
                             if tpm is not None:
-                                raise ModelAdapterError(
+                                _learn_tpm(origin, tpm[0], tpm[1], estimated_input, payload["max_tokens"])
+                            if tpm is not None and tpm[1] > tpm[0]:
+                                # One request is larger than the whole per-minute cap: waiting cannot help,
+                                # but a smaller packet can. The controller refits to the learned cap and retries.
+                                error = ModelAdapterError(
                                     "MODEL_QUOTA_TPM_TOO_LOW",
-                                    f"{self.profile.endpoint_origin} limits this account to {tpm[0]} tokens per minute, "
-                                    f"less than one harness request ({tpm[1]} tokens), so retrying cannot help. "
-                                    "Use a paid tier (for Groq, the Developer plan) or another provider.",
+                                    f"{origin} limits this account to {tpm[0]} tokens per minute, less than this "
+                                    f"request ({tpm[1]} tokens); the harness shrinks its requests to fit.",
                                 )
+                                error.tpm_limit = tpm[0]
+                                raise error
                         if response.status_code == 429 or response.status_code >= 500:
                             retry_after = _retry_after_seconds(response.headers.get("retry-after"))
                             raise ModelAdapterError(
@@ -285,8 +294,14 @@ class OpenAICompatibleModelAdapter:
                     client.close()
             except ModelAdapterError as exc:
                 last_error = exc
-                if not exc.retryable or attempt >= self.max_attempts:
+                rate_limited = exc.code == "MODEL_RATE_LIMITED"
+                if not exc.retryable or attempt >= (RATE_LIMIT_ATTEMPTS if rate_limited else self.max_attempts):
                     raise
+                if rate_limited:
+                    # Wait for the provider's window to refill instead of failing the run.
+                    wait = retry_after if retry_after is not None else min(2.0 ** attempt, RATE_LIMIT_MAX_WAIT_SECONDS)
+                    self._sleep(min(wait + random.random() * 0.25, RATE_LIMIT_MAX_WAIT_SECONDS))
+                    continue
             except httpx.HTTPError as exc:
                 with self._lock:
                     cancelled = request.call_id in self._cancelled
@@ -313,6 +328,25 @@ class OpenAICompatibleModelAdapter:
 
         assert last_error is not None
         raise last_error
+
+    def _pace(self, origin: str, estimated_input: int, max_tokens: int) -> None:
+        """Hold a request until it fits the learned tokens-per-minute window (no-op when none is known)."""
+        limits = provider_tpm_limit(origin)
+        if not limits or "tpm" not in limits:
+            return
+        cap = int(limits["tpm"] * 0.95)
+        needed = int(estimated_input * limits.get("ratio", 1.0)) + max_tokens
+        for _ in range(8):  # bounded: each wait lets the oldest entry leave the 60 s window
+            now = time.monotonic()
+            with _LIMITS_LOCK:
+                window = [entry for entry in _TPM_WINDOWS.get(origin, []) if now - entry[0] < 60.0]
+                _TPM_WINDOWS[origin] = window
+                used = sum(tokens for _, tokens in window)
+                if not window or used + needed <= cap:
+                    window.append((now, needed))
+                    return
+                wait = 60.0 - (now - window[0][0]) + 0.5
+            self._sleep(min(max(wait, 0.5), RATE_LIMIT_MAX_WAIT_SECONDS))
 
     def cancel(self, call_id: str) -> None:
         with self._lock:
@@ -360,14 +394,44 @@ def _auth_rejected_message(status: int, origin: str, profile_id: str, api_key: s
     return f"{lead}: {hint}."
 
 
-def _tpm_limit_below_request(body: str) -> Optional[tuple]:
-    """(limit, requested) when a provider says one request exceeds its tokens-per-minute cap."""
+RATE_LIMIT_ATTEMPTS = 8          # 429s are waited out, not fatal: the TPM window refills every minute
+RATE_LIMIT_MAX_WAIT_SECONDS = 65.0
+
+# What each provider origin has told us about its tokens-per-minute cap in this process:
+# {"tpm": limit, "ratio": provider tokens per estimated token}. Used to size packets
+# (controller) and to pace requests so they fit the one-minute window (adapter).
+_PROVIDER_LIMITS: Dict[str, Dict[str, float]] = {}
+_TPM_WINDOWS: Dict[str, List[Tuple[float, int]]] = {}
+_LIMITS_LOCK = threading.Lock()
+
+
+def provider_tpm_limit(origin: str) -> Optional[Dict[str, float]]:
+    """The learned (or HARNESS_MODEL_TPM_LIMIT-configured) tokens-per-minute cap for an origin."""
+    configured = os.environ.get("HARNESS_MODEL_TPM_LIMIT", "").strip()
+    with _LIMITS_LOCK:
+        learned = dict(_PROVIDER_LIMITS.get(origin) or {})
+    if configured.isdigit() and int(configured) > 0:
+        learned["tpm"] = min(int(configured), int(learned.get("tpm", configured)))
+    return learned or None
+
+
+def _learn_tpm(origin: str, limit: int, requested: int, estimated_input: int, max_tokens: int) -> None:
+    with _LIMITS_LOCK:
+        entry = _PROVIDER_LIMITS.setdefault(origin, {})
+        entry["tpm"] = min(limit, int(entry.get("tpm", limit)))
+        if requested > max_tokens and estimated_input > 0:
+            entry["ratio"] = max(0.5, min(1.5, (requested - max_tokens) / estimated_input))
+
+
+def _tpm_numbers(body: str) -> Optional[Tuple[int, int]]:
+    """(limit, requested) from a provider's tokens-per-minute rate-limit message (Groq format)."""
     if "tokens per minute" not in body.lower():
         return None
-    match = re.search(r"Limit\s+(\d+),\s*Requested\s+(\d+)", body)
-    if not match or int(match.group(2)) <= int(match.group(1)):
-        return None  # an ordinary rate limit: waiting and retrying can succeed
-    return int(match.group(1)), int(match.group(2))
+    limit = re.search(r"Limit\s+(\d+)", body)
+    requested = re.search(r"Requested\s+(\d+)", body)
+    if not limit or not requested:
+        return None
+    return int(limit.group(1)), int(requested.group(1))
 
 
 def _failed_generation(body: bytes) -> Optional[str]:

@@ -381,7 +381,7 @@ def cmd_run(
         _handle_cli_error(exc, json_mode=json_mode)
     if not json_mode:
         _err_console.print(f"  [green]✓[/green] Prepared run [bold]{prepared.run_id}[/bold] ({len(prepared.tasks)} task(s))")
-    _run_after_prepare(prepared.run_id, until, json_mode)
+    _run_after_prepare(prepared.run_id, until, json_mode, interactive=not (json_mode or non_interactive))
     try:
         orchestration, _, _ = _get_orchestration_controller()
         result = controller.continue_prepared_run(
@@ -1121,12 +1121,15 @@ def legacy_clean_all(force: bool = False) -> None:
     sys.exit(0)
 
 
-def _run_after_prepare(run_id: str, until: str, json_mode: bool) -> None:
-    """Route a freshly prepared run: `complete` runs the full queue pipeline."""
+def _run_after_prepare(run_id: str, until: str, json_mode: bool, *, interactive: bool = False) -> None:
+    """Route a freshly prepared run: `complete` runs the full queue pipeline.
+
+    ``interactive`` lets a verified result offer to apply its patch to the original source.
+    """
     from .cli_execution import continue_with_execution, run_pipeline
 
     if until == "complete":
-        run_pipeline(run_id, json_mode)
+        run_pipeline(run_id, json_mode, interactive=interactive)
     if until == "verification-required":
         continue_with_execution(run_id, until, json_mode)
 

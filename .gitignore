@@ -35,8 +35,9 @@ data/quarantine/
 !.env.example
 *.token
 
-# Ad-hoc local request files at the repository root
+# Ad-hoc local request files and saved run patches at the repository root
 /request.json
+/*.patch
 
 # IDE
 .vscode/
