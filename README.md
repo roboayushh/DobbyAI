@@ -268,7 +268,7 @@ src/harness/
   evaluator/  export/  release/  plugins/          # PRD 6: gateway, patch export, results/evidence, plugin kernel
   approvals/  retention/  doctor/                  # capability grants, registered cleanup, doctor
   persistence/                                     # SQLite migrations 1-7, artifact store, events
-tests/                                             # 494 deterministic tests incl. Docker end-to-end
+tests/                                             # 491 deterministic tests incl. Docker end-to-end
 ```
 
 ## Security and guardrails

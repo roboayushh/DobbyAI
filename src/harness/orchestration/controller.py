@@ -662,7 +662,6 @@ class OrchestrationController(ExecutionLoopMixin):
         if replay is not None:
             return replay
         schema_errors: List[Mapping[str, Any]] = []
-        self._tpm_origin = resolved.contract.endpoint_origin
         contract = self._fitted_contract(resolved.contract)
         for format_retry in range(3):
             if self._current_lease is None:
@@ -1219,7 +1218,7 @@ class OrchestrationController(ExecutionLoopMixin):
             return contract
         tpm = int(limits["tpm"])
         ratio = max(0.5, float(limits.get("ratio", 1.0)))
-        max_output = min(contract.max_output_tokens, max(1024, tpm // 4))
+        max_output = min(contract.max_output_tokens, max(1024, tpm // 5))
         safety = min(contract.safety_margin_tokens, 128)
         max_input = max(1024, int((tpm * 0.9 - max_output) / ratio))
         window = min(contract.context_window_tokens, max_input + max_output + safety)

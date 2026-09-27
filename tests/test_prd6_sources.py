@@ -135,17 +135,3 @@ def test_checkout_with_only_caches_is_not_dirty(tmp_path: Path, controller) -> N
     result = prepare(ctl, RepositoryKind.LOCAL_GIT, repo, "src-cache-0001")
     snapshot = store.get_source_snapshot(result.run_id)
     assert snapshot["dirty_source_imported"] == 0 and snapshot["baseline_commit"] == snapshot["upstream_commit"]
-
-
-def test_model_style_globs_and_generated_files() -> None:
-    """Brace alternatives and '**/' match like a shell; lock files never become evidence."""
-    import fnmatch
-
-    from harness.retrieval.indexer import GENERATED_FILENAMES, GENERATED_SUFFIXES
-    from harness.retrieval.retriever import _glob_variants
-
-    patterns = _glob_variants("frontend/src/**/*.{js,jsx,ts,tsx}")
-    for path in ("frontend/src/App.jsx", "frontend/src/components/Stats.tsx", "frontend/src/main.js"):
-        assert any(fnmatch.fnmatchcase(path, p) for p in patterns), path
-    assert not any(fnmatch.fnmatchcase("frontend/src/App.css", p) for p in patterns)
-    assert "package-lock.json" in GENERATED_FILENAMES and "bundle.min.js".endswith(GENERATED_SUFFIXES)

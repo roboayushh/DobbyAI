@@ -283,13 +283,3 @@ def test_prompt_schema_drops_generated_titles_but_keeps_real_fields() -> None:
     assert "title" in compact["properties"] and compact["properties"]["title"] == {"type": "string"}
     assert "title" not in compact and "title" not in compact["$defs"]["Step"]
     assert json.dumps(compact).count('"title"') == 1
-
-
-def test_raw_newlines_inside_json_strings_are_accepted_not_retried() -> None:
-    """Live finding: models put real newlines inside python_action; that used to cost a full retry."""
-    registry = RoleSchemaRegistry()
-    raw = ('{"schema_version":"1.0","decision":"NEEDS_EVIDENCE","task_id":"t1","queries":[{"query_type":"PATH_GLOB",'
-           '"query":"src/a.py"}],"reason":"line one\nline two"}')
-    assert registry.validate(Role.PLANNER, raw).reason == "line one\nline two"
-    with pytest.raises(RoleSchemaError):
-        registry.validate(Role.PLANNER, '{"decision": "NEEDS_EVIDENCE", "reason": "unterminated')

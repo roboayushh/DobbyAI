@@ -95,15 +95,9 @@ class RoleSchemaRegistry:
         except json.JSONDecodeError as exc:
             repaired = repair_triple_quoted_strings(candidate) if '"""' in candidate else None
             try:
-                if repaired is None and exc.msg.startswith("Invalid control character"):
-                    # Models often put real newlines inside the python_action string. The object is
-                    # still one complete JSON value; only in-string escaping is lax, so accept it
-                    # (strict=False) instead of paying for a full retry of the call.
-                    parsed = json.loads(candidate, object_pairs_hook=_reject_duplicate_keys, strict=False)
-                elif repaired is None:
+                if repaired is None:
                     raise exc
-                else:
-                    parsed = json.loads(repaired, object_pairs_hook=_reject_duplicate_keys, strict=False)
+                parsed = json.loads(repaired, object_pairs_hook=_reject_duplicate_keys)
             except (json.JSONDecodeError, DuplicateJSONKeyError):
                 raise RoleSchemaError(
                     f"Role response is not strict JSON: {exc}. Encode python_action as ONE JSON string "
