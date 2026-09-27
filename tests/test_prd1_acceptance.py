@@ -7,6 +7,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -675,7 +676,15 @@ def test_at020_machine_output_valid_json(git_repo, temp_dir):
     env["DATA_DIR"] = str(temp_dir / "harness_data")  # never write into the developer's real data/
 
     proc = subprocess.run(
-        [".venv/bin/harness", "prepare", "--request", str(req_file), "--json"],
+        [
+            sys.executable,
+            "-m",
+            "harness.cli",
+            "prepare",
+            "--request",
+            str(req_file),
+            "--json",
+        ],
         cwd=str(Path.cwd()),
         capture_output=True,
         text=True,
