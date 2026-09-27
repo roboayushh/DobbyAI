@@ -21,7 +21,7 @@
   ],
   "optional_capabilities": [],
   "plugin": {
-    "content_sha256": "62d633cc1431147b78d24d86ad89a579a4a1b5f064b4a59fd5f652603c3681e8",
+    "content_sha256": "3c528979c464e18a857d055c852fd803cd130d84e7c4aa8aca958f549e865b8c",
     "distribution": "ai-coding-harness",
     "entry_point": "OrchestrationController",
     "module": "harness.orchestration.controller",

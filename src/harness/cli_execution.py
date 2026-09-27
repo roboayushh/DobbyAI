@@ -200,7 +200,14 @@ def run_pipeline(run_id: str, json_mode: bool, stack: Optional[Stack] = None, *,
         _emit(payload, json_mode, lambda: _console().print(f"[bold yellow]BLOCKED_ENVIRONMENT[/bold yellow] ({blocked}): {payload['message']}"))
         raise typer.Exit(release_exit_code("BLOCKED_ENVIRONMENT"))
     try:
-        result = stack.coordinator.run(run_id)
+        if json_mode:
+            result = stack.coordinator.run(run_id)
+        else:
+            from .cli_progress import ProgressFeed
+
+            data_dir = Path(stack.config.data_dir)
+            with ProgressFeed(_console(), data_dir / "harness.db", run_id, data_dir / "runs" / run_id / "artifacts"):
+                result = stack.coordinator.run(run_id)
     except KeyboardInterrupt as exc:
         try:
             stack.coordinator.request_cancel(run_id)

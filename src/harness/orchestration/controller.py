@@ -16,6 +16,7 @@ from pydantic import BaseModel
 
 from harness.context import BuiltContext, ContextBuilder
 from harness.context.builder import DEFAULT_AUTHORIZATION_POLICY
+from harness.context.compactor import ContextLimitError
 from harness.contracts import (
     CoderCompleteV1,
     CoderDecisionV1,
@@ -670,12 +671,11 @@ class OrchestrationController(ExecutionLoopMixin):
             self._current_lease = self.leases.renew(
                 self._current_lease, ttl_seconds=300
             )
-            built = self.context_builder.build(
+            build_args = dict(
                 run_id=run_id,
                 task_id=task_id,
                 role=role,
                 purpose=f"{purpose}-format-{format_retry}",
-                profile=contract,
                 source_revision=source_revision,
                 evidence=evidence,
                 plan=plan,
@@ -686,6 +686,18 @@ class OrchestrationController(ExecutionLoopMixin):
                 phase=phase,
                 extra_sections=extra_sections,
             )
+            try:
+                built = self.context_builder.build(profile=contract, **build_args)
+            except ContextLimitError as exc:
+                required = getattr(exc, "required_tokens", None)
+                if contract is resolved.contract or not required:
+                    raise
+                # A fitted budget below the pinned minimum: send the minimal (pinned-only)
+                # packet rather than stop. If the provider still refuses it, it says so.
+                contract = contract.model_copy(update={"context_window_tokens": min(
+                    resolved.contract.context_window_tokens,
+                    required + 256 + contract.max_output_tokens + contract.safety_margin_tokens)})
+                built = self.context_builder.build(profile=contract, **build_args)
             call_id = f"mcall_{uuid.uuid4().hex[:16]}"
             schema = self.schema_registry.schema(role)
             request_payload = {

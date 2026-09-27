@@ -300,6 +300,7 @@ class OpenAICompatibleModelAdapter:
                 if rate_limited:
                     # Wait for the provider's window to refill instead of failing the run.
                     wait = retry_after if retry_after is not None else min(2.0 ** attempt, RATE_LIMIT_MAX_WAIT_SECONDS)
+                    _notify_wait(min(wait, RATE_LIMIT_MAX_WAIT_SECONDS), "Provider rate limit (HTTP 429)")
                     self._sleep(min(wait + random.random() * 0.25, RATE_LIMIT_MAX_WAIT_SECONDS))
                     continue
             except httpx.HTTPError as exc:
@@ -346,6 +347,7 @@ class OpenAICompatibleModelAdapter:
                     window.append((now, needed))
                     return
                 wait = 60.0 - (now - window[0][0]) + 0.5
+            _notify_wait(min(max(wait, 0.5), RATE_LIMIT_MAX_WAIT_SECONDS), f"Pacing to {int(limits['tpm'])} tokens/minute")
             self._sleep(min(max(wait, 0.5), RATE_LIMIT_MAX_WAIT_SECONDS))
 
     def cancel(self, call_id: str) -> None:
@@ -403,6 +405,16 @@ RATE_LIMIT_MAX_WAIT_SECONDS = 65.0
 _PROVIDER_LIMITS: Dict[str, Dict[str, float]] = {}
 _TPM_WINDOWS: Dict[str, List[Tuple[float, int]]] = {}
 _LIMITS_LOCK = threading.Lock()
+# Observers of rate-limit waits (the interactive progress feed): callable(seconds, reason).
+WAIT_LISTENERS: List[Callable[[float, str], None]] = []
+
+
+def _notify_wait(seconds: float, reason: str) -> None:
+    for listener in list(WAIT_LISTENERS):
+        try:
+            listener(seconds, reason)
+        except Exception:
+            pass
 
 
 def provider_tpm_limit(origin: str) -> Optional[Dict[str, float]]:

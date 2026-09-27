@@ -810,3 +810,15 @@ def test_repeated_wrong_plan_identity_keeps_the_typed_error(tmp_path: Path) -> N
     with pytest.raises(Exception, match="Expected plan revision 1, got 5"):
         controller.continue_run("run_1", stop_at="plan")
     assert len(adapter.calls) == 3  # the original plus two repairs
+
+
+def test_a_tiny_rate_cap_still_sends_the_pinned_minimum(tmp_path: Path, monkeypatch) -> None:
+    """Groq run regression: a fitted budget below the pinned context must shrink to it, not stop the run."""
+    monkeypatch.setenv("HARNESS_MODEL_TPM_LIMIT", "1000")  # fits only the 1024-token floor
+    data_root, _, store, artifacts = _prepared_run(tmp_path)
+    adapter = FakeModelAdapter([_plan_response()])
+    controller = OrchestrationController(run_store=store, artifact_store=artifacts, data_root=data_root,
+                                         profile_resolver=ModelProfileResolver(_profile_file(tmp_path)), adapter=adapter)
+    result = controller.continue_run("run_1", stop_at="plan")
+    assert result.status.value == "PLAN_READY" and len(adapter.calls) == 1
+    assert adapter.calls[0].max_output_tokens <= 1024

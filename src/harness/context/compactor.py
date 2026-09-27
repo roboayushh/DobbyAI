@@ -53,9 +53,11 @@ class ContextCompactor:
 
         pinned_tokens = sum(item.estimated_tokens for item in valid if item.pinned)
         if pinned_tokens > max_tokens:
-            raise ContextLimitError(
+            error = ContextLimitError(
                 f"Pinned context requires {pinned_tokens} tokens but maximum input is {max_tokens}"
             )
+            error.required_tokens = pinned_tokens
+            raise error
         total = sum(item.estimated_tokens for item in valid)
         if total <= max_tokens:
             return valid, decisions

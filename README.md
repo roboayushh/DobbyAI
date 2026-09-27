@@ -48,6 +48,11 @@ make run                                    # interactive; see the prompts below
 
 Pasting an issue URL at the repository prompt answers both questions 2 and 3.
 
+While it works, `make run` shows a **live feed**: which agent is working (🧭 Planner,
+🛠 Coder, 🔍 Validator) and what it decided, each sandbox action and whether it was
+accepted, every test check with pass/fail counts, the completion gate, token use per call,
+and any rate-limit waits.
+
 After a verified run, `make run` asks whether to **apply the fix to the original
 repository** (default No). For a local folder or checkout it runs `git apply --check`, then
 applies the patch to the working tree only: nothing is committed or pushed. For a GitHub
@@ -263,7 +268,7 @@ src/harness/
   evaluator/  export/  release/  plugins/          # PRD 6: gateway, patch export, results/evidence, plugin kernel
   approvals/  retention/  doctor/                  # capability grants, registered cleanup, doctor
   persistence/                                     # SQLite migrations 1-7, artifact store, events
-tests/                                             # 490 deterministic tests incl. Docker end-to-end
+tests/                                             # 491 deterministic tests incl. Docker end-to-end
 ```
 
 ## Security and guardrails
